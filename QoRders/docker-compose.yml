@@ -14,30 +14,29 @@ services:
   #   command: >
   #     bash -c "npm install && npm run dev"
 
-  # laravel:
-  #   build:
-  #     context: ./backend-laravel
-  #   container_name: laravel_container
-  #   ports:
-  #     - "8000:8000"
-  #   volumes:
-  #     - ./laravel:/app
-  #     - ./wait-for-it.sh:/usr/local/bin/wait-for-it.sh
-  #   environment:
-  #     - DB_CONNECTION=${DB_CONNECTION}
-  #     - DB_HOST=${DB_HOST}
-  #     - DB_PORT=${DB_PORT}
-  #     - DB_DATABASE=${DB_DATABASE}
-  #     - DB_USERNAME=${DB_USERNAME}
-  #     - DB_PASSWORD=${DB_PASSWORD}
-  #   depends_on:
-  #     - mysql
-  #   command: >
-  #     bash -c "chmod +x /usr/local/bin/wait-for-it.sh &&
-  #              /usr/local/bin/wait-for-it.sh mysql 3306 ${DB_USERNAME} ${DB_PASSWORD} -- 
-  #              php artisan key:generate &&
-  #              php artisan migrate &&
-  #              php artisan serve --host=0.0.0.0 --port=8000"
+  laravel:
+    build:
+      context: ./backend-laravel
+    container_name: laravel_container
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend-laravel:/var/www/html
+      - ./wait-for-it.sh:/usr/local/bin/wait-for-it.sh
+    environment:
+      DB_CONNECTION: mysql
+      DB_HOST: mysql_container
+      DB_PORT: 3306
+      DB_DATABASE: laravel_db
+      DB_USERNAME: root
+      DB_PASSWORD: root
+    depends_on:
+      - mysql
+    command: >+
+      bash -c "/usr/local/bin/wait-for-it.sh mysql_container:3306 -- 
+               php artisan key:generate &&
+               php artisan serve --host=0.0.0.0 --port=8000"
+               
 
   springboot:
     build:
@@ -53,7 +52,7 @@ services:
       SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
     depends_on:
       - mysql
-      # - laravel
+      - laravel
     command: >
       bash -c "chmod +x /usr/local/bin/wait-for-it.sh &&
                /usr/local/bin/wait-for-it.sh mysql 3306 ${DB_USERNAME} ${DB_PASSWORD} -- 
