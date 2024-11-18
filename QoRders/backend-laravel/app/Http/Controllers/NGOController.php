@@ -17,9 +17,20 @@ class NGOController extends Controller
         return NGO::find($id); // Obtener un NGO por ID
     }
 
-    public function store(Request $request)
+    public function showBySlug($slug)
     {
-        return NGO::create($request->all()); // Crear un nuevo NGO
+        return NGO::where('ngo_slug', $slug)->firstOrFail();
+    }
+
+   public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'ngo_name' => 'required|string|max:150',
+            'ngo_slug' => 'required|string|unique:ngos,ngo_slug',
+            'email' => 'required|email',
+        ]);
+
+        return NGO::create($validated);
     }
 
     public function update(Request $request, $id)
@@ -32,6 +43,19 @@ class NGOController extends Controller
         return response()->json(['error' => 'NGO not found'], 404);
     }
 
+    public function updateBySlug(Request $request, $slug)
+    {
+        $validated = $request->validate([
+            'ngo_name' => 'required|string|max:150',
+            'email' => 'required|email',
+            // Añade más validaciones según sea necesario
+        ]);
+
+        $ngo = NGO::where('ngo_slug', $slug)->firstOrFail();
+        $ngo->update($validated);
+        return $ngo;
+    }
+
     public function destroy($id)
     {
         $ngo = NGO::find($id);
@@ -40,5 +64,12 @@ class NGOController extends Controller
             return response()->json(['message' => 'NGO deleted successfully']);
         }
         return response()->json(['error' => 'NGO not found'], 404);
+    }
+
+    public function deleteBySlug($slug)
+    {
+        $ngo = NGO::where('ngo_slug', $slug)->firstOrFail();
+        $ngo->delete();
+        return response()->json(['message' => 'NGO deleted successfully']);
     }
 }
