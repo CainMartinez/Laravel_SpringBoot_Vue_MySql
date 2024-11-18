@@ -1,9 +1,10 @@
 # Usa una imagen base de PHP 8.2 con extensiones necesarias
 FROM php:8.2-fpm
 
-# Instala Composer y otras dependencias necesarias
+# Instala Composer, cliente MySQL y otras dependencias necesarias
 RUN apt-get update && \
-    apt-get install -y curl git unzip libpng-dev libonig-dev libxml2-dev zip && \
+    apt-get install -y \
+    curl git unzip libpng-dev libonig-dev libxml2-dev zip default-mysql-client && \
     curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 # Instala extensiones adicionales de PHP

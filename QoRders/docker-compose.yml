@@ -13,7 +13,6 @@ services:
   #     - springboot
   #   command: >
   #     bash -c "npm install && npm run dev"
-
   laravel:
     build:
       context: ./backend-laravel
@@ -27,17 +26,15 @@ services:
       DB_CONNECTION: mysql
       DB_HOST: mysql_container
       DB_PORT: 3306
-      DB_DATABASE: laravel_db
+      DB_DATABASE: QoRders
       DB_USERNAME: ${DB_USERNAME}
       DB_PASSWORD: ${DB_PASSWORD}
     depends_on:
       - mysql
     command: >+
-      bash -c "/usr/local/bin/wait-for-it.sh mysql_container:3306 -- 
-               php artisan key:generate &&
-               php artisan serve --host=0.0.0.0 --port=8000"
-               
-
+      bash -c "/usr/local/bin/wait-for-it.sh mysql_container 3306 ${DB_USERNAME} ${DB_PASSWORD} ${DB_DATABASE} -- 
+              php artisan key:generate &&
+              php artisan serve --host=0.0.0.0 --port=8000"
   springboot:
     build:
       context: ./backend-springboot
@@ -54,11 +51,8 @@ services:
       - mysql
       - laravel
     command: >
-      bash -c "chmod +x /usr/local/bin/wait-for-it.sh &&
-               /usr/local/bin/wait-for-it.sh mysql 3306 ${DB_USERNAME} ${DB_PASSWORD} -- 
-               /usr/local/bin/wait-for-it.sh laravel_container 8000 -- 
-               java -jar app.jar"
-
+      bash -c "/app/wait-for-it.sh mysql_container 3306 root root QoRders --
+            java -jar app.jar"
   mysql:
     image: mysql:8.0
     container_name: mysql_container
@@ -67,10 +61,10 @@ services:
       - "3306:3306"
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${DB_DATABASE}
     volumes:
       - mysql_data:/var/lib/mysql
-      - ./database/QoRders.sql:/docker-entrypoint-initdb.d/QoRders.sql
-
+      - ./database/${DB_DATABASE}.sql:/docker-entrypoint-initdb.d/${DB_DATABASE}.sql
   phpmyadmin:
     image: phpmyadmin/phpmyadmin:5.2.1
     container_name: phpmyadmin_container
@@ -79,10 +73,9 @@ services:
     ports:
       - "8080:80"
     environment:
-      - PMA_HOST=${DB_HOST}
-      - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
+      PMA_HOST: mysql_container
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
     depends_on:
       - mysql
-
 volumes:
   mysql_data:
