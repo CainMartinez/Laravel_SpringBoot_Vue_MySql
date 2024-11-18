@@ -69,6 +69,7 @@ services:
       MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
     volumes:
       - mysql_data:/var/lib/mysql
+      - ./database/QoRders.sql:/docker-entrypoint-initdb.d/QoRders.sql
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin:5.2.1
