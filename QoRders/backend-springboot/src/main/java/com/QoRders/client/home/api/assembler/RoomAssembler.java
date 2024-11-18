@@ -1,35 +1,25 @@
 package com.QoRders.client.home.api.assembler;
 
-import com.QoRders.client.home.api.response.RoomResponse;
+import com.QoRders.client.home.api.dto.RoomDto;
 import com.QoRders.client.home.domain.model.Room;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 public class RoomAssembler {
 
-    public RoomResponse toResponse(Room room) {
-        // Mapeo manual de los campos desde Room a RoomResponse
-        RoomResponse response = new RoomResponse();
-        response.setUuid(room.getRoomUuid());
-        response.setName(room.getRoomName());
-        response.setSlug(room.getRoomSlug());
-        response.setDescription(room.getDescription());
-        response.setTheme(room.getTheme());
-        response.setMaxCapacity(room.getMaxCapacity());
-        response.setTotalBookings(room.getTotalBookings());
-        response.setAverageRating(room.getAverageRating());
-        response.setImageUrl(room.getImageUrl());
-        response.setIsActive(room.getIsActive());
-        response.setNgoId(room.getNgoId());
-        return response;
-    }
-
-    public List<RoomResponse> toResponseList(List<Room> rooms) {
-        return rooms.stream()
-                .map(this::toResponse)
-                .collect(Collectors.toList());
+    public RoomDto toDto(Room room) {
+        RoomDto dto = new RoomDto();
+        dto.setUuid(room.getRoomUuid());
+        dto.setName(room.getRoomName());
+        dto.setSlug(room.getRoomSlug());
+        dto.setDescription(room.getDescription());
+        dto.setTheme(room.getTheme());
+        dto.setMaxCapacity(room.getMaxCapacity());
+        dto.setTotalBookings(room.getTotalBookings());
+        dto.setAverageRating(room.getAverageRating());
+        dto.setImageUrl(room.getImageUrl());
+        dto.setIsActive(room.getIsActive());
+        dto.setNgoId(room.getNgoId());
+        return dto;
     }
 }
