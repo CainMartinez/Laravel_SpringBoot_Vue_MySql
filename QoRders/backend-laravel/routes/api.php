@@ -27,4 +27,5 @@ Route::prefix('rooms')->group(function () {
     Route::post('/', [RoomController::class, 'store']); // Crear una nueva sala
     Route::put('/{slug}', [RoomController::class, 'updateBySlug']); // Actualizar una sala
     Route::delete('/{slug}', [RoomController::class, 'deleteBySlug']); // Eliminar una sala
+    Route::get('/{slug}/products', [RoomController::class, 'getProductsByRoomSlug']); // Obtener todos los productos de una sala
 });

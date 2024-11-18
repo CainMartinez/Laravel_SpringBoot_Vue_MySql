@@ -38,4 +38,8 @@ class Product extends Model
         'origin',
         'is_active',
     ];
+    public function ngo()
+    {
+        return $this->belongsTo(NGO::class, 'origin', 'country');
+    }
 }

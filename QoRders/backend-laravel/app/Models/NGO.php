@@ -44,4 +44,10 @@ class NGO extends Model
     {
         return $this->hasOne(Room::class, 'ngo_id', 'ngo_id');
     }
+    // Relación 1:N con Product
+    public function products()
+    {
+        return $this->hasMany(Product::class, 'origin', 'country');
+    }
+
 }

@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Room;
+use App\Models\Product; 
+use App\Models\NGO;     
 
 class RoomController extends Controller
 {
@@ -80,5 +82,20 @@ class RoomController extends Controller
         $room = Room::where('room_slug', $slug)->firstOrFail();
         $room->delete();
         return response()->json(['message' => 'Room deleted successfully']);
+    }
+
+    public function getProductsByRoomSlug($slug)
+    {
+        try {
+            $room = Room::where('room_slug', $slug)->firstOrFail();
+            $products = Product::whereHas('ngo', function ($query) use ($room) {
+                $query->where('ngo_id', $room->ngo_id)
+                    ->whereColumn('Products.origin', 'NGO.country');
+            })->get();
+
+            return response()->json($products, 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 }
