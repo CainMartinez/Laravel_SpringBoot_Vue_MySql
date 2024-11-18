@@ -1,5 +1,5 @@
-# Usa una imagen base de PHP 8.1 con extensiones necesarias
-FROM php:8.1-fpm
+# Usa una imagen base de PHP 8.2 con extensiones necesarias
+FROM php:8.2-fpm
 
 # Instala Composer y otras dependencias necesarias
 RUN apt-get update && \
@@ -16,7 +16,7 @@ WORKDIR /var/www/html
 COPY . .
 
 # Instala dependencias de Composer
-RUN composer install --no-dev --optimize-autoloader
+RUN composer install --no-dev --optimize-autoloader || exit 1
 
 # Ajusta permisos de las carpetas requeridas
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache && \
