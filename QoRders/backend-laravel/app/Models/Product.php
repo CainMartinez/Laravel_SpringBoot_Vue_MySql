@@ -5,15 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Room extends Model
+class Product extends Model
 {
     use HasFactory;
 
     // Nombre de la tabla
-    protected $table = 'Room';
+    protected $table = 'Products';
 
-    // Clave primaria
-    protected $primaryKey = 'room_id';
+    // Clave primaria de la tabla
+    protected $primaryKey = 'product_id';
 
     // Indicar si la clave primaria es autoincremental
     public $incrementing = false;
@@ -21,27 +21,21 @@ class Room extends Model
     // Tipo de la clave primaria
     protected $keyType = 'int';
 
-    // Indicar que se manejan timestamps automáticamente
+    // Desactivar timestamps si Laravel no debe manejarlos automáticamente
     public $timestamps = true;
 
     // Columnas que se pueden llenar masivamente
     protected $fillable = [
-        'room_uuid',
-        'room_name',
-        'room_slug',
+        'product_uuid',
+        'product_name',
+        'product_slug',
         'description',
-        'theme',
-        'max_capacity',
-        'total_bookings',
-        'average_rating',
+        'unit_price',
+        'allergens',
+        'stock',
         'image_url',
+        'product_type',
+        'origin',
         'is_active',
-        'ngo_id',
     ];
-
-    // Relación 1:1 con NGO
-    public function ngo()
-    {
-        return $this->belongsTo(NGO::class, 'ngo_id', 'ngo_id');
-    }
 }
