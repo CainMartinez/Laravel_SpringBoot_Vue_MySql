@@ -1,20 +1,13 @@
-# Usa una imagen base con Node.js
-FROM node:18
-
-# Establece el directorio de trabajo
+# Etapa de construcción
+FROM node:16 AS build-stage
 WORKDIR /app
-
-# Copia los archivos de configuración y dependencias de npm
 COPY package*.json ./
-
-# Instala las dependencias del proyecto
 RUN npm install
-
-# Copia todos los archivos de la aplicación
 COPY . .
+RUN npm run build
 
-# Expone el puerto predeterminado de desarrollo de Vue.js
-EXPOSE 5001
-
-# Comando por defecto para iniciar el servidor de desarrollo
-CMD ["npm", "run", "dev"]
+# Etapa de producción
+FROM nginx:stable-alpine
+COPY --from=build-stage /app/dist /usr/share/nginx/html
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]

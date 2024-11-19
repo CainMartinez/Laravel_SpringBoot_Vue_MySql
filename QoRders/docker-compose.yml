@@ -1,18 +1,19 @@
 services:
-  # vue:
-  #   build:
-  #     context: ./frontend-vue
-  #   container_name: vue_container
-  #   ports:
-  #     - "5001:5001"
-  #   volumes:
-  #     - ./vue:/app
-  #     - /app/node_modules
-  #   depends_on:
-  #     - laravel
-  #     - springboot
-  #   command: >
-  #     bash -c "npm install && npm run dev"
+  vue-app:
+    build:
+      context: ./frontend-vue
+    container_name: vue_container
+    ports:
+      - "5200:80"
+    volumes:
+      # - ./frontend-vue:/app
+      # - /app/node_modules
+      # - /app/dist
+    command: [ "npm", "run", "serve" ]
+    depends_on:
+      - laravel
+      - springboot
+      - mysql
   laravel:
     build:
       context: ./backend-laravel
