@@ -47,6 +47,9 @@ services:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql_container:3306/${DB_DATABASE}
       SPRING_DATASOURCE_USERNAME: ${DB_USERNAME}
       SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
+      SPRING_JPA_HIBERNATE_DDL_AUTO: none
+      SPRING_JPA_SHOW_SQL: true
+      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.MySQLDialect
     depends_on:
       - mysql
       - laravel
