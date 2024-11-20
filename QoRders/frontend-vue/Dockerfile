@@ -1,13 +1,18 @@
 # Etapa de construcción
-FROM node:16 AS build-stage
+FROM node:20-alpine
 WORKDIR /app
-COPY package*.json ./
-RUN npm install
-COPY . .
-RUN npm run build
 
-# Etapa de producción
-FROM nginx:stable-alpine
-COPY --from=build-stage /app/dist /usr/share/nginx/html
-EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+# Copiar archivos necesarios para instalar dependencias
+COPY package*.json ./
+
+# Instalar dependencias
+RUN npm install
+
+# Copiar el resto del proyecto
+COPY . .
+
+# Exponer el puerto 8085
+EXPOSE 8085
+
+# Comando para iniciar la aplicación en el puerto especificado
+CMD ["npm", "run", "dev"]

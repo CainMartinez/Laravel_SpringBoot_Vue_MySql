@@ -1,19 +1,20 @@
 services:
-  vue-app:
+  vue:
     build:
       context: ./frontend-vue
     container_name: vue_container
     ports:
-      - "5200:80"
+      - "8085:8085"
     volumes:
-      # - ./frontend-vue:/app
-      # - /app/node_modules
-      # - /app/dist
-    command: [ "npm", "run", "serve" ]
+      - ./frontend-vue:/app
+      - /app/node_modules
+      - /app/dist
     depends_on:
       - laravel
       - springboot
       - mysql
+    environment:
+      VITE_PORT: 8085
   laravel:
     build:
       context: ./backend-laravel
