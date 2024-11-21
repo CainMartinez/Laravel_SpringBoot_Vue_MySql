@@ -38,6 +38,9 @@ public class NgoResponse {
     @JsonProperty("image_url")
     private String imageUrl;
 
+    @JsonProperty("description_img_url")
+    private String descriptionImageUrl;
+
     @JsonProperty("total_donations")
     private String totalDonations;
 }

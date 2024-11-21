@@ -23,6 +23,7 @@ public class NgoAssembler {
         response.setWebsiteUrl(ngo.getWebsiteUrl());
         response.setLogoUrl(ngo.getLogoUrl());
         response.setImageUrl(ngo.getImageUrl());
+        response.setDescriptionImageUrl(ngo.getDescriptionImageUrl());
         response.setTotalDonations(ngo.getTotalDonations());
         return response;
     }
@@ -39,6 +40,7 @@ public class NgoAssembler {
         dto.setWebsiteUrl(ngo.getWebsiteUrl());
         dto.setLogoUrl(ngo.getLogoUrl());
         dto.setImageUrl(ngo.getImageUrl());
+        dto.setDescriptionImageUrl(ngo.getDescriptionImageUrl());
         dto.setTotalDonations(ngo.getTotalDonations());
         return dto;
     }

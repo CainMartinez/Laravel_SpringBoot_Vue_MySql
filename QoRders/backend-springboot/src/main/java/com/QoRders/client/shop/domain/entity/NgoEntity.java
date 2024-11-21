@@ -47,6 +47,9 @@ public class NgoEntity {
     @Column(name = "image_url")
     private String imageUrl;
 
+    @Column(name = "description_img_url")
+    private String descriptionImageUrl;
+
     @Column(name = "total_donations", precision = 10, scale = 2)
     private String totalDonations;
 
