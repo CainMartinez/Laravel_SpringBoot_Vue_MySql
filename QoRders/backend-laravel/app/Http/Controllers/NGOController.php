@@ -9,67 +9,208 @@ class NGOController extends Controller
 {
     public function index()
     {
-        return NGO::all(); // Obtener todos los NGOs
+        try {
+            $ngos = NGO::all();
+
+            if ($ngos->isEmpty()) {
+                return response()->json([
+                    'message' => 'No NGOs found'
+                ], 404);
+            }
+
+            return response()->json([
+                'message' => 'NGOs retrieved successfully',
+                'data' => $ngos
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'An unexpected error occurred',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
     public function show($id)
     {
-        return NGO::find($id); // Obtener un NGO por ID
+        try {
+            $ngo = NGO::findOrFail($id);
+
+            return response()->json([
+                'message' => 'NGO retrieved successfully',
+                'data' => $ngo
+            ], 200);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json([
+                'message' => 'NGO not found',
+                'id' => $id
+            ], 404);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'An unexpected error occurred',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
     public function showBySlug($slug)
     {
-        return NGO::where('ngo_slug', $slug)->firstOrFail();
+        try {
+            $ngo = NGO::where('ngo_slug', $slug)->firstOrFail();
+
+            return response()->json([
+                'message' => 'NGO retrieved successfully',
+                'data' => $ngo
+            ], 200);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json([
+                'message' => 'NGO not found',
+                'slug' => $slug
+            ], 404);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'An unexpected error occurred',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
-   public function store(Request $request)
+    public function store(Request $request)
     {
-        $validated = $request->validate([
-            'ngo_name' => 'required|string|max:150',
-            'ngo_slug' => 'required|string|unique:ngos,ngo_slug',
-            'email' => 'required|email',
-        ]);
+        try {
+            $validated = $request->validate([
+                'ngo_name' => 'required|string|max:150',
+                'ngo_slug' => 'required|string|unique:ngos,ngo_slug',
+                'email' => 'required|email',
+            ]);
 
-        return NGO::create($validated);
+            $ngo = NGO::create($validated);
+
+            return response()->json([
+                'message' => 'NGO created successfully',
+                'data' => $ngo
+            ], 201);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'message' => 'Validation failed',
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'An unexpected error occurred',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
     public function update(Request $request, $id)
     {
-        $ngo = NGO::find($id);
-        if ($ngo) {
-            $ngo->update($request->all());
-            return $ngo;
+        try {
+            $validated = $request->validate([
+                'ngo_name' => 'string|max:150',
+                'email' => 'email',
+            ]);
+
+            $ngo = NGO::findOrFail($id);
+            $ngo->update($validated);
+
+            return response()->json([
+                'message' => 'NGO updated successfully',
+                'data' => $ngo
+            ], 200);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'message' => 'Validation failed',
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json([
+                'message' => 'NGO not found',
+                'id' => $id
+            ], 404);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'An unexpected error occurred',
+                'error' => $e->getMessage()
+            ], 500);
         }
-        return response()->json(['error' => 'NGO not found'], 404);
     }
 
     public function updateBySlug(Request $request, $slug)
     {
-        $validated = $request->validate([
-            'ngo_name' => 'required|string|max:150',
-            'email' => 'required|email',
-            // Añade más validaciones según sea necesario
-        ]);
+        try {
+            $validated = $request->validate([
+                'ngo_name' => 'string|max:150',
+                'email' => 'email',
+            ]);
 
-        $ngo = NGO::where('ngo_slug', $slug)->firstOrFail();
-        $ngo->update($validated);
-        return $ngo;
+            $ngo = NGO::where('ngo_slug', $slug)->firstOrFail();
+            $ngo->update($validated);
+
+            return response()->json([
+                'message' => 'NGO updated successfully',
+                'data' => $ngo
+            ], 200);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'message' => 'Validation failed',
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json([
+                'message' => 'NGO not found',
+                'slug' => $slug
+            ], 404);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'An unexpected error occurred',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
     public function destroy($id)
     {
-        $ngo = NGO::find($id);
-        if ($ngo) {
+        try {
+            $ngo = NGO::findOrFail($id);
             $ngo->delete();
-            return response()->json(['message' => 'NGO deleted successfully']);
+
+            return response()->json([
+                'message' => 'NGO deleted successfully',
+                'id' => $id
+            ], 200);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json([
+                'message' => 'NGO not found',
+                'id' => $id
+            ], 404);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'An unexpected error occurred',
+                'error' => $e->getMessage()
+            ], 500);
         }
-        return response()->json(['error' => 'NGO not found'], 404);
     }
 
     public function deleteBySlug($slug)
     {
-        $ngo = NGO::where('ngo_slug', $slug)->firstOrFail();
-        $ngo->delete();
-        return response()->json(['message' => 'NGO deleted successfully']);
+        try {
+            $ngo = NGO::where('ngo_slug', $slug)->firstOrFail();
+            $ngo->delete();
+
+            return response()->json([
+                'message' => 'NGO deleted successfully',
+                'slug' => $slug
+            ], 200);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json([
+                'message' => 'NGO not found',
+                'slug' => $slug
+            ], 404);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'An unexpected error occurred',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 }

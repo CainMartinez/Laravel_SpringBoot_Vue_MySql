@@ -9,37 +9,87 @@ use App\Models\NGO;
 
 class RoomController extends Controller
 {
+    // Obtener todas las salas
     public function index()
     {
-        return Room::all(); // Obtener todas las salas
+        $rooms = Room::all();
+        if ($rooms->isEmpty()) {
+            return response()->json(['message' => 'No rooms found'], 404);
+        }
+        return response()->json([
+            'message' => 'Rooms retrieved successfully',
+            'data' => $rooms
+        ], 200);
     }
-
+    // Obtener una sala por ID
     public function show($id)
     {
-        return Room::find($id); // Obtener una sala por ID
+        $room = Room::find($id);
+        if (!$room) {
+            return response()->json([
+                'message' => 'Room not found',
+                'id' => $id
+            ], 404);
+        }
+        return response()->json([
+            'message' => 'Room retrieved successfully',
+            'data' => $room
+        ], 200);
     }
-
+    // Obtener una sala por Slug
     public function showBySlug($slug)
     {
-        return Room::where('room_slug', $slug)->firstOrFail(); // Obtener una sala por slug
+        try {
+            $room = Room::where('room_slug', $slug)->firstOrFail();
+            return response()->json([
+                'message' => 'Room retrieved successfully',
+                'data' => $room
+            ], 200);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json([
+                'message' => 'Room not found',
+                'slug' => $slug
+            ], 404);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'An unexpected error occurred',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
-
+    // Crear una nueva sala
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'room_name' => 'required|string|max:100',
-            'room_slug' => 'required|string|unique:rooms,room_slug',
-            'description' => 'nullable|string',
-            'theme' => 'required|string|max:100',
-            'max_capacity' => 'required|integer|min:1',
-            'ngo_id' => 'required|integer|exists:ngos,ngo_id',
-            'is_active' => 'boolean',
-            // Añade más validaciones según sea necesario
-        ]);
-
-        return Room::create($validated); // Crear una nueva sala
+        try {
+            // Validación de datos
+            $validated = $request->validate([
+                'room_name' => 'required|string|max:100',
+                'room_slug' => 'required|string|unique:rooms,room_slug',
+                'description' => 'nullable|string',
+                'theme' => 'required|string|max:100',
+                'max_capacity' => 'required|integer|min:1',
+                'ngo_id' => 'required|integer|exists:ngos,ngo_id',
+                'is_active' => 'boolean',
+            ]);
+            // Crear la nueva sala
+            $room = Room::create($validated);
+            return response()->json([
+                'message' => 'Room created successfully',
+                'data' => $room
+            ], 201); // Estado HTTP 201: Created
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'message' => 'Validation failed',
+                'errors' => $e->errors()
+            ], 422); // Estado HTTP 422: Unprocessable Entity
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'An unexpected error occurred',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
-
+    // Actualizar una sala por id
     public function update(Request $request, $id)
     {
         $room = Room::find($id);
@@ -49,24 +99,45 @@ class RoomController extends Controller
         }
         return response()->json(['error' => 'Room not found'], 404);
     }
-
+    // Actualizar una sala por slug
     public function updateBySlug(Request $request, $slug)
     {
-        $validated = $request->validate([
-            'room_name' => 'string|max:100',
-            'description' => 'nullable|string',
-            'theme' => 'string|max:100',
-            'max_capacity' => 'integer|min:1',
-            'ngo_id' => 'integer|exists:ngos,ngo_id',
-            'is_active' => 'boolean',
-            // Añade más validaciones según sea necesario
-        ]);
-
-        $room = Room::where('room_slug', $slug)->firstOrFail();
-        $room->update($validated);
-        return $room;
+        try {
+            // Validar los datos de la solicitud
+            $validated = $request->validate([
+                'room_name' => 'string|max:100',
+                'description' => 'nullable|string',
+                'theme' => 'string|max:100',
+                'max_capacity' => 'integer|min:1',
+                'ngo_id' => 'integer|exists:ngos,ngo_id',
+                'is_active' => 'boolean',
+            ]);
+            // Buscar la sala por el slug
+            $room = Room::where('room_slug', $slug)->firstOrFail();
+            // Actualizar la sala con los datos validados
+            $room->update($validated);
+            return response()->json([
+                'message' => 'Room updated successfully',
+                'data' => $room
+            ], 200);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'message' => 'Validation failed',
+                'errors' => $e->errors()
+            ], 422); // Estado HTTP 422: Unprocessable Entity
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json([
+                'message' => 'Room not found',
+                'slug' => $slug
+            ], 404); // Estado HTTP 404: Not Found
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'An unexpected error occurred',
+                'error' => $e->getMessage()
+            ], 500); // Estado HTTP 500: Internal Server Error
+        }
     }
-
+    // Borrar una sala por id
     public function destroy($id)
     {
         $room = Room::find($id);
@@ -76,26 +147,64 @@ class RoomController extends Controller
         }
         return response()->json(['error' => 'Room not found'], 404);
     }
-
     public function deleteBySlug($slug)
     {
-        $room = Room::where('room_slug', $slug)->firstOrFail();
-        $room->delete();
-        return response()->json(['message' => 'Room deleted successfully']);
+        try {
+            // Buscar la sala por el slug
+            $room = Room::where('room_slug', $slug)->firstOrFail();
+            // Eliminar la sala
+            $room->delete();
+            return response()->json([
+                'message' => 'Room deleted successfully',
+                'slug' => $slug
+            ], 200); // Estado HTTP 200: OK
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json([
+                'message' => 'Room not found',
+                'slug' => $slug
+            ], 404); // Estado HTTP 404: Not Found
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'An unexpected error occurred',
+                'error' => $e->getMessage()
+            ], 500); // Estado HTTP 500: Internal Server Error
+        }
     }
-
+    // Obtener los productos relacionados con el slug de una sala
     public function getProductsByRoomSlug($slug)
     {
         try {
+            // Encuentra la sala usando el slug
             $room = Room::where('room_slug', $slug)->firstOrFail();
-            $products = Product::whereHas('ngo', function ($query) use ($room) {
-                $query->where('ngo_id', $room->ngo_id)
-                    ->whereColumn('Products.origin', 'NGO.country');
+            // Consulta los productos relacionados con la sala y la ONG correspondiente
+            $products = Product::where(function ($query) use ($room) {
+                $query->whereHas('ngo', function ($subQuery) use ($room) {
+                    $subQuery->where('ngo_id', $room->ngo_id)
+                            ->whereColumn('Products.origin', 'NGO.country');
+                })
+                ->orWhere('origin', 'Generic'); // Añade productos con origin "Generic"
             })->get();
-
-            return response()->json($products, 200);
+            if ($products->isEmpty()) {
+                return response()->json([
+                    'message' => 'No products found for the specified room',
+                    'room_slug' => $slug
+                ], 404); // Estado HTTP 404: No encontrado
+            }
+            return response()->json([
+                'message' => 'Products retrieved successfully',
+                'room' => $room->room_name,
+                'products' => $products
+            ], 200); // Estado HTTP 200: OK
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json([
+                'message' => 'Room not found',
+                'slug' => $slug
+            ], 404); // Estado HTTP 404: No encontrado
         } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
+            return response()->json([
+                'message' => 'An unexpected error occurred',
+                'error' => $e->getMessage()
+            ], 500); // Estado HTTP 500: Error interno
         }
     }
 }
