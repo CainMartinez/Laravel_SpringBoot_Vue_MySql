@@ -29,7 +29,7 @@ public class NgoEntity {
     @Column(name = "description")
     private String description;
 
-    @Column(name = "country", nullable = false)
+    @Column(name = "country", nullable = false, unique = true)
     private String country;
 
     @Column(name = "email", nullable = false)
@@ -50,7 +50,6 @@ public class NgoEntity {
     @Column(name = "total_donations", precision = 10, scale = 2)
     private String totalDonations;
 
-    // Relación One-to-Many con ProductEntity
-    @OneToMany(mappedBy = "origin", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "country", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProductEntity> products;
 }
