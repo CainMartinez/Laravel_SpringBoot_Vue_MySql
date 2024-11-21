@@ -1,4 +1,4 @@
-package com.QoRders.client.home.domain.model;
+package com.QoRders.client.home.domain.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -6,11 +6,13 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 
+import com.QoRders.client.shop.domain.entity.NgoEntity;
+
 @Entity
 @Table(name = "Room")
 @Getter
 @Setter
-public class Room {
+public class RoomEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -47,6 +49,7 @@ public class Room {
     @Column(name = "is_active", nullable = false)
     private Boolean isActive;
 
-    @Column(name = "ngo_id", nullable = false)
-    private Integer ngoId;
+    @OneToOne
+    @JoinColumn(name = "ngo_id", referencedColumnName = "ngo_id", nullable = false)
+    private NgoEntity ngo;
 }

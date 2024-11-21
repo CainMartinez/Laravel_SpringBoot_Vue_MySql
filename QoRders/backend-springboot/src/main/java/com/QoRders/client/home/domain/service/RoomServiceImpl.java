@@ -2,7 +2,7 @@ package com.QoRders.client.home.domain.service;
 
 import com.QoRders.client.home.api.assembler.RoomAssembler;
 import com.QoRders.client.home.api.dto.RoomDto;
-import com.QoRders.client.home.domain.model.Room;
+import com.QoRders.client.home.domain.entity.RoomEntity;
 import com.QoRders.client.home.domain.repository.RoomRepository;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +23,7 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public List<RoomDto> listAll() {
-        List<Room> rooms = roomRepository.findAll();
+        List<RoomEntity> rooms = roomRepository.findAll();
         return rooms.stream()
                 .map(roomAssembler::toDto)
                 .collect(Collectors.toList());
