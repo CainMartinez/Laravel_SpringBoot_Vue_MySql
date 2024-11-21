@@ -17,10 +17,13 @@ return [
 
     'allowed_methods' => ['*'], // Métodos permitidos (GET, POST, etc.)
 
-    'allowed_origins' => [
-        'http://vue:8085', // Frontend Vue
-        'http://react:8086', // Frontend React
-    ],
+     'allowed_origins' => [
+     'http://localhost:8085',
+     'http://vue_container:8085',
+     'http://localhost:8086',
+     'http://react_container:8086',
+],
+
 
     'allowed_origins_patterns' => [],
 
