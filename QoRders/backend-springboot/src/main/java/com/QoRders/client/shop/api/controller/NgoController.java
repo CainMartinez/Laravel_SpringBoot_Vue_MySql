@@ -10,7 +10,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/ngos")
-@CrossOrigin(origins = "http://localhost:8085")
+@CrossOrigin(origins = {"http://localhost:8085","http://localhost:8086"})
 public class NgoController {
 
     private final NgoService ngoService;
