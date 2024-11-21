@@ -38,7 +38,7 @@ USE QoRders;
 CREATE TABLE `Booking` (
     `booking_id` int NOT NULL,
     `booking_uuid` char(36) NOT NULL,
-    `user_id` int NOT NULL,
+    `customer_id` int NOT NULL,
     `room_shift_id` int NOT NULL,
     `guest_count` int NOT NULL,
     `status` enum(

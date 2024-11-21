@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\NGOController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\RoomController;
+use App\Http\Controllers\BookingController;
 
 Route::prefix('ngos')->group(function () {
     Route::get('/', [NGOController::class, 'index']); // Obtener todos los NGOs
@@ -28,4 +29,12 @@ Route::prefix('rooms')->group(function () {
     Route::put('/{slug}', [RoomController::class, 'updateBySlug']); // Actualizar una sala
     Route::delete('/{slug}', [RoomController::class, 'deleteBySlug']); // Eliminar una sala
     Route::get('/{slug}/products', [RoomController::class, 'getProductsByRoomSlug']); // Obtener todos los productos de una sala
+});
+
+Route::prefix('bookings')->group(function () {
+    Route::get('/', [BookingController::class, 'index']); // Obtener todas las reservas
+    Route::get('/{uuid}', [BookingController::class, 'show']); // Obtener una reserva por UUID
+    Route::post('/', [BookingController::class, 'store']); // Crear una nueva reserva
+    Route::put('/{uuid}', [BookingController::class, 'update']); // Actualizar una reserva por UUID
+    Route::delete('/{uuid}', [BookingController::class, 'destroy']); // Eliminar una reserva por UUID
 });
