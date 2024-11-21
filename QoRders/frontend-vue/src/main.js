@@ -1,5 +1,31 @@
-import { createApp } from 'vue'
-import './style.css'
-import App from './App.vue'
+import { createApp } from 'vue';
+import App from './App.vue';
+import router from './router/router';
+import store from './store/store';
 
-createApp(App).mount('#app')
+//PrimeVue Imports
+import PrimeVue from 'primevue/config';
+import 'primeicons/primeicons.css';
+
+//PrimeVue Themes
+import Aura from '@primevue/themes/aura';
+
+//PrimeVue Components
+import Button from 'primevue/button';
+import Menubar from 'primevue/menubar';
+
+const app = createApp(App);
+
+app.use(router);
+app.use(store);
+
+app.use(PrimeVue, {
+    theme: {
+        preset: Aura
+    }
+});
+
+app.component('Button', Button);
+app.component('Menubar', Menubar);
+
+app.mount('#app');
