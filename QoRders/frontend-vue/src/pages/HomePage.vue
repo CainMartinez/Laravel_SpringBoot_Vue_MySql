@@ -3,11 +3,11 @@
         <!-- Carousel -->
         <div class="carousel-container" v-if="rooms.length">
             <Carousel :value="rooms" :numVisible="1" :numScroll="1" :showNavigators="false" :showIndicators="false"
-                :autoplayInterval="3000">
+                :autoplayInterval="5000" :circular="true">
                 <template #item="slotProps">
                     <div class="carousel-image-container">
                         <img :src="slotProps.data.imageUrl" alt="Imagen de la sala" class="carousel-image" />
-                        <div class="carousel-overlay">
+                        <div :class="slotProps.data.theme.toLowerCase()" class="carousel-overlay">
                             <h2>¿Quieres viajar a {{ slotProps.data.theme }}?</h2>
                         </div>
                     </div>
@@ -17,19 +17,21 @@
 
         <!-- Separador y Flecha -->
         <div class="separator">
+            <i class="pi pi-angle-double-down"></i>
             <p>Descubre más destinos</p>
-            <i class="pi pi-arrow-down"></i>
+            <i class="pi pi-angle-double-down"></i>
         </div>
 
         <!-- Cards de las salas -->
         <div class="rooms-cards">
-            <div v-for="room in rooms" :key="room.id" class="room-card">
-                <img v-if="room.imageUrl" :src="room.imageUrl" :alt="room.name" class="room-card-image" />
-                <div class="room-card-info">
-                    <h1>{{ room.name }}</h1>
-                    <router-link :to="`/sala/${room.slug}`" class="room-card-link">Ver Carta</router-link>
+            <router-link v-for="room in rooms" :key="room.uuid" :to="`/sala/${room.slug}`" class="room-card">
+                <div class="room-card-image-container">
+                    <img v-if="room.imageUrl" :src="room.imageUrl" :alt="room.name" class="room-card-image" />
+                    <div :class="room.theme.toLowerCase()" class="room-card-overlay">
+                        <h3>{{ room.name }}</h3>
+                    </div>
                 </div>
-            </div>
+            </router-link>
         </div>
     </div>
 </template>
@@ -87,8 +89,33 @@ onMounted(() => {
 }
 
 .separator {
+    display: flex;
+    flex-direction: row;
     text-align: center;
-    margin-top: 20px;
+    font-size: 24px;
+    justify-content: center;
+    align-items: center;
+    gap: 100px;
+    color: #333;
+}
+
+.separator .pi {
+    font-size: 1em;
+    animation: slideDown 2s infinite;
+}
+
+@keyframes slideDown {
+    0% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(10px);
+    }
+
+    100% {
+        transform: translateY(0);
+    }
 }
 
 .rooms-cards {
@@ -96,45 +123,61 @@ onMounted(() => {
     flex-wrap: wrap;
     justify-content: center;
     margin-top: 20px;
-    gap: 20px;
+    margin-bottom: 40px;
+    gap: 40px;
 }
 
 .room-card {
-    width: 250px;
+    width: 500px;
+    height: 300px;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     overflow: hidden;
     background-color: white;
     transition: transform 0.2s;
     text-align: center;
+    display: block;
+    text-decoration: none;
 }
 
 .room-card:hover {
     transform: scale(1.05);
 }
 
+.room-card-image-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
 .room-card-image {
     width: 100%;
-    height: 150px;
+    height: 100%;
     object-fit: cover;
 }
 
-.room-card-info {
-    padding: 10px;
+.room-card-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-.room-card-info h1 {
-    font-size: 24px;
-    margin-bottom: 10px;
+.room-card-overlay h3 {
+    color: white;
+    font-size: 36px;
+    font-weight: bold;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .room-card-link {
+    display: block;
     text-decoration: none;
-    color: #007bff;
-    font-weight: bold;
-}
-
-.room-card-link:hover {
-    text-decoration: underline;
+    color: inherit;
 }
 </style>

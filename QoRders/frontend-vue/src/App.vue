@@ -11,8 +11,58 @@ import Footer from './layouts/Footer.vue';
 </script>
 
 <style>
+:root {
+  --font-default: 'Roboto', sans-serif;
+  --font-japan: 'Sawarabi Mincho', serif;
+  --font-italy: 'Playfair Display', serif;
+  --font-mexico: 'Lobster', cursive;
+  --font-spain: 'Dancing Script', cursive;
+  --font-india: 'Mukta', sans-serif;
+  --font-turkey: 'Cinzel Decorative', serif;
+}
+
+/* Estilo base de la página */
 body {
   margin: 0;
   padding: 0;
+  font-family: var(--font-default);
+  font-weight: normal;
+}
+
+/* Aplicar la tipografía según el país */
+.japan {
+  font-family: var(--font-japan);
+  font-weight: normal;
+  letter-spacing: 1px;
+}
+
+.italy {
+  font-family: var(--font-italy);
+  font-weight: normal;
+  letter-spacing: 1px;
+}
+
+.mexico {
+  font-family: var(--font-mexico);
+  font-weight: normal;
+  letter-spacing: 2px;
+}
+
+.spain {
+  font-family: var(--font-spain);
+  font-weight: normal;
+  letter-spacing: 2px;
+}
+
+.india {
+  font-family: var(--font-india);
+  font-weight: normal;
+  letter-spacing: 1px;
+}
+
+.turkey {
+  font-family: var(--font-turkey);
+  font-weight: normal;
+  letter-spacing: 1px;
 }
 </style>
