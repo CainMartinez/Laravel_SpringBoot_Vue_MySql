@@ -1,0 +1,6 @@
+.p-carousel-prev{
+    left: 0;
+    background-color: #000000;
+    opacity: 0.5;
+    border-radius: 0 5px 5px 0;
+}
