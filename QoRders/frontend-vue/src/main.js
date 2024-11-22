@@ -12,7 +12,7 @@ import Aura from '@primevue/themes/aura';
 
 //PrimeVue Components
 import Button from 'primevue/button';
-import Menubar from 'primevue/menubar';
+import Carousel from 'primevue/carousel';
 
 const app = createApp(App);
 
@@ -26,6 +26,6 @@ app.use(PrimeVue, {
 });
 
 app.component('Button', Button);
-app.component('Menubar', Menubar);
+app.component('Carousel', Carousel);
 
 app.mount('#app');

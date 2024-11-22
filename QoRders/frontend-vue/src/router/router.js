@@ -12,15 +12,25 @@ const routes = [
         redirect: '/',
     },
     {
-        path: '/room',
-        name: 'Salas',
+        path: '/rooms',
+        name: 'rooms',
         component: () => import('../pages/RoomsPage.vue'),
     },
     {
         path: '/room/:slug',
-        name: 'Carta',
-        component: () => import('../pages/CartaPage.vue'),
+        name: 'menu',
+        component: () => import('../pages/MenuPage.vue'),
     },
+    {
+        path: '/reservation',
+        name: 'Reserva',
+        component: () => import('../pages/ReservationPage.vue'),
+    },
+    {
+        path: '/login',
+        name: 'Iniciar sesión',
+        component: () => import('../pages/AuthPage.vue'),
+    }
 ];
 
 const router = createRouter({

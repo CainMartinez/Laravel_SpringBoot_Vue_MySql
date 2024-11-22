@@ -6,8 +6,8 @@
 
     <div class="menu">
       <router-link to="/home">Inicio</router-link>
-      <router-link to="/carta">Carta</router-link>
-      <router-link to="/reserva">Reserva</router-link>
+      <router-link to="/rooms">Carta</router-link>
+      <router-link to="/reservation">Reserva</router-link>
     </div>
 
     <div class="login-button">
@@ -25,12 +25,16 @@ import { ref } from 'vue';
 <style scoped>
 .header {
   display: flex;
+  position: absolute;
+  z-index: 1;
+  width: 99%;
   align-items: center;
   justify-content: space-between;
   padding: 10px 20px;
-  margin: 10px;
+  margin: 10px 20px 10px 10px;
   background-color: #f8f9fa;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
 }
 
 .logo {

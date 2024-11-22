@@ -1,5 +1,9 @@
-import axios from 'axios'
+import axios from 'axios';
 
-export const api = axios.create({
-    baseURL: 'http://localhost:8081',
+export const api_spring = axios.create({
+    baseURL: import.meta.env.VITE_URL_SPRING,
+});
+
+export const api_laravel = axios.create({
+    baseURL: import.meta.env.VITE_URL_LARAVEL,
 });
