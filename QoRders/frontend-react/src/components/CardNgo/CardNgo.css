@@ -1,0 +1,15 @@
+.ngo-card {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 16px;
+    margin: 16px 0;
+    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.ngo-card h3 {
+    margin: 0 0 8px;
+}
+
+.ngo-card p {
+    margin: 4px 0;
+}
