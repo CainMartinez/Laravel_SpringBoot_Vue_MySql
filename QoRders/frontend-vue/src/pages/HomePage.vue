@@ -28,7 +28,7 @@
                 <div class="room-card-image-container">
                     <img v-if="room.imageUrl" :src="room.imageUrl" :alt="room.name" class="room-card-image" />
                     <div :class="room.theme.toLowerCase()" class="room-card-overlay">
-                        <h3>{{ room.name }}</h3>
+                        <h3>{{ room.name.toUpperCase() }}</h3>
                     </div>
                 </div>
             </router-link>
@@ -170,9 +170,10 @@ onMounted(() => {
 
 .room-card-overlay h3 {
     color: white;
-    font-size: 36px;
+    font-size: 30px;
     font-weight: bold;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    letter-spacing: 2px;
 }
 
 .room-card-link {

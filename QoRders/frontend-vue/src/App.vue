@@ -30,25 +30,25 @@ body {
 }
 
 /* Aplicar la tipografía según el país */
-.japan {
+.japón {
   font-family: var(--font-japan);
   font-weight: normal;
   letter-spacing: 1px;
 }
 
-.italy {
+.italia {
   font-family: var(--font-italy);
   font-weight: normal;
   letter-spacing: 1px;
 }
 
-.mexico {
+.méxico {
   font-family: var(--font-mexico);
   font-weight: normal;
   letter-spacing: 2px;
 }
 
-.spain {
+.españa {
   font-family: var(--font-spain);
   font-weight: normal;
   letter-spacing: 2px;
@@ -60,7 +60,7 @@ body {
   letter-spacing: 1px;
 }
 
-.turkey {
+.turquía {
   font-family: var(--font-turkey);
   font-weight: normal;
   letter-spacing: 1px;
