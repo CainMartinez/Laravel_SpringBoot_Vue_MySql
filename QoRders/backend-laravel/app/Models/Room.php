@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str; // Importar Str para usar slugify y UUID
 
 class Room extends Model
 {
@@ -43,5 +44,17 @@ class Room extends Model
     public function ngo()
     {
         return $this->belongsTo(NGO::class, 'ngo_id', 'ngo_id');
+    }
+
+    // Generar UUID automáticamente al crear un registro
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($room) {
+            if (empty($room->room_uuid)) {
+                $room->room_uuid = (string) Str::uuid();
+            }
+        });
     }
 }

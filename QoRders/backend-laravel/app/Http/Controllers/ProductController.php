@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use App\Models\Product;
 
 class ProductController extends Controller
@@ -79,13 +80,15 @@ class ProductController extends Controller
         try {
             $validated = $request->validate([
                 'product_name' => 'required|string|max:150',
-                'product_slug' => 'required|string|unique:products,product_slug',
                 'unit_price' => 'required|numeric|min:0',
                 'product_type' => 'required|in:Starter,Main Course,Dessert,Drink,Other',
                 'origin' => 'required|string|max:100',
                 'stock' => 'integer|min:0',
                 // Añade más validaciones si lo necesitas
             ]);
+
+            // Generar el slug automáticamente
+            $validated['product_slug'] = Str::slug($validated['product_name']) . '_' . rand(100000, 999999);
 
             $product = Product::create($validated);
 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use App\Models\Room;
 use App\Models\Product; 
 use App\Models\NGO;     
@@ -64,15 +65,19 @@ class RoomController extends Controller
             // Validación de datos
             $validated = $request->validate([
                 'room_name' => 'required|string|max:100',
-                'room_slug' => 'required|string|unique:rooms,room_slug',
                 'description' => 'nullable|string',
                 'theme' => 'required|string|max:100',
                 'max_capacity' => 'required|integer|min:1',
-                'ngo_id' => 'required|integer|exists:ngos,ngo_id',
+                'ngo_id' => 'required|integer|exists:NGO,ngo_id',
                 'is_active' => 'boolean',
             ]);
+
+            // Generar slug usando room_name y un número aleatorio
+            $validated['room_slug'] = Str::slug($validated['room_name'], '_') . '_' . rand(100000, 999999);
+
             // Crear la nueva sala
             $room = Room::create($validated);
+
             return response()->json([
                 'message' => 'Room created successfully',
                 'data' => $room

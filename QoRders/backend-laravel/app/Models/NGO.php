@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class NGO extends Model
 {
@@ -49,5 +50,20 @@ class NGO extends Model
     {
         return $this->hasMany(Product::class, 'origin', 'country');
     }
+    public static function boot()
+    {
+        parent::boot();
+        // Generar automáticamente el slug al crear un NGO
+        static::creating(function ($ngo) {
+            if (empty($ngo->ngo_slug)) {
+                $ngo->ngo_slug = self::generateSlug($ngo->ngo_name);
+            }
+        });
+    }
 
+    private static function generateSlug($name)
+    {
+        // Convertir el nombre a un slug y agregar un número aleatorio de 6 cifras
+        return Str::slug($name, '_') . '_' . mt_rand(100000, 999999);
+    }
 }

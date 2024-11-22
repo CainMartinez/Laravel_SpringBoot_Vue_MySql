@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use App\Models\NGO;
 
 class NGOController extends Controller
@@ -79,9 +80,24 @@ class NGOController extends Controller
         try {
             $validated = $request->validate([
                 'ngo_name' => 'required|string|max:150',
-                'ngo_slug' => 'required|string|unique:ngos,ngo_slug',
                 'email' => 'required|email',
+                'description' => 'nullable|string',
+                'country' => 'nullable|string|max:100',
+                'phone_number' => 'nullable|string|max:15',
+                'website_url' => 'nullable|url',
+                'logo_url' => 'nullable|url',
+                'image_url' => 'nullable|url',
             ]);
+
+            // Generar automáticamente el uuid y el slug
+            $validated['ngo_uuid'] = (string) \Illuminate\Support\Str::uuid();
+            $validated['ngo_slug'] = strtolower(
+                preg_replace(
+                    '/[^A-Za-z0-9_]/',
+                    '_',
+                    iconv('UTF-8', 'ASCII//TRANSLIT', $validated['ngo_name'])
+                )
+            ) . '_' . random_int(100000, 999999);
 
             $ngo = NGO::create($validated);
 

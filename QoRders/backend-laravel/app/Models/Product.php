@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class Product extends Model
 {
@@ -38,6 +39,14 @@ class Product extends Model
         'origin',
         'is_active',
     ];
+
+    protected static function booted()
+    {
+        static::creating(function ($product) {
+            $product->product_uuid = (string) Str::uuid();
+        });
+    }
+
     public function ngo()
     {
         return $this->belongsTo(NGO::class, 'origin', 'country');
