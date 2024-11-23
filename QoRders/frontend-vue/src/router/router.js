@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import ReactWrapper from '../components/ReactWrapper.vue';
+import { useStore } from 'vuex';
 
 // Definición de rutas
 const routes = [
@@ -21,6 +22,11 @@ const routes = [
         path: '/room/:slug',
         name: 'menu',
         component: () => import('../pages/MenuPage.vue'),
+        beforeEnter: (to, from, next) => {
+            const store = useStore();
+            store.dispatch('storeProducts/fetchProductsByRoom', to.params.slug);
+            next();
+        },
     },
     {
         path: '/reservation',

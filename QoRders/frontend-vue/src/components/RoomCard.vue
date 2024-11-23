@@ -1,5 +1,5 @@
 <template>
-    <router-link :to="`/sala/${room.slug}`" class="room-card">
+    <router-link :to="`/room/${room.slug}`" class="room-card">
         <div class="room-card-image-container">
             <img v-if="room.imageUrl" :src="room.imageUrl" :alt="room.name" class="room-card-image" />
             <div :class="room.theme.toLowerCase()" class="room-card-overlay">
@@ -15,8 +15,8 @@ defineProps(['room']);
 
 <style scoped>
 .room-card {
-    width: 500px;
-    height: 300px;
+    width: 450px;
+    height: 250px;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     overflow: hidden;
