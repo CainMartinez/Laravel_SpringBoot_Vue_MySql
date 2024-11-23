@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router';
+import ReactWrapper from '../components/ReactWrapper.vue';
 
 // Definición de rutas
 const routes = [
@@ -30,7 +31,12 @@ const routes = [
         path: '/login',
         name: 'Iniciar sesión',
         component: () => import('../pages/AuthPage.vue'),
-    }
+    },
+    {
+        path: '/donations',
+        name: 'Donaciones',
+        component: ReactWrapper,
+    },
 ];
 
 const router = createRouter({

@@ -14,6 +14,12 @@ import Aura from '@primevue/themes/aura';
 import Button from 'primevue/button';
 import Carousel from 'primevue/carousel';
 
+//Prime React Components
+import 'primereact/resources/themes/lara-light-blue/theme.css';
+import 'primereact/resources/primereact.min.css';
+import 'primeicons/primeicons.css';
+
+
 const app = createApp(App);
 
 app.use(router);

@@ -8,6 +8,7 @@
       <router-link to="/home">Inicio</router-link>
       <router-link to="/rooms">Carta</router-link>
       <router-link to="/reservation">Reserva</router-link>
+      <router-link to="/donations">Donaciones</router-link>
     </div>
 
     <div class="login-button">
@@ -18,6 +19,7 @@
 
 <script setup>
 import { ref } from 'vue';
+import router from '../router/router';
 
 
 </script>

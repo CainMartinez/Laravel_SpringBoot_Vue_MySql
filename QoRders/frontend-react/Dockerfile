@@ -23,4 +23,4 @@ COPY --chown=node:node . .
 EXPOSE 8086
 
 # 9. Comando por defecto para iniciar la aplicación en modo desarrollo
-CMD ["npm", "run", "dev"]
+CMD ["npm", "run", "start-docker"]
