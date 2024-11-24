@@ -19,7 +19,7 @@ public enum ProductType {
 
     public static ProductType fromValue(String value) {
         for (ProductType type : ProductType.values()) {
-            if (type.getValue().equalsIgnoreCase(value)) {
+            if (type.getValue().equalsIgnoreCase(value) || type.name().equalsIgnoreCase(value)) {
                 return type;
             }
         }
