@@ -13,10 +13,11 @@ import { useStore } from 'vuex';
 import RoomCard from '../components/RoomCard.vue';
 
 const store = useStore();
-const rooms = computed(() => store.getters.rooms);
+const rooms = computed(() => store.getters['storeRooms/getRooms']);
+console.log("Salas", rooms);
 
 onMounted(() => {
-    store.dispatch('fetchRooms');
+    store.dispatch('storeRooms/fetchRooms');
 });
 </script>
 

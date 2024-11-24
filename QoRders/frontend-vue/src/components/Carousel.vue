@@ -19,7 +19,7 @@ import { computed } from 'vue';
 import { useStore } from 'vuex';
 
 const store = useStore();
-const rooms = computed(() => store.getters.rooms);
+const rooms = computed(() => store.getters['storeRooms/getRooms']);
 </script>
 
 <style scoped>
