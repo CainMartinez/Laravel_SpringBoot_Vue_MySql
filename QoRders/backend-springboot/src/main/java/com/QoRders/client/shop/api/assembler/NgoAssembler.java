@@ -25,6 +25,7 @@ public class NgoAssembler {
         response.setImageUrl(ngo.getImageUrl());
         response.setDescriptionImageUrl(ngo.getDescriptionImageUrl());
         response.setTotalDonations(ngo.getTotalDonations());
+        response.setIsActive(ngo.getIsActive());
         return response;
     }
 
@@ -42,6 +43,7 @@ public class NgoAssembler {
         dto.setImageUrl(ngo.getImageUrl());
         dto.setDescriptionImageUrl(ngo.getDescriptionImageUrl());
         dto.setTotalDonations(ngo.getTotalDonations());
+        dto.setIsActive(ngo.getIsActive());
         return dto;
     }
 

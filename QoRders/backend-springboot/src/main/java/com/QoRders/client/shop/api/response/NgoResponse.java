@@ -43,4 +43,7 @@ public class NgoResponse {
 
     @JsonProperty("total_donations")
     private String totalDonations;
+
+    @JsonProperty("is_active")
+    private Boolean isActive;
 }

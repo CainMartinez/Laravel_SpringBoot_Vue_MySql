@@ -53,6 +53,9 @@ public class NgoEntity {
     @Column(name = "total_donations", precision = 10, scale = 2)
     private String totalDonations;
 
+    @Column(name = "is_active", nullable = false)
+    private Boolean isActive;
+
     @OneToMany(mappedBy = "country", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProductEntity> products;
 }

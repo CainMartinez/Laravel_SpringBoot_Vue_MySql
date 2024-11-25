@@ -18,4 +18,5 @@ public class NgoDto {
     private String imageUrl;
     private String descriptionImageUrl;
     private String totalDonations;
+    private Boolean isActive;
 }
