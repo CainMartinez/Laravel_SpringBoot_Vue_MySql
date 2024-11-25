@@ -42,7 +42,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<ProductDto> filterProducts(ProductFilter filter) {
-        String productTypeValue = ProductType.fromValue(filter.getProductType()).getValue();
+        String productTypeValue = filter.getProductType() != null ? ProductType.fromValue(filter.getProductType()).getValue() : null;
         String order = filter.getOrder() != null ? filter.getOrder() : "asc";
 
         return productRepository.filterProductsByRoomAndTypeAndOrder(

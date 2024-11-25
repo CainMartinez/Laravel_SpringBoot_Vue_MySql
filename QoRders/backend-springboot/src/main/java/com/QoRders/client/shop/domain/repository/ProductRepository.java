@@ -39,7 +39,7 @@ public interface ProductRepository extends PagingAndSortingRepository<ProductEnt
         LEFT JOIN NGO n ON p.origin = n.country
         LEFT JOIN Room r ON n.ngo_id = r.ngo_id
         WHERE r.room_slug = :slug
-        AND p.product_type = :productType
+        AND (:productType IS NULL OR p.product_type = :productType)
         ORDER BY 
             CASE 
                 WHEN :order = 'asc' THEN p.unit_price

@@ -4,11 +4,9 @@ import com.QoRders.client.shop.api.dto.ProductDto;
 import com.QoRders.client.shop.domain.model.ProductFilter;
 import com.QoRders.client.shop.domain.service.ProductService;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -34,10 +32,13 @@ public class ProductController {
     @GetMapping("/room/{slug}")
     public ResponseEntity<?> listProductsByRoomSlug(
             @PathVariable String slug,
+            @RequestParam(required = false) String productType,
+            @RequestParam(required = false) String order,
             @RequestParam(defaultValue = "0") int offset,
             @RequestParam(defaultValue = "10") int limit
     ) {
-        List<ProductDto> products = productService.findProductsByRoomSlug(slug, offset, limit);
+        ProductFilter filter = new ProductFilter(slug, productType, order, offset, limit);
+        List<ProductDto> products = productService.filterProducts(filter);
 
         if (products.isEmpty()) {
             return ResponseEntity.status(404).body(
@@ -46,23 +47,4 @@ public class ProductController {
 
         return ResponseEntity.ok(products);
     }
-
-    @GetMapping("/room/{slug}/filter")
-    public ResponseEntity<List<ProductDto>> filterProducts(
-            @PathVariable String slug,
-            @RequestParam(required = false) String productType,
-            @RequestParam(required = false) String order,
-            @RequestParam(defaultValue = "0") int offset,
-            @RequestParam(defaultValue = "10") int limit
-        ) {
-        ProductFilter filter = new ProductFilter(slug, productType, order, offset, limit);
-        List<ProductDto> products = productService.filterProducts(filter);
-
-        if (products.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                                .body(Collections.emptyList());
-        }
-
-    return ResponseEntity.ok(products);
-}
 }
