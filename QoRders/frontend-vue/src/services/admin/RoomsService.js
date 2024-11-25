@@ -42,3 +42,5 @@ const RoomsService = {
         }
     }
 };
+
+export default RoomsService;
