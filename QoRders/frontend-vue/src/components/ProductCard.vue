@@ -67,6 +67,8 @@ const adjustQuantity = (product, delta) => {
     padding: 20px;
     display: flex;
     flex-direction: column;
+    background-color: #f3f3f3;
+    color: #333;
 }
 
 .product-card-container {
@@ -130,16 +132,23 @@ const adjustQuantity = (product, delta) => {
 .product-card .p-accordion {
     width: 100%;
     margin-top: 10px;
+    background-color: #ffffff;
 }
 
-.p-accordion .p-accordionheader,
-.p-accordion .p-accordioncontent,
-.p-accordion .p-accordioncontent-content {
+.p-accordionheader,
+.p-accordioncontent,
+.p-accordionpanel {
     font-size: 14px;
     padding: 10px;
+    background-color: #ffffff;
+}
+
+.p-accordioncontent-content {
+    padding: 0px !important;
 }
 
 .p-accordion p {
     margin: 0;
+    background-color: #ffffff;
 }
 </style>

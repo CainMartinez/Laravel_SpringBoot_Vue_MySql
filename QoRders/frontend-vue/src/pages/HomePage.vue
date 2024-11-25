@@ -37,6 +37,8 @@ onMounted(() => {
     display: flex;
     flex-direction: column;
     align-items: center;
+    background-color: #f3f3f3;
+    color: #333;
 }
 
 .separator {

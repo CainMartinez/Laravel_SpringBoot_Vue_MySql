@@ -51,6 +51,7 @@ const updateSelectedType = (type) => {
     padding: 15px;
     gap: 60px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    color: #333;
 }
 
 .filters label {

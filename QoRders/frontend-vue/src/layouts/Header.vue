@@ -37,6 +37,7 @@ import router from '../router/router';
   background-color: #f8f9fa;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   border-radius: 5px;
+  color: #333;
 }
 
 .logo {

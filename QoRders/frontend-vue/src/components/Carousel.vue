@@ -28,6 +28,8 @@ const rooms = computed(() => store.getters['storeRooms/getRooms']);
     width: 100%;
     height: 90vh;
     position: relative;
+    background-color: #f3f3f3;
+    color: #333;
 }
 
 .carousel-image-container {

@@ -15,16 +15,17 @@ defineProps(['room']);
 
 <style scoped>
 .room-card {
-    width: 450px;
-    height: 250px;
+    width: 350px;
+    height: 175px;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     overflow: hidden;
-    background-color: white;
     transition: transform 0.2s;
     text-align: center;
     display: block;
     text-decoration: none;
+    background-color: #f3f3f3;
+    color: #333;
 }
 
 .room-card:hover {

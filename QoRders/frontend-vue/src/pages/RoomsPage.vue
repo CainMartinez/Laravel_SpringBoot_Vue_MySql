@@ -27,6 +27,8 @@ onMounted(() => {
     flex-direction: column;
     align-items: center;
     padding: 20px;
+    background-color: #f3f3f3;
+    color: #333;
 }
 
 .carta-page h1 {

@@ -23,6 +23,8 @@ import { ref } from 'vue';
   padding: 10px 20px;
   background-color: #f8f9fa;
   box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1);
+  background-color: #f3f3f3;
+  color: #333;
 }
 
 p {

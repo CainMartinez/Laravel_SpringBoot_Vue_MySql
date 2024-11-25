@@ -27,7 +27,8 @@ body {
   padding: 0;
   font-family: var(--font-default);
   font-weight: normal;
-  background-color: #f5f5f5;
+  background-color: #f3f3f3;
+  color: #333;
 }
 
 /* Aplicar la tipografía según el país */

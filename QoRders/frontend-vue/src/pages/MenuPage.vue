@@ -75,6 +75,7 @@ const adjustQuantity = (product, delta) => {
     background-blend-mode: lighten;
     max-height: 850px;
     overflow-y: auto;
+    color: #333;
 }
 
 .menu-page h1 {
