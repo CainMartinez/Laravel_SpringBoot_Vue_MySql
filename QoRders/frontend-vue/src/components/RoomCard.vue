@@ -1,5 +1,5 @@
 <template>
-    <router-link :to="`/room/${room.slug}`" class="room-card">
+    <router-link :to="`/room/${room.slug}`" :class="['room-card', sizeClass]">
         <div class="room-card-image-container">
             <img v-if="room.imageUrl" :src="room.imageUrl" :alt="room.name" class="room-card-image" />
             <div :class="room.theme.toLowerCase()" class="room-card-overlay">
@@ -10,13 +10,27 @@
 </template>
 
 <script setup>
-defineProps(['room']);
+import { computed, defineProps } from 'vue';
+
+const props = defineProps({
+    room: Object,
+    size: {
+        type: String,
+        default: 'medium'
+    }
+});
+
+const sizeClass = computed(() => {
+    return {
+        'room-card-small': props.size === 'small',
+        'room-card-medium': props.size === 'medium',
+        'room-card-large': props.size === 'large'
+    };
+});
 </script>
 
 <style scoped>
 .room-card {
-    width: 350px;
-    height: 175px;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     overflow: hidden;
@@ -30,6 +44,21 @@ defineProps(['room']);
 
 .room-card:hover {
     transform: scale(1.05);
+}
+
+.room-card-small {
+    width: 350px;
+    height: 200px;
+}
+
+.room-card-medium {
+    width: 450px;
+    height: 250px;
+}
+
+.room-card-large {
+    width: 600px;
+    height: 350px;
 }
 
 .room-card-image-container {

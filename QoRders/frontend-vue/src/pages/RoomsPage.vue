@@ -2,7 +2,7 @@
     <div class="carta-page">
         <h1>Elige tu destino</h1>
         <div class="rooms-cards">
-            <RoomCard v-for="room in rooms" :key="room.uuid" :room="room" />
+            <RoomCard v-for="room in rooms" :key="room.uuid" :room="room" size="small"/>
         </div>
     </div>
 </template>
