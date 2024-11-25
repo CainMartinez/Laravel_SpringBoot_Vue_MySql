@@ -1,9 +1,9 @@
-const API_BASE_URL = 'http://localhost:8081/api';
+import axios from 'axios';
 
-export const fetchNgos = async () => {
-    const response = await fetch(`${API_BASE_URL}/ngos`);
-    if (!response.ok) {
-        throw new Error('Failed to fetch NGOs');
-    }
-    return response.json();
-};
+export const api_spring = axios.create({
+    baseURL: import.meta.env.VITE_API_BASE_URL_SPRING,
+});
+
+export const api_laravel = axios.create({
+    baseURL: import.meta.env.VITE_API_BASE_URL_LARAVEL,
+});
