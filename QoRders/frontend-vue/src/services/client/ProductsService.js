@@ -1,4 +1,4 @@
-import { api_spring, api_laravel } from "../api";
+import { api_spring } from "../api";
 
 const ProductsService = {
     async getProducts() {
