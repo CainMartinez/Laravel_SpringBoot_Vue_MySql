@@ -27,7 +27,7 @@ const actions = {
     async fetchProductsByRoom({ commit }, room_slug) {
         try {
             const productsData = await ProductsService.getProductByRoom(room_slug);
-            console.log("Productos de la sala:", productsData);
+            // console.log("Productos de la sala:", productsData);
             commit('setProductsByRoom', productsData);
         } catch (error) {
             console.error("Error al obtener los productos de la sala:", error);

@@ -25,6 +25,7 @@ const routes = [
         beforeEnter: (to, from, next) => {
             const store = useStore();
             store.dispatch('storeProducts/fetchProductsByRoom', to.params.slug);
+            store.dispatch('storeRooms/fetchRoomBySlug', to.params.slug);
             next();
         },
     },

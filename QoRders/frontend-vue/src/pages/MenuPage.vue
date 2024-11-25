@@ -1,6 +1,6 @@
 <template>
-    <div class="menu-page">
-        <h1>Bienvenido a {{ countryName }}</h1>
+    <div :class="room.theme.toLowerCase()" class="menu-page" :style="{ backgroundImage: 'url(' + room.imageUrl + ')' }">
+        <h1>Bienvenido a {{ room.theme }}</h1>
 
         <!-- Filtros -->
         <Filters :selectedType="selectedType" @update:selectedType="selectedType = $event"
@@ -26,9 +26,10 @@ const room_slug = computed(() => route.params.slug);
 
 const store = useStore();
 const products = computed(() => store.getters['storeProducts/getProductsByRoom']);
-console.log("products", products.value);
+const room = computed(() => store.getters['storeRooms/getRoomBySlug']);
 
-const countryName = ref('España');
+onMounted(() => {
+});
 
 // Filtros
 const selectedType = ref(null);
@@ -53,7 +54,7 @@ const filteredProducts = computed(() => {
     return filtered;
 });
 
-console.log("filteredProducts", filteredProducts.value);
+// console.log("filteredProducts", filteredProducts.value);
 
 // Lógica para ajustar la cantidad del producto
 const adjustQuantity = (product, delta) => {
@@ -61,10 +62,6 @@ const adjustQuantity = (product, delta) => {
         product.quantity += delta;
     }
 };
-
-onMounted(() => {
-    store.dispatch('storeProducts/fetchProductsByRoom', room_slug.value);
-});
 </script>
 
 <style scoped>
@@ -74,8 +71,10 @@ onMounted(() => {
     flex-direction: column;
     align-items: center;
     background: #f7f7f7;
-    background-color: rgba(255, 255, 255, 0.8);
+    background-color: rgba(255, 255, 255, 0.497);
     background-blend-mode: lighten;
+    max-height: 850px;
+    overflow-y: auto;
 }
 
 .menu-page h1 {
@@ -86,7 +85,7 @@ onMounted(() => {
     display: flex;
     flex-direction: column;
     width: 80%;
-    max-width: 1200px;
+    max-width: 850px;
     background: rgba(255, 255, 255, 0.9);
     padding: 20px;
     border-radius: 10px;

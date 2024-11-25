@@ -12,7 +12,7 @@
                 <p>{{ product.description }}</p>
 
                 <!-- Cantidad -->
-                <div class="quantity">
+                <div class="quantity" v-if="user">
                     <button @click="adjustQuantity(product, -1)">-</button>
                     <span>{{ product.quantity }}</span>
                     <button @click="adjustQuantity(product, 1)">+</button>
