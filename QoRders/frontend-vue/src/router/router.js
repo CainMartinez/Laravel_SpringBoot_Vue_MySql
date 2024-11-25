@@ -24,10 +24,16 @@ const routes = [
         component: () => import('../pages/MenuPage.vue'),
         beforeEnter: (to, from, next) => {
             const store = useStore();
-            store.dispatch('storeProducts/fetchProductsByRoom', to.params.slug);
-            store.dispatch('storeRooms/fetchRoomBySlug', to.params.slug);
-            next();
+            if (to.params.slug) {
+                store.dispatch('storeProducts/fetchProductsByRoom', { room_slug: to.params.slug, filters: {} });
+                store.dispatch('storeRooms/fetchRoomBySlug', to.params.slug);
+                next();
+            } else {
+                console.error("El parámetro 'slug' no está definido en la ruta.");
+                next(false); // Cancelar la navegación
+            }
         },
+
     },
     {
         path: '/reservation',

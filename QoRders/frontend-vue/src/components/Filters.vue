@@ -10,14 +10,14 @@
         <div class="filters-radio">
             <label>Tipo de producto</label>
             <div class="filter-buttons">
-                <button :class="{ active: selectedType === 'entrantes' }"
-                    @click="updateSelectedType('entrantes')">Entrantes</button>
-                <button :class="{ active: selectedType === 'principales' }"
-                    @click="updateSelectedType('principales')">Principales</button>
-                <button :class="{ active: selectedType === 'postres' }"
-                    @click="updateSelectedType('postres')">Postres</button>
-                <button :class="{ active: selectedType === 'bebidas' }"
-                    @click="updateSelectedType('bebidas')">Bebidas</button>
+                <button :class="{ active: selectedType === 'STARTER' }"
+                    @click="updateSelectedType('STARTER')">Entrantes</button>
+                <button :class="{ active: selectedType === 'MAIN_COURSE' }"
+                    @click="updateSelectedType('MAIN_COURSE')">Principales</button>
+                <button :class="{ active: selectedType === 'DESSERT' }"
+                    @click="updateSelectedType('DESSERT')">Postres</button>
+                <button :class="{ active: selectedType === 'DRINK' }"
+                    @click="updateSelectedType('DRINK')">Bebidas</button>
             </div>
         </div>
     </div>

@@ -15,7 +15,7 @@
 </template>
 
 <script setup>
-import { computed, ref, onMounted } from 'vue';
+import { computed, ref, onMounted, watch } from 'vue';
 import { useStore } from 'vuex';
 import { useRoute } from 'vue-router';
 import Filters from '../components/Filters.vue';
@@ -28,8 +28,16 @@ const store = useStore();
 const products = computed(() => store.getters['storeProducts/getProductsByRoom']);
 const room = computed(() => store.getters['storeRooms/getRoomBySlug']);
 
+
 onMounted(() => {
+    if (room_slug.value) {
+        store.dispatch('storeProducts/fetchProductsByRoom', {
+            room_slug: room_slug.value,
+            filters: { order: orderBy.value, productType: selectedType.value },
+        });
+    }
 });
+
 
 // Filtros
 const selectedType = ref(null);
@@ -38,21 +46,28 @@ const orderBy = ref('asc');
 // Filtros de productos
 const filteredProducts = computed(() => {
     if (!products.value) return [];
-    let filtered = products.value;
-    if (!selectedType.value) {
+
+    // Si no hay filtro adicional en el frontend, devuelve los datos directamente
+    if (!selectedType.value && orderBy.value === 'asc') {
         return products.value;
     }
-    filtered = filtered.filter(product => {
-        const matchesType = selectedType.value ? product.type === selectedType.value : true;
-        return matchesType;
-    });
+
+    // Ordenar
+    let sorted = [...products.value];
     if (orderBy.value === 'asc') {
-        filtered = filtered.sort((a, b) => a.price - b.price);
+        sorted = sorted.sort((a, b) => a.price - b.price);
     } else {
-        filtered = filtered.sort((a, b) => b.price - a.price);
+        sorted = sorted.sort((a, b) => b.price - a.price);
     }
-    return filtered;
+
+    // Filtrar solo si el usuario selecciona un tipo adicional
+    if (selectedType.value) {
+        sorted = sorted.filter((product) => product.productType === selectedType.value);
+    }
+
+    return sorted;
 });
+
 
 // console.log("filteredProducts", filteredProducts.value);
 
@@ -62,6 +77,23 @@ const adjustQuantity = (product, delta) => {
         product.quantity += delta;
     }
 };
+
+watch([selectedType, orderBy], ([newType, newOrderBy]) => {
+    console.log("Filtros actualizados (watch - MenuPage.vue):", { newType, newOrderBy }); // Debug
+    const filters = {};
+    if (newOrderBy) {
+        filters.order = newOrderBy;
+    }
+    if (newType) {
+        filters.productType = newType;
+    }
+    store.dispatch('storeProducts/fetchProductsByRoom', {
+        room_slug: room_slug.value,
+        filters,
+    });
+});
+
+
 </script>
 
 <style scoped>
