@@ -25,7 +25,7 @@
         </div>
         <div>
             <!-- Alérgenos Dropdown -->
-            <Accordion :activeIndex="null">
+            <Accordion :activeIndex="null" v-if="product.allergens !== null">
                 <AccordionPanel value="0">
                     <AccordionHeader>Alérgenos</AccordionHeader>
                     <AccordionContent>
