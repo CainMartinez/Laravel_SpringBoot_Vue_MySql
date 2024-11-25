@@ -152,16 +152,27 @@ class RoomController extends Controller
         }
         return response()->json(['error' => 'Room not found'], 404);
     }
-    public function deleteBySlug($slug)
+
+    public function enableBySlug($slug)
     {
         try {
-            // Buscar la sala por el slug
+            // Buscar la sala por su slug
             $room = Room::where('room_slug', $slug)->firstOrFail();
-            // Eliminar la sala
-            $room->delete();
+
+             // Comprobar si ya está habilitado
+            if ($room->is_active) {
+                return response()->json([
+                    'message' => 'Room is already enabled',
+                    'data' => $room
+                ], 200); // Estado HTTP 200: OK
+            }
+
+            // Actualizar el campo is_active a 1
+            $room->update(['is_active' => 1]);
+
             return response()->json([
-                'message' => 'Room deleted successfully',
-                'slug' => $slug
+                'message' => 'Room has been enabled successfully',
+                'data' => $room
             ], 200); // Estado HTTP 200: OK
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return response()->json([
@@ -175,6 +186,40 @@ class RoomController extends Controller
             ], 500); // Estado HTTP 500: Internal Server Error
         }
     }
+
+    public function unableBySlug($slug)
+    {
+        try {
+            // Buscar la sala por su slug
+            $room = Room::where('room_slug', $slug)->firstOrFail();
+            
+            // Comprobar si ya está deshabilitado
+            if (!$room->is_active) {
+                return response()->json([
+                    'message' => 'Room is already disabled',
+                    'data' => $room
+                ], 200); // Estado HTTP 200: OK
+            }
+            // Actualizar el campo is_active a 0
+            $room->update(['is_active' => 0]);
+
+            return response()->json([
+                'message' => 'Room has been deactivated successfully',
+                'data' => $room
+            ], 200); // Estado HTTP 200: OK
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json([
+                'message' => 'Room not found',
+                'slug' => $slug
+            ], 404); // Estado HTTP 404: Not Found
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'An unexpected error occurred',
+                'error' => $e->getMessage()
+            ], 500); // Estado HTTP 500: Internal Server Error
+        }
+    }
+
     // Obtener los productos relacionados con el slug de una sala
     public function getProductsByRoomSlug($slug)
     {
