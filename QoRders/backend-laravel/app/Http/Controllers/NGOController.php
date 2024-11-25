@@ -207,26 +207,71 @@ class NGOController extends Controller
         }
     }
 
-    public function deleteBySlug($slug)
+    public function enableBySlug($slug)
     {
         try {
+            // Buscar el NGO por su slug
             $ngo = NGO::where('ngo_slug', $slug)->firstOrFail();
-            $ngo->delete();
+
+            // Comprobar si ya está habilitado
+            if ($ngo->is_active) {
+                return response()->json([
+                    'message' => 'NGO is already enabled',
+                    'data' => $ngo
+                ], 200); // Estado HTTP 200: OK
+            }
+
+            // Actualizar el campo is_active a 1
+            $ngo->update(['is_active' => 1]);
 
             return response()->json([
-                'message' => 'NGO deleted successfully',
-                'slug' => $slug
-            ], 200);
+                'message' => 'NGO has been enabled successfully',
+                'data' => $ngo
+            ], 200); // Estado HTTP 200: OK
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return response()->json([
                 'message' => 'NGO not found',
                 'slug' => $slug
-            ], 404);
+            ], 404); // Estado HTTP 404: Not Found
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'An unexpected error occurred',
                 'error' => $e->getMessage()
-            ], 500);
+            ], 500); // Estado HTTP 500: Internal Server Error
+        }
+    }
+
+    public function unableBySlug($slug)
+    {
+        try {
+            // Buscar el NGO por su slug
+            $ngo = NGO::where('ngo_slug', $slug)->firstOrFail();
+
+            // Comprobar si ya está deshabilitado
+            if (!$ngo->is_active) {
+                return response()->json([
+                    'message' => 'NGO is already disabled',
+                    'data' => $ngo
+                ], 200); // Estado HTTP 200: OK
+            }
+
+            // Actualizar el campo is_active a 0
+            $ngo->update(['is_active' => 0]);
+
+            return response()->json([
+                'message' => 'NGO has been deactivated successfully',
+                'data' => $ngo
+            ], 200); // Estado HTTP 200: OK
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json([
+                'message' => 'NGO not found',
+                'slug' => $slug
+            ], 404); // Estado HTTP 404: Not Found
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'An unexpected error occurred',
+                'error' => $e->getMessage()
+            ], 500); // Estado HTTP 500: Internal Server Error
         }
     }
 }

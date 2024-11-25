@@ -7,28 +7,31 @@ use App\Http\Controllers\RoomController;
 use App\Http\Controllers\BookingController;
 
 Route::prefix('ngos')->group(function () {
-    Route::get('/', [NGOController::class, 'index']); // Obtener todos los NGOs
-    Route::get('/{slug}', [NGOController::class, 'showBySlug']); // Obtener un NGO por Slug
-    Route::post('/', [NGOController::class, 'store']); // Crear un nuevo NGO
-    Route::put('/{slug}', [NGOController::class, 'updateBySlug']); // Actualizar un NGO
-    Route::delete('/{slug}', [NGOController::class, 'deleteBySlug']); // Eliminar un NGO
+    Route::get('/', [NGOController::class, 'index']);
+    Route::get('/{slug}', [NGOController::class, 'showBySlug']);
+    Route::post('/', [NGOController::class, 'store']);
+    Route::put('/{slug}', [NGOController::class, 'updateBySlug']);
+    Route::put('/{slug}/unable', [NGOController::class, 'unableBySlug']); // Deshabilitar
+    Route::put('/{slug}/enable', [NGOController::class, 'enableBySlug']); // Habilitar
 });
 
 Route::prefix('products')->group(function () {
-    Route::get('/', [ProductController::class, 'index']); // Obtener todos los productos
-    Route::get('/{slug}', [ProductController::class, 'showBySlug']); // Obtener un producto por Slug
-    Route::post('/', [ProductController::class, 'store']); // Crear un nuevo producto
-    Route::put('/{slug}', [ProductController::class, 'updateBySlug']); // Actualizar un producto
-    Route::delete('/{slug}', [ProductController::class, 'deleteBySlug']); // Eliminar un producto
+    Route::get('/', [ProductController::class, 'index']);
+    Route::get('/{slug}', [ProductController::class, 'showBySlug']);
+    Route::post('/', [ProductController::class, 'store']);
+    Route::put('/{slug}', [ProductController::class, 'updateBySlug']);
+    Route::put('/{slug}/unable', [ProductController::class, 'unableBySlug']); // Deshabilitar
+    Route::put('/{slug}/enable', [ProductController::class, 'enableBySlug']); // Habilitar
 });
 
 Route::prefix('rooms')->group(function () {
-    Route::get('/', [RoomController::class, 'index']); // Obtener todas las salas
-    Route::get('/{slug}', [RoomController::class, 'showBySlug']); // Obtener una sala por Slug
-    Route::post('/', [RoomController::class, 'store']); // Crear una nueva sala
-    Route::put('/{slug}', [RoomController::class, 'updateBySlug']); // Actualizar una sala
-    Route::delete('/{slug}', [RoomController::class, 'deleteBySlug']); // Eliminar una sala
-    Route::get('/{slug}/products', [RoomController::class, 'getProductsByRoomSlug']); // Obtener todos los productos de una sala
+    Route::get('/', [RoomController::class, 'index']);
+    Route::get('/{slug}', [RoomController::class, 'showBySlug']);
+    Route::post('/', [RoomController::class, 'store']);
+    Route::put('/{slug}', [RoomController::class, 'updateBySlug']);
+    Route::put('/{slug}/unable', [RoomController::class, 'unableBySlug']); // Deshabilitar
+    Route::put('/{slug}/enable', [RoomController::class, 'enableBySlug']); // Habilitar
+    Route::get('/{slug}/products', [RoomController::class, 'getProductsByRoomSlug']);
 });
 
 Route::prefix('bookings')->group(function () {
@@ -36,5 +39,5 @@ Route::prefix('bookings')->group(function () {
     Route::get('/{uuid}', [BookingController::class, 'show']); // Obtener una reserva por UUID
     Route::post('/', [BookingController::class, 'store']); // Crear una nueva reserva
     Route::put('/{uuid}', [BookingController::class, 'update']); // Actualizar una reserva por UUID
-    Route::delete('/{uuid}', [BookingController::class, 'destroy']); // Eliminar una reserva por UUID
+    Route::put('/{uuid}/unable', [BookingController::class, 'unable']); // Desactivar una reserva
 });

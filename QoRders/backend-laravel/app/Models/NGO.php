@@ -37,6 +37,8 @@ class NGO extends Model
         'website_url',
         'logo_url',
         'image_url',
+        'description_img_url',
+        'is_active',
         'total_donations',
     ];
 

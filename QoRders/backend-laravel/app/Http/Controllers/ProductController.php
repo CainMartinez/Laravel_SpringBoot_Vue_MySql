@@ -206,26 +206,70 @@ class ProductController extends Controller
         }
     }
 
-    public function deleteBySlug($slug)
+    public function enableBySlug($slug)
     {
         try {
+            // Buscar el producto por su slug
             $product = Product::where('product_slug', $slug)->firstOrFail();
-            $product->delete();
+            
+            // Comprobar si ya está habilitado
+            if ($product->is_active) {
+                return response()->json([
+                    'message' => 'Product is already enabled',
+                    'data' => $product
+                ], 200); // Estado HTTP 200: OK
+            }
+            // Actualizar el campo is_active a 1
+            $product->update(['is_active' => 1]);
 
             return response()->json([
-                'message' => 'Product deleted successfully',
-                'slug' => $slug
-            ], 200);
+                'message' => 'Product has been enabled successfully',
+                'data' => $product
+            ], 200); // Estado HTTP 200: OK
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return response()->json([
                 'message' => 'Product not found',
                 'slug' => $slug
-            ], 404);
+            ], 404); // Estado HTTP 404: Not Found
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'An unexpected error occurred',
                 'error' => $e->getMessage()
-            ], 500);
+            ], 500); // Estado HTTP 500: Internal Server Error
+        }
+    }
+
+    public function unableBySlug($slug)
+    {
+        try {
+            // Buscar el producto por su slug
+            $product = Product::where('product_slug', $slug)->firstOrFail();
+
+            // Comprobar si ya está deshabilitado
+            if (!$product->is_active) {
+                return response()->json([
+                    'message' => 'Product is already disabled',
+                    'data' => $product
+                ], 200); // Estado HTTP 200: OK
+            }
+
+            // Actualizar el campo is_active a 0
+            $product->update(['is_active' => 0]);
+
+            return response()->json([
+                'message' => 'Product has been deactivated successfully',
+                'data' => $product
+            ], 200); // Estado HTTP 200: OK
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json([
+                'message' => 'Product not found',
+                'slug' => $slug
+            ], 404); // Estado HTTP 404: Not Found
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'An unexpected error occurred',
+                'error' => $e->getMessage()
+            ], 500); // Estado HTTP 500: Internal Server Error
         }
     }
 }
