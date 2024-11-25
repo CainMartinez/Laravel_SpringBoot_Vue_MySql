@@ -11,7 +11,7 @@
 
         <!-- Cards de las salas -->
         <div class="rooms-cards">
-            <RoomCard v-for="room in rooms" :key="room.uuid" :room="room" size="medium"/>
+            <RoomCard v-for="room in rooms" :key="room.uuid" :room="room" size="large"/>
         </div>
     </div>
 </template>
