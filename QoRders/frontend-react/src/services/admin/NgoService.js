@@ -29,6 +29,16 @@ const NgoService = {
             console.error(`Error al deshabilitar el NGO con slug: ${slug}`, error);
             throw error;
         }
+    },
+
+    async enableNgo(slug) {
+        try {
+            const response = await api_laravel.put(`/ngos/${slug}/enable`);
+            return response.data;
+        } catch (error) {
+            console.error(`Error al habilitar el NGO con slug: ${slug}`, error);
+            throw error;
+        }
     }
 };
 
