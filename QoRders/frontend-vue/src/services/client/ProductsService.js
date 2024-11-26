@@ -11,9 +11,12 @@ const ProductsService = {
         }
     },
 
-    async getProductByRoom(room_slug) {
+    async getProductByRoom(room_slug, filters = {}) {
         try {
-            const response = await api_spring.get(`/products/room/${room_slug}`);
+            // Construir los parámetros de consulta basados en los filtros
+            const params = new URLSearchParams(filters).toString();
+            const response = await api_spring.get(`/products/room/${room_slug}?${params}`);
+            console.log("Respuesta del servidor con filtros:", response);
             return response.data;
         } catch (error) {
             console.error("Error al obtener los productos de la sala:", error);

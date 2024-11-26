@@ -12,7 +12,8 @@ const mutations = {
     },
     setProductsByRoom(state, products) {
         state.productsByRoom = products;
-    }
+        //console.log("Estado actualizado (mutations - storeProducts.js): ", state.productsByRoom); // Debug
+    },
 }
 
 const actions = {
@@ -24,10 +25,13 @@ const actions = {
             console.error("Error al obtener los productos:", error);
         }
     },
-    async fetchProductsByRoom({ commit }, room_slug) {
+    async fetchProductsByRoom({ commit }, { room_slug, filters }) {
+        if (!room_slug) {
+            console.error("room_slug no está definido.");
+            return;
+        }
         try {
-            const productsData = await ProductsService.getProductByRoom(room_slug);
-            // console.log("Productos de la sala:", productsData);
+            const productsData = await ProductsService.getProductByRoom(room_slug, filters);
             commit('setProductsByRoom', productsData);
         } catch (error) {
             console.error("Error al obtener los productos de la sala:", error);
