@@ -15,7 +15,7 @@
 </template>
 
 <script setup>
-import { computed, ref, onMounted, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useStore } from 'vuex';
 import { useRoute } from 'vue-router';
 import Filters from '../components/Filters.vue';
@@ -27,16 +27,6 @@ const room_slug = computed(() => route.params.slug);
 const store = useStore();
 const products = computed(() => store.getters['storeProducts/getProductsByRoom']);
 const room = computed(() => store.getters['storeRooms/getRoomBySlug']);
-
-
-onMounted(() => {
-    if (room_slug.value) {
-        store.dispatch('storeProducts/fetchProductsByRoom', {
-            room_slug: room_slug.value,
-            filters: { order: orderBy.value, productType: selectedType.value },
-        });
-    }
-});
 
 
 // Filtros

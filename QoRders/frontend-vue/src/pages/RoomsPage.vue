@@ -8,17 +8,13 @@
 </template>
 
 <script setup>
-import { computed, onMounted } from 'vue';
+import { computed } from 'vue';
 import { useStore } from 'vuex';
 import RoomCard from '../components/RoomCard.vue';
 
 const store = useStore();
 const rooms = computed(() => store.getters['storeRooms/getRooms']);
 console.log("Salas", rooms);
-
-onMounted(() => {
-    store.dispatch('storeRooms/fetchRooms');
-});
 </script>
 
 <style scoped>
