@@ -6,6 +6,8 @@ import lombok.Setter;
 
 import java.util.List;
 
+import com.QoRders.client.home.domain.entity.RoomEntity;
+
 @Entity
 @Table(name = "NGO")
 @Getter
@@ -55,6 +57,9 @@ public class NgoEntity {
 
     @Column(name = "is_active", nullable = false)
     private Boolean isActive;
+
+    @OneToOne(mappedBy = "ngo", cascade = CascadeType.ALL)
+    private RoomEntity room;
 
     @OneToMany(mappedBy = "country", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProductEntity> products;

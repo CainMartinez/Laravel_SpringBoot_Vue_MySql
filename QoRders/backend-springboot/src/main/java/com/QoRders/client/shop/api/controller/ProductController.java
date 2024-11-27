@@ -1,17 +1,17 @@
 package com.QoRders.client.shop.api.controller;
 
 import com.QoRders.client.shop.api.dto.ProductDto;
-import com.QoRders.client.shop.domain.model.ProductFilter;
 import com.QoRders.client.shop.domain.service.ProductService;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
+@CrossOrigin(origins = {"http://localhost:8085","http://localhost:8086"})
 @RequestMapping("/api/products")
-@CrossOrigin(origins = "http://localhost:8085")
 public class ProductController {
 
     private final ProductService productService;
@@ -20,31 +20,25 @@ public class ProductController {
         this.productService = productService;
     }
 
-    @GetMapping
-    public ResponseEntity<List<ProductDto>> listAll(
-            @RequestParam(defaultValue = "0") int offset,
-            @RequestParam(defaultValue = "10") int limit
-    ) {
-        List<ProductDto> products = productService.listAll(offset, limit);
-        return ResponseEntity.ok(products);
-    }
-
     @GetMapping("/room/{slug}")
-    public ResponseEntity<?> listProductsByRoomSlug(
-            @PathVariable String slug,
-            @RequestParam(required = false) String productType,
-            @RequestParam(required = false) String order,
-            @RequestParam(defaultValue = "0") int offset,
-            @RequestParam(defaultValue = "10") int limit
-    ) {
-        ProductFilter filter = new ProductFilter(slug, productType, order, offset, limit);
-        List<ProductDto> products = productService.filterProducts(filter);
+    public ResponseEntity<Page<ProductDto>> filterProducts(
+            @PathVariable("slug") String slug,
+            @RequestParam(value = "order", defaultValue = "") String order,
+            @RequestParam(value = "productType", required = false) String productType,
+            @RequestParam(value = "offset", defaultValue = "0") int page,
+            @RequestParam(value = "limit", defaultValue = "10") int size) {
 
-        if (products.isEmpty()) {
-            return ResponseEntity.status(404).body(
-                    String.format("No products found for room with slug '%s' or associated NGO.", slug));
+        if (productType != null) {
+            productType = productType.replace("_", " ");
         }
 
+        Pageable pageable = PageRequest.of(
+                page,
+                size,
+                order.equalsIgnoreCase("desc") ? Sort.by("unitPrice").descending() : Sort.by("unitPrice").ascending()
+        );
+
+        Page<ProductDto> products = productService.filterProductsBySlugAndType(slug, productType, pageable);
         return ResponseEntity.ok(products);
     }
 }

@@ -48,10 +48,6 @@ public class ProductEntity {
     @Convert(converter = ProductTypeConverter.class)
     private ProductType productType;
 
-    @ManyToOne
-    @JoinColumn(name = "origin", referencedColumnName = "country", nullable = false)
-    private NgoEntity country;
-
     @Column(name = "is_active", nullable = false, columnDefinition = "tinyint(1) default 1")
     private Boolean isActive;
 
@@ -60,4 +56,8 @@ public class ProductEntity {
 
     @Column(name = "updated_at", insertable = false)
     private java.time.LocalDateTime updatedAt;
+
+    @ManyToOne
+    @JoinColumn(name = "origin", referencedColumnName = "country", nullable = false)
+    private NgoEntity country;
 }

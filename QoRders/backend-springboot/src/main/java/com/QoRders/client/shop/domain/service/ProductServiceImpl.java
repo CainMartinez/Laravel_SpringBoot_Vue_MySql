@@ -2,58 +2,34 @@ package com.QoRders.client.shop.domain.service;
 
 import com.QoRders.client.shop.api.assembler.ProductAssembler;
 import com.QoRders.client.shop.api.dto.ProductDto;
-import com.QoRders.client.shop.domain.enums.ProductType;
-import com.QoRders.client.shop.domain.model.ProductFilter;
+import com.QoRders.client.shop.domain.entity.ProductEntity;
 import com.QoRders.client.shop.domain.repository.ProductRepository;
-import com.QoRders.client.home.domain.repository.RoomRepository;
+import com.QoRders.client.shop.infra.spec.ProductSpecification;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
-    private final RoomRepository roomRepository;
     private final ProductAssembler productAssembler;
 
-    public ProductServiceImpl(ProductRepository productRepository, RoomRepository roomRepository, ProductAssembler productAssembler) {
+    public ProductServiceImpl(ProductRepository productRepository, ProductAssembler productAssembler) {
         this.productRepository = productRepository;
-        this.roomRepository = roomRepository;
         this.productAssembler = productAssembler;
     }
 
     @Override
-    public List<ProductDto> listAll(int offset, int limit) {
-        return productRepository.findAllWithPagination(limit, offset)
-                .stream()
-                .map(productAssembler::toDto)
-                .collect(Collectors.toList());
-    }
+    public Page<ProductDto> filterProductsBySlugAndType(String slug, String productType, Pageable pageable) {
+        // Crear la especificación para el filtro
+        Specification<ProductEntity> spec = ProductSpecification.withSlugAndType(slug, productType);
 
-    @Override
-    public List<ProductDto> findProductsByRoomSlug(String slug, int offset, int limit) {
-        return productRepository.findProductsByRoomSlug(slug, limit, offset)
-                .stream()
-                .map(productAssembler::toDto)
-                .collect(Collectors.toList());
-    }
+        // Obtener los productos filtrados con paginación
+        Page<ProductEntity> products = productRepository.findAll(spec, pageable);
 
-    @Override
-    public List<ProductDto> filterProducts(ProductFilter filter) {
-        String productTypeValue = filter.getProductType() != null ? ProductType.fromValue(filter.getProductType()).getValue() : null;
-        String order = filter.getOrder() != null ? filter.getOrder() : "asc";
-
-        return productRepository.filterProductsByRoomAndTypeAndOrder(
-                filter.getSlug(), productTypeValue, order, filter.getLimit(), filter.getOffset()
-        ).stream()
-        .map(productAssembler::toDto)
-        .collect(Collectors.toList());
-    }
-
-    @Override
-    public boolean roomExists(String slug) {
-        return roomRepository.findByRoomSlug(slug).isPresent();
+        // Mapear a DTO
+        return products.map(productAssembler::toDto);
     }
 }

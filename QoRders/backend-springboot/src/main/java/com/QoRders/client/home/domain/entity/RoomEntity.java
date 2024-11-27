@@ -25,7 +25,7 @@ public class RoomEntity {
     @Column(name = "room_name", nullable = false)
     private String roomName;
 
-    @Column(name = "room_slug", nullable = false)
+    @Column(name = "room_slug", nullable = false, unique = true)
     private String roomSlug;
 
     @Column(name = "description")
