@@ -3,14 +3,29 @@
         <h1>Bienvenido a {{ room.theme }}</h1>
 
         <!-- Filtros -->
-        <Filters :selectedType="selectedType" @update:selectedType="selectedType = $event"
-            @update:orderBy="orderBy = $event" />
+        <Filters 
+            :selectedType="selectedType" 
+            @update:selectedType="selectedType = $event"
+            @update:orderBy="orderBy = $event" 
+        />
 
         <!-- Productos -->
         <div class="product-list">
-            <ProductCard v-for="product in filteredProducts" :key="product.id" :product="product"
-                @adjustQuantity="adjustQuantity" />
+            <ProductCard 
+                v-for="product in productsByRoom" 
+                :key="product.id" 
+                :product="product" 
+                @adjustQuantity="adjustQuantity" 
+            />
         </div>
+
+        <!-- Paginador -->
+        <Paginator 
+            :rows="pageSize" 
+            :totalRecords="totalProducts" 
+            :first="offset" 
+            @page="onPageChange" 
+        />
     </div>
 </template>
 
@@ -20,70 +35,44 @@ import { useStore } from 'vuex';
 import { useRoute } from 'vue-router';
 import Filters from '../components/Filters.vue';
 import ProductCard from '../components/ProductCard.vue';
+import Paginator from 'primevue/paginator';
 
 const route = useRoute();
 const room_slug = computed(() => route.params.slug);
 
 const store = useStore();
-const products = computed(() => store.getters['storeProducts/getProductsByRoom']);
+const productsByRoom = computed(() => store.getters['storeProducts/getProductsByRoom']);
+const totalProducts = computed(() => store.getters['storeProducts/getTotalProducts']);
 const room = computed(() => store.getters['storeRooms/getRoomBySlug']);
-
 
 // Filtros
 const selectedType = ref(null);
-const orderBy = ref('asc');
+const orderBy = ref(null);
 
-// Filtros de productos
-const filteredProducts = computed(() => {
-    if (!products.value) return [];
+// Paginación
+const currentPage = ref(0);
+const pageSize = ref(10);
+const offset = computed(() => currentPage.value * pageSize.value);
 
-    // Si no hay filtro adicional en el frontend, devuelve los datos directamente
-    if (!selectedType.value && orderBy.value === 'asc') {
-        return products.value;
-    }
-
-    // Ordenar
-    let sorted = [...products.value];
-    if (orderBy.value === 'asc') {
-        sorted = sorted.sort((a, b) => a.price - b.price);
-    } else {
-        sorted = sorted.sort((a, b) => b.price - a.price);
-    }
-
-    // Filtrar solo si el usuario selecciona un tipo adicional
-    if (selectedType.value) {
-        sorted = sorted.filter((product) => product.productType === selectedType.value);
-    }
-
-    return sorted;
-});
-
-
-// console.log("filteredProducts", filteredProducts.value);
-
-// Lógica para ajustar la cantidad del producto
-const adjustQuantity = (product, delta) => {
-    if (product.quantity + delta >= 0) {
-        product.quantity += delta;
-    }
+const onPageChange = (event) => {
+    currentPage.value = event.page;
 };
 
-watch([selectedType, orderBy], ([newType, newOrderBy]) => {
-    console.log("Filtros actualizados (watch - MenuPage.vue):", { newType, newOrderBy }); // Debug
-    const filters = {};
-    if (newOrderBy) {
-        filters.order = newOrderBy;
-    }
-    if (newType) {
-        filters.productType = newType;
-    }
+// Ver cambios en filtros o paginación
+watch([room_slug, currentPage, pageSize, orderBy, selectedType], ([newSlug, newPage, newSize, newOrder, newType]) => {
+    const limit = newSize;
+    const offsetValue = newPage * newSize;
+
     store.dispatch('storeProducts/fetchProductsByRoom', {
-        room_slug: room_slug.value,
-        filters,
+        room_slug: newSlug,
+        filters: {
+            limit,
+            offset: offsetValue,
+            order: newOrder,
+            productType: newType,
+        },
     });
 });
-
-
 </script>
 
 <style scoped>

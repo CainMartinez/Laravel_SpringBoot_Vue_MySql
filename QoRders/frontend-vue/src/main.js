@@ -5,7 +5,6 @@ import store from './store';
 
 //PrimeVue Imports
 import PrimeVue from 'primevue/config';
-import 'primeicons/primeicons.css';
 
 //PrimeVue Themes
 import Aura from '@primevue/themes/aura';
@@ -13,6 +12,7 @@ import Aura from '@primevue/themes/aura';
 //PrimeVue Components
 import Button from 'primevue/button';
 import Carousel from 'primevue/carousel';
+import Paginator from 'primevue/paginator';
 
 //Prime React Components
 import 'primereact/resources/themes/lara-light-blue/theme.css';
@@ -33,5 +33,6 @@ app.use(PrimeVue, {
 
 app.component('Button', Button);
 app.component('Carousel', Carousel);
+app.component('Paginator', Paginator);
 
 app.mount('#app');

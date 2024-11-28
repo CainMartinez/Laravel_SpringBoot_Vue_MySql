@@ -1,57 +1,54 @@
 import ProductsService from '../../services/client/ProductsService';
 
-
 const state = {
-    products: [],
-    productsByRoom: []
-}
+    productsByRoom: [],
+    totalProducts: 0,
+};
 
 const mutations = {
-    setProducts(state, products) {
-        state.products = products;
-    },
-    setProductsByRoom(state, products) {
+    setProductsByRoom(state, { products, total }) {
+        // console.log("storeProducts.js: Mutating productsByRoom ->", products, "Total products:", total); // Debug
         state.productsByRoom = products;
-        //console.log("Estado actualizado (mutations - storeProducts.js): ", state.productsByRoom); // Debug
+        state.totalProducts = total;
     },
-}
+};
 
 const actions = {
-    async fetchProducts({ commit }) {
-        try {
-            const productsData = await ProductsService.getProducts();
-            commit('setProducts', productsData);
-        } catch (error) {
-            console.error("Error al obtener los productos:", error);
-        }
-    },
     async fetchProductsByRoom({ commit }, { room_slug, filters }) {
         if (!room_slug) {
-            console.error("room_slug no está definido.");
+            console.error("storeProducts.js: room_slug is not defined."); // Debug
             return;
         }
         try {
+            // console.log("storeProducts.js: Fetching products for room:", room_slug, "with filters:", filters); // Debug
             const productsData = await ProductsService.getProductByRoom(room_slug, filters);
-            commit('setProductsByRoom', productsData);
+
+            // console.log("storeProducts.js: Fetched products for room ->", productsData); // Debug
+            commit('setProductsByRoom', {
+                products: productsData.content,
+                total: productsData.totalElements,
+            });
         } catch (error) {
-            console.error("Error al obtener los productos de la sala:", error);
+            console.error("storeProducts.js: Error fetching products by room:", error);
         }
-    }
-}
+    },
+};
 
 const getters = {
-    products(state) {
-        return state.products;
-    },
     getProductsByRoom(state) {
+        // console.log("storeProducts.js: Getter productsByRoom ->", state.productsByRoom); // Debug
         return state.productsByRoom;
     },
-}
+    getTotalProducts(state) {
+        // console.log("storeProducts.js: Getter totalProducts ->", state.totalProducts); // Debug
+        return state.totalProducts;
+    },
+};
 
 export default {
     namespaced: true,
     state,
     mutations,
     actions,
-    getters
-}
+    getters,
+};
