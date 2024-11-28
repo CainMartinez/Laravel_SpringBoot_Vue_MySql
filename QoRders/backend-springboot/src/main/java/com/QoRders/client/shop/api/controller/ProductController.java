@@ -25,8 +25,8 @@ public class ProductController {
             @PathVariable("slug") String slug,
             @RequestParam(value = "order", required = false) String order,
             @RequestParam(value = "productType", required = false) String productType,
-            @RequestParam(value = "offset", defaultValue = "0") int page,
-            @RequestParam(value = "limit", defaultValue = "10") int size) {
+            @RequestParam(value = "offset", defaultValue = "0") int offset,
+            @RequestParam(value = "limit", defaultValue = "10") int limit) {
 
         // Si los parámetros vienen como "null", tratarlos como si no estuvieran presentes
         if ("null".equalsIgnoreCase(order)) {
@@ -36,21 +36,19 @@ public class ProductController {
             productType = null;
         }
 
-        // Configurar el Pageable dependiendo del parámetro order
+        // Configurar Pageable según los parámetros
         Pageable pageable;
         if (order == null || order.isBlank()) {
-            // No se aplica orden, se toma el orden natural de la base de datos
-            pageable = PageRequest.of(page, size);
+            pageable = PageRequest.of(offset / limit, limit);
         } else {
-            // Ordenar por unitPrice
             pageable = PageRequest.of(
-                    page,
-                    size,
+                    offset / limit,
+                    limit,
                     order.equalsIgnoreCase("desc") ? Sort.by("unitPrice").descending() : Sort.by("unitPrice").ascending()
             );
         }
 
-        // Normalizar el parámetro productType (reemplazar "_" con " ")
+        // Normalizar el parámetro productType
         if (productType != null && !productType.isBlank()) {
             productType = productType.replace("_", " ");
         }
