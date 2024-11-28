@@ -18,6 +18,7 @@
                     @click="updateSelectedType('DESSERT')">Postres</button>
                 <button :class="{ active: selectedType === 'DRINK' }"
                     @click="updateSelectedType('DRINK')">Bebidas</button>
+                <button class="reset-button" @click="resetFilters">Eliminar filtros</button>
             </div>
         </div>
     </div>
@@ -25,7 +26,8 @@
 
 <script setup>
 const props = defineProps({
-    selectedType: String
+    selectedType: String,
+    orderBy: String,
 });
 
 const emit = defineEmits(['update:selectedType', 'update:orderBy']);
@@ -36,6 +38,10 @@ const updateOrderBy = (event) => {
 
 const updateSelectedType = (type) => {
     emit('update:selectedType', type);
+};
+
+const resetFilters = () => {
+    emit('resetFilters');
 };
 </script>
 
@@ -101,5 +107,18 @@ const updateSelectedType = (type) => {
 .filter-buttons button.active {
     background-color: #ccc;
     color: #333;
+}
+
+.filter-buttons .reset-button {
+    background-color: red;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.reset-button:hover {
+    background-color: #ff6666; 
 }
 </style>
