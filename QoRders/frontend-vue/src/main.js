@@ -13,6 +13,7 @@ import Aura from '@primevue/themes/aura';
 import Button from 'primevue/button';
 import Carousel from 'primevue/carousel';
 import Paginator from 'primevue/paginator';
+import ScrollTop from 'primevue/scrolltop';
 
 //Prime React Components
 import 'primereact/resources/themes/lara-light-blue/theme.css';
@@ -34,5 +35,6 @@ app.use(PrimeVue, {
 app.component('Button', Button);
 app.component('Carousel', Carousel);
 app.component('Paginator', Paginator);
+app.component('ScrollTop', ScrollTop);
 
 app.mount('#app');

@@ -26,6 +26,9 @@
             :first="offset" 
             @page="onPageChange" 
         />
+
+        <!-- Scroll to Top -->
+        <ScrollTop target=".product-list" :threshold="100" style="--scrolltop-size: 3rem; --scrolltop-border-radius: 50%;" />
     </div>
 </template>
 
