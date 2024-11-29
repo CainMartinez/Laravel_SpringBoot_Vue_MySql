@@ -22,18 +22,32 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useStore } from 'vuex';
+import useScroll from '../composables/useScroll';
 import Carousel from '../components/Carousel.vue';
 import RoomCard from '../components/RoomCard.vue';
-import { useRooms } from '../composables/useRooms';
-import { useScroll } from '../composables/useScroll';
 
-const { allRooms, visibleRooms, loadMoreRooms } = useRooms();
-const { loading, onScroll } = useScroll(loadMoreRooms);
+const store = useStore();
+const allRooms = computed(() => store.getters['storeRooms/getRooms']);
+const { visibleItems, loadMoreItems, loading } = useScroll({ totalItems: allRooms, pageSize: 1 });
+
+const visibleRooms = ref([]);
+visibleRooms.value = visibleItems.value;
+
+const onScroll = () => {
+    const container = document.documentElement || document.body;
+    const scrollTop = container.scrollTop;
+    const scrollHeight = container.scrollHeight;
+    const clientHeight = container.clientHeight;
+
+    if (scrollTop + clientHeight >= scrollHeight - 100 && !loading.value) {
+        loadMoreItems();
+    }
+};
 
 onMounted(() => {
-    loadMoreRooms();
+    loadMoreItems();
 });
 </script>
 

@@ -1,27 +1,23 @@
-import { onMounted, ref } from 'vue';
+import { ref } from 'vue';
 
-export const useScroll = (loadMoreItems) => {
+export default function useScroll({ totalItems, pageSize }) {
+    const currentPage = ref(0);
     const loading = ref(false);
+    const visibleItems = ref([]);
+    
+    const loadMoreItems = () => {
+        if (loading.value) return;
+        loading.value = true;
 
-    const onScroll = () => {
-        const container = document.documentElement || document.body;
-        const scrollTop = container.scrollTop;
-        const scrollHeight = container.scrollHeight;
-        const clientHeight = container.clientHeight;
+        setTimeout(() => {
+            const start = currentPage.value * pageSize;
+            const end = start + pageSize;
+            visibleItems.value.push(...totalItems.value.slice(start, end));
+            currentPage.value++;
 
-        if (scrollTop + clientHeight >= scrollHeight - 100 && !loading.value) {
-            loading.value = true;
-            loadMoreItems();
             loading.value = false;
-        }
+        }, 500);
     };
 
-    onMounted(() => {
-        window.addEventListener('scroll', onScroll);
-    });
-
-    return {
-        loading,
-        onScroll
-    };
-};
+    return { visibleItems, loadMoreItems, loading };
+}
