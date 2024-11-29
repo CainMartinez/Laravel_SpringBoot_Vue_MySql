@@ -78,6 +78,22 @@ services:
       bash -c "/app/wait-for-it.sh mysql_container 3306 root root QoRders --
             java -jar app.jar"
 
+  resend:
+    build:
+      context: ./resend-express
+    container_name: resend_container
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./backend-resend:/app
+      - /app/node_modules
+    depends_on:
+      - mysql
+    environment:
+      RESEND_API_KEY: ${RESEND_API_KEY}
+    command: >
+      sh -c "npm install && node app/server.js"
+
   mysql:
     image: mysql:8.0
     container_name: mysql_container
