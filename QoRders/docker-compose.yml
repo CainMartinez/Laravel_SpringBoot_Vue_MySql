@@ -93,7 +93,22 @@ services:
       RESEND_API_KEY: ${RESEND_API_KEY}
     command: >
       sh -c "npm install && node app/server.js"
-
+    
+  ultramsg:
+    build:
+      context: ./ultramsg-fastify
+    container_name: ultramsg_container
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./ultramsg-fastify:/usr/src/app
+      - /usr/src/app/node_modules
+    environment:
+      ULTRAMSG_INSTANCE_ID: ${ULTRAMSG_INSTANCE_ID}
+      ULTRAMSG_TOKEN: ${ULTRAMSG_TOKEN}
+    command: >
+      sh -c "npm install && npm run dev"
+      
   mysql:
     image: mysql:8.0
     container_name: mysql_container
