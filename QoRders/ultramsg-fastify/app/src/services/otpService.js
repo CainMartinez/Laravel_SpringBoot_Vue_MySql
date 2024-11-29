@@ -6,7 +6,7 @@ const sendOtp = async (phone, otp) => {
     try {
         const payload = {
             to: phone,
-            body: `🌟 *Restaurante QoRders* 🌟\n\nGracias por confiar en nosotros. 🙌\n\nSu reserva ha sido confirmada para el día: ${otp}.\n\nPara cumplir con todas las reservas le pedimos puntualidad.\n\n📍 Dirección: Calle de la Buena Comida, 123, Madrid, España\n📞 Teléfono: +34 912 345 678\n📧 Email: contacto@qorders.com\n\n¡Esperamos verte pronto! 🍽️`,
+            body: `🌟 *Restaurante QoRders* 🌟\n\nGracias por confiar en nosotros. 🙌\n\nSu reserva ha sido confirmada para el día:${otp}.\n\nPara cumplir con todas las reservas le pedimos puntualidad.\n\n📍 Dirección: Calle de la Buena Comida, 123, Madrid, España\n📞 Teléfono: +34 912 345 678\n📧 Email: contacto@qorders.com\n\n¡Esperamos verte pronto! 🍽️`,
         };
 
         console.log('otpService: Sending request with payload:', payload);
