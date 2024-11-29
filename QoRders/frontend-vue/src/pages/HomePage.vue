@@ -1,6 +1,6 @@
 <template>
     <div class="home" @scroll.passive="onScroll" ref="homeContainer">
-        <Carousel />
+        <Carousel :rooms="allRooms" />
 
         <!-- Separador y Flecha -->
         <div class="separator">
@@ -11,7 +11,7 @@
 
         <!-- Cards de las salas -->
         <div class="rooms-cards">
-            <RoomCard v-for="room in visibleRooms" :key="room.uuid" :room="room" size="large"/>
+            <RoomCard v-for="room in visibleRooms" :key="room.uuid" :room="room" size="large" />
         </div>
 
         <!-- Cargando -->
@@ -22,49 +22,16 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useStore } from 'vuex';
 import Carousel from '../components/Carousel.vue';
 import RoomCard from '../components/RoomCard.vue';
+import { useRooms } from '../composables/useRooms';
+import { useScroll } from '../composables/useScroll';
 
-const store = useStore();
-const allRooms = computed(() => store.getters['storeRooms/getRooms']);
+const { allRooms, visibleRooms, loadMoreRooms } = useRooms();
+const { loading, onScroll } = useScroll(loadMoreRooms);
 
-const visibleRooms = ref([]);
-const currentPage = ref(0);
-const pageSize = 1;
-const loading = ref(false);
-
-const loadMoreRooms = () => {
-    if (loading.value) return;
-    loading.value = true;
-
-    // Simular una carga de datos con un timeout
-    setTimeout(() => {
-        const start = currentPage.value * pageSize;
-        const end = start + pageSize;
-
-        // Añadir más elementos a la lista visible
-        visibleRooms.value.push(...allRooms.value.slice(start, end));
-
-        currentPage.value++;
-        loading.value = false;
-    }, 500);
-};
-
-const onScroll = () => {
-    const container = document.documentElement || document.body;
-    const scrollTop = container.scrollTop;
-    const scrollHeight = container.scrollHeight;
-    const clientHeight = container.clientHeight;
-
-    // Verificar si el usuario está cerca del final del scroll
-    if (scrollTop + clientHeight >= scrollHeight - 100 && !loading.value) {
-        loadMoreRooms();
-    }
-};
-
-// Inicializar la carga de datos
 onMounted(() => {
     loadMoreRooms();
 });
@@ -77,8 +44,8 @@ onMounted(() => {
     align-items: center;
     background-color: #f3f3f3;
     color: #333;
-    height: 100vh; /* Necesario para habilitar el scroll */
-    overflow-y: auto; /* Habilitar scroll interno */
+    height: 100vh;
+    overflow-y: auto;
 }
 
 .separator {

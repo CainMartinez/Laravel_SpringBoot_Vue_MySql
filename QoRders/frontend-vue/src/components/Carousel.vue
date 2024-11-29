@@ -15,11 +15,15 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
-import { useStore } from 'vuex';
+const props = defineProps({
+    rooms: {
+        type: Array,
+        required: true
+    }
+});
 
-const store = useStore();
-const rooms = computed(() => store.getters['storeRooms/getRooms']);
+console.log(props.rooms);
+
 </script>
 
 <style scoped>
