@@ -9,12 +9,12 @@
 
 <script setup>
 import { computed } from 'vue';
-import { useStore } from 'vuex';
+import { useRooms } from '../composables/useRooms';
 import RoomCard from '../components/RoomCard.vue';
 
-const store = useStore();
-const rooms = computed(() => store.getters['storeRooms/getRooms']);
-console.log("Salas", rooms);
+const { allRooms } = useRooms();
+
+const rooms = computed(() => allRooms.value);
 </script>
 
 <style scoped>

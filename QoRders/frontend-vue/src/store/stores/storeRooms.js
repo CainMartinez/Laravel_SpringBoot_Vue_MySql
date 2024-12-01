@@ -18,7 +18,6 @@ const actions = {
     async fetchRooms({ commit }) {
         try {
             const roomsData = await RoomsService.getRooms();
-            console.log("Salas obtenidas:", roomsData);
             commit('setRooms', roomsData);
         } catch (error) {
             console.error("Error al cargar las salas:", error);
@@ -27,7 +26,6 @@ const actions = {
     async fetchRoomBySlug({ commit }, slug) {
         try {
             const roomData = await RoomsService.getRoomBySlug(slug);
-            console.log("Sala obtenida:", roomData);
             commit('setRoomBySlug', roomData);
         } catch (error) {
             console.error("Error al cargar la sala:", error);

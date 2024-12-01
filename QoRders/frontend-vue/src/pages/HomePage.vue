@@ -22,14 +22,13 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
-import { useStore } from 'vuex';
+import { ref, onMounted } from 'vue';
+import { useRooms } from '../composables/useRooms';
 import useScroll from '../composables/useScroll';
 import Carousel from '../components/Carousel.vue';
 import RoomCard from '../components/RoomCard.vue';
 
-const store = useStore();
-const allRooms = computed(() => store.getters['storeRooms/getRooms']);
+const { allRooms } = useRooms();
 const { visibleItems, loadMoreItems, loading } = useScroll({ totalItems: allRooms, pageSize: 1 });
 
 const visibleRooms = ref([]);
