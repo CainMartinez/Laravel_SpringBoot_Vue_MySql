@@ -2,7 +2,8 @@
     <div class="filters">
         <div class="filters-orderby">
             <label for="orderBy">Ordenar</label>
-            <select id="orderBy" @change="updateOrderBy($event)">
+            <select id="orderBy" v-model="localOrderBy" @change="updateOrderBy($event)">
+                <option value="none">Por defecto</option>
                 <option value="asc">Por más barato</option>
                 <option value="desc">Por más caro</option>
             </select>
@@ -25,12 +26,20 @@
 </template>
 
 <script setup>
+import { ref, watch } from 'vue';
+
 const props = defineProps({
     selectedType: String,
     orderBy: String,
 });
 
-const emit = defineEmits(['update:selectedType', 'update:orderBy']);
+const emit = defineEmits(['update:selectedType', 'update:orderBy', 'resetFilters']);
+
+const localOrderBy = ref(props.orderBy);
+
+watch(() => props.orderBy, (newOrderBy) => {
+    localOrderBy.value = newOrderBy || 'none';
+});
 
 const updateOrderBy = (event) => {
     emit('update:orderBy', event.target.value);
@@ -119,6 +128,6 @@ const resetFilters = () => {
 }
 
 .reset-button:hover {
-    background-color: #ff6666; 
+    background-color: #ff6666;
 }
 </style>

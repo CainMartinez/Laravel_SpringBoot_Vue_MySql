@@ -3,7 +3,7 @@ import { ref, computed } from 'vue';
 export default function useFilters(products, updateStore) {
      // Estado de los filtros
      const selectedType = ref(null);
-     const orderBy = ref('asc');
+     const orderBy = ref('none');
 
      // Filtrar productos
      const filteredProducts = computed(() => {
@@ -14,8 +14,10 @@ export default function useFilters(products, updateStore) {
           // Ordenar productos
           if (orderBy.value === 'asc') {
                filtered = filtered.sort((a, b) => a.unitPrice - b.unitPrice);
-          } else {
+          } else if (orderBy.value === 'desc') {
                filtered = filtered.sort((a, b) => b.unitPrice - a.unitPrice);
+          } else if (orderBy.value === null || orderBy.value === 'none') {
+               filtered = filtered;
           }
 
           // Filtrar por tipo de producto
@@ -40,7 +42,7 @@ export default function useFilters(products, updateStore) {
      // Función para resetear los filtros
      const resetFilters = (room_slug) => {
           selectedType.value = null;
-          orderBy.value = 'asc';
+          orderBy.value = null;
           updateStore(room_slug);
      };
 

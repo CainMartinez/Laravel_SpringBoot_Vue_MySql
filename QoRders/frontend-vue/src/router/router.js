@@ -22,11 +22,6 @@ const routes = [
         path: '/rooms',
         name: 'rooms',
         component: () => import('../pages/RoomsPage.vue'),
-        beforeEnter: (to, from, next) => {
-            const store = useStore();
-            store.dispatch('storeRooms/fetchRooms');
-            next();
-        }
     },
     {
         path: '/room/:slug',
@@ -43,7 +38,6 @@ const routes = [
                 next(false);
             }
         },
-
     },
     {
         path: '/reservation',

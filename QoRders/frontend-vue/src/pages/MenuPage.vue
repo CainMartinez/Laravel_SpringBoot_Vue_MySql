@@ -3,46 +3,35 @@
         <h1>Bienvenido a {{ room.theme }}</h1>
 
         <!-- Filtros -->
-        <Filters 
-            :selectedType="selectedType" 
-            :orderBy="orderBy" 
-            @update:selectedType="setProductType" 
-            @update:orderBy="setOrderBy" 
-            @resetFilters="resetFilters(room_slug.value)" 
-        />
+        <Filters :selectedType="selectedType" :orderBy="orderBy" @update:selectedType="setProductType"
+            @update:orderBy="setOrderBy" @resetFilters="resetFilters(room_slug.value)" />
 
         <!-- Productos -->
         <div class="product-list">
-            <ProductCard 
-                v-for="product in filteredProducts" 
-                :key="product.id" 
-                :product="product" 
-                @adjustQuantity="adjustQuantity" 
-            />
+            <ProductCard v-for="product in filteredProducts" :key="product.id" :product="product"
+                @adjustQuantity="adjustQuantity" />
         </div>
 
         <!-- Paginador -->
-        <Paginator 
-            v-if="totalProducts > pageSize"
-            :rows="pageSize" 
-            :totalRecords="totalProducts" 
-            :first="offset" 
-            @page="onPageChange" 
-        />
+        <Paginator v-if="totalProducts > pageSize" :rows="pageSize" :totalRecords="totalProducts" :first="offset"
+            @page="onPageChange" />
 
         <!-- Scroll to Top -->
-        <ScrollTop target=".product-list" :threshold="100" style="--scrolltop-size: 3rem; --scrolltop-border-radius: 50%;" />
+        <ScrollTop target=".product-list" :threshold="100"
+            style="--scrolltop-size: 3rem; --scrolltop-border-radius: 50%;" />
     </div>
 </template>
 
 <script setup>
-import { computed, ref, watch } from 'vue';
+import { computed, watch, ref } from 'vue';
 import { useStore } from 'vuex';
 import { useRoute } from 'vue-router';
 import Filters from '../components/Filters.vue';
 import ProductCard from '../components/ProductCard.vue';
 import Paginator from 'primevue/paginator';
 import ScrollTop from 'primevue/scrolltop';
+import useFilters from '../composables/useFilters';
+import usePagination from '../composables/usePagination';
 
 const route = useRoute();
 const room_slug = computed(() => route.params.slug);
@@ -52,20 +41,7 @@ const products = computed(() => store.getters['storeProducts/getProductsByRoom']
 const totalProducts = computed(() => store.getters['storeProducts/getTotalProducts']);
 const room = computed(() => store.getters['storeRooms/getRoomBySlug']);
 
-// Filtros
-const selectedType = ref(null);
-const orderBy = ref(null);
-
-// Paginación
-const currentPage = ref(0);
-const pageSize = ref(10);
-const offset = computed(() => currentPage.value * pageSize.value);
-
-const onPageChange = (event) => {
-    currentPage.value = event.page;
-};
-
-// Ver cambios en filtros o paginación
+// Actualización de datos en Vuex
 const updateStore = () => {
     if (!room_slug.value) {
         console.error("room_slug no está definido.");
@@ -78,37 +54,26 @@ const updateStore = () => {
         order: orderBy.value,
         productType: selectedType.value,
     };
+    console.log(filters);
 
     store.dispatch('storeProducts/fetchProductsByRoom', { room_slug: room_slug.value, filters });
 };
 
-const setProductType = (type) => {
-    selectedType.value = type;
-    currentPage.value = 0;
-    updateStore();
-};
+// Filtros
+const { selectedType, orderBy, filteredProducts, setProductType, setOrderBy, resetFilters } = useFilters(products, updateStore);
 
-const setOrderBy = (order) => {
-    orderBy.value = order;
-    updateStore();
-};
+// Paginación
+const { currentPage, pageSize, offset, onPageChange } = usePagination();
 
-const resetFilters = (slug) => {
-    selectedType.value = null;
-    orderBy.value = null;
-    currentPage.value = 0;
-    store.dispatch('storeProducts/fetchProductsByRoom', { room_slug: slug, filters: {} });
-};
-
-watch([selectedType, orderBy, currentPage], updateStore);
-
-const filteredProducts = computed(() => products.value || []);
-
+// Función para ajustar la cantidad del producto
 const adjustQuantity = (product, delta) => {
     if (product.quantity + delta >= 0) {
         product.quantity += delta;
     }
 };
+
+// Watchers para los filtros y la paginación
+watch([selectedType, orderBy, currentPage], updateStore);
 </script>
 
 <style scoped>
