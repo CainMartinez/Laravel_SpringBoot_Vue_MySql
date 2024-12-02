@@ -14,7 +14,7 @@ return [
     */
 
     'defaults' => [
-        'guard' => env('AUTH_GUARD', 'web'),
+        'guard' => env('AUTH_GUARD_WAITER', 'waiter'), // Cambiado el guard por defecto a 'waiter'
         'passwords' => env('AUTH_PASSWORD_BROKER', 'users'),
     ],
 
@@ -31,7 +31,7 @@ return [
     | users are actually retrieved out of your database or other storage
     | system used by the application. Typically, Eloquent is utilized.
     |
-    | Supported: "session"
+    | Supported: "session", "token"
     |
     */
 
@@ -39,6 +39,18 @@ return [
         'web' => [
             'driver' => 'session',
             'provider' => 'users',
+        ],
+
+        // Guard para Waiters (autenticación vía JWT)
+        'waiters' => [
+            'driver' => 'jwt',
+            'provider' => 'waiters', // Proveedor que busca en la tabla Waiter
+        ],
+
+        // Guard para Managers (autenticación vía JWT)
+        'managers' => [
+            'driver' => 'jwt',
+            'provider' => 'managers', // Proveedor que busca en la tabla Manager
         ],
     ],
 
@@ -60,10 +72,23 @@ return [
     */
 
     'providers' => [
-        'users' => [
+        // Proveedor para los Waiters
+        'waiters' => [
             'driver' => 'eloquent',
-            'model' => env('AUTH_MODEL', App\Models\User::class),
+            'model' => App\Models\Waiter::class, // Modelo para Waiters
         ],
+
+        // Proveedor para los Managers
+        'managers' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Manager::class, // Modelo para Managers
+        ],
+
+        // Proveedor para usuarios genéricos (si es necesario)
+        // 'users' => [
+        //     'driver' => 'eloquent',
+        //     'model' => env('AUTH_MODEL', App\Models\User::class),
+        // ],
 
         // 'users' => [
         //     'driver' => 'database',
@@ -91,9 +116,21 @@ return [
     */
 
     'passwords' => [
+        'waiters' => [
+            'provider' => 'waiters',
+            'table' => 'password_reset_tokens',
+            'expire' => 60,
+            'throttle' => 60,
+        ],
+        'managers' => [
+            'provider' => 'managers',
+            'table' => 'password_reset_tokens',
+            'expire' => 60,
+            'throttle' => 60,
+        ],
         'users' => [
             'provider' => 'users',
-            'table' => env('AUTH_PASSWORD_RESET_TOKEN_TABLE', 'password_reset_tokens'),
+            'table' => 'password_reset_tokens',
             'expire' => 60,
             'throttle' => 60,
         ],
