@@ -56,6 +56,12 @@ CREATE TABLE `Booking` (
 --
 -- Estructura de tabla para la tabla `Booking_Waiter`
 --
+CREATE TABLE Blacklist (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    token VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    expiration_date DATE NOT NULL
+);
 
 CREATE TABLE `Booking_Waiter` (
     `booking_waiter_id` int NOT NULL,
@@ -90,7 +96,7 @@ CREATE TABLE `Customer` (
     `has_coupon` tinyint(1) DEFAULT '0',
     `loyalty_points` int DEFAULT '0',
     `is_active` tinyint(1) DEFAULT '1',
-    `refresh_token` varchar(100) DEFAULT NULL,
+    `refresh_token` varchar(255) DEFAULT NULL,
     `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
     `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
