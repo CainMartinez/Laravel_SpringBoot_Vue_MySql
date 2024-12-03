@@ -4,14 +4,14 @@ import viteLogo from '/vite.svg'
 import './App.css'
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import DonationsPage from './pages/DonationsPage/DonationsPage';
+import NgoPage from './pages/NgoPage/NgoPage';
 
 function App() {
 
     return (
         <Router>
             <Routes>
-                <Route path="/" element={<DonationsPage />} />
+                <Route path="/" element={<NgoPage />} />
             </Routes>
         </Router>
     );

@@ -1,0 +1,53 @@
+.ngo-card {
+    width: 100%;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Sombra */
+    border: none;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.ngo-card-content {
+    display: flex;
+    flex-direction: row;
+    gap: 1.5rem;
+    align-items: center;
+    padding: 1.5rem;
+}
+
+.ngo-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    text-align: left;
+}
+
+.ngo-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 1rem;
+}
+
+.ngo-header h2 {
+    font-size: 1.8rem;
+    color: #007ad9;
+    margin: 0;
+}
+
+.ngo-logo {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+    border-radius: 50%;
+    border: 1px solid #ddd;
+}
+
+.ngo-description {
+    font-size: 1.2rem;
+    color: #555;
+    line-height: 1.6;
+    margin-top: 1rem;
+}
