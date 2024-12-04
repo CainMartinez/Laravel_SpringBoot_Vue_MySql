@@ -1,6 +1,7 @@
 import React from 'react';
-import NgoCarousel from '../NgoCarousel/NgoCarousel';
+import { Link } from 'react-router-dom';
 import { Card } from 'primereact/card';
+import NgoCarousel from '../NgoCarousel/NgoCarousel';
 import useNgoImages from '../../hooks/useNgoImages';
 import './NgoCard.css';
 
@@ -15,6 +16,11 @@ const NgoCard = ({ ngo }) => {
                         <img src={ngo.logoUrl} alt={`${ngo.name} Logo`} className="ngo-logo" />
                     </div>
                     <p className="ngo-description">{ngo.description}</p>
+                    <div className="ngo-actions">
+                        <Link to={`/ngos/${ngo.slug}`} className="ngo-view-more">
+                            Ver más
+                        </Link>
+                    </div>
                 </div>
             </div>
         </Card>
