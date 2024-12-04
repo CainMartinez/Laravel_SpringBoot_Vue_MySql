@@ -513,8 +513,8 @@ CREATE TABLE `Feedback` (
 CREATE TABLE `Manager` (
     `manager_id` int NOT NULL,
     `manager_uuid` char(36) NOT NULL,
-    `first_name` varchar(100) NOT NULL,
-    `last_name` varchar(100) NOT NULL,
+    `firstName` varchar(100) NOT NULL,
+    `lastName` varchar(100) NOT NULL,
     `email` varchar(150) NOT NULL,
     `password` varchar(255) NOT NULL,
     `phone_number` varchar(15) DEFAULT NULL,
@@ -535,8 +535,8 @@ INSERT INTO
     `Manager` (
         `manager_id`,
         `manager_uuid`,
-        `first_name`,
-        `last_name`,
+        `firstName`,
+        `lastName`,
         `email`,
         `password`,
         `phone_number`,
@@ -8656,8 +8656,8 @@ CREATE TABLE `Tickets` (
 CREATE TABLE `Waiter` (
     `waiter_id` int NOT NULL,
     `waiter_uuid` char(36) NOT NULL,
-    `first_name` varchar(100) NOT NULL,
-    `last_name` varchar(100) NOT NULL,
+    `firstName` varchar(100) NOT NULL,
+    `lastName` varchar(100) NOT NULL,
     `email` varchar(150) NOT NULL,
     `password` varchar(255) NOT NULL,
     `phone_number` varchar(15) DEFAULT NULL,
@@ -8679,8 +8679,8 @@ INSERT INTO
     `Waiter` (
         `waiter_id`,
         `waiter_uuid`,
-        `first_name`,
-        `last_name`,
+        `firstName`,
+        `lastName`,
         `email`,
         `password`,
         `phone_number`,
