@@ -632,7 +632,7 @@ VALUES (
         'bfe0dd93-a383-11ef-a437-0242ac140002',
         'Sakura Foundation',
         'Sakura_Foundation_123456',
-        'Dedicada a preservar el patrimonio cultural japonés y apoyar a las comunidades desfavorecidas.',
+        'La Sakura Foundation está dedicada a preservar el patrimonio cultural japonés y apoyar a las comunidades desfavorecidas. Fundada en 1995, ha trabajado incansablemente para promover la educación y la cultura japonesa en todo el mundo.; La fundación organiza eventos culturales, talleres educativos y programas de intercambio para jóvenes. Además, proporciona becas a estudiantes de bajos recursos para que puedan continuar sus estudios. Su misión es crear un puente entre Japón y el resto del mundo, fomentando el entendimiento y la cooperación internacional.',
         'Japón',
         'contact@sakurafoundation.jp',
         '+81345678901',
@@ -649,7 +649,7 @@ VALUES (
         'bfe0e287-a383-11ef-a437-0242ac140002',
         'Helping Hands India',
         'Helping_Hands_India_375839',
-        'Se centra en la educación y la atención médica para niños desfavorecidos en India.',
+        'Helping Hands India se centra en la educación y la atención médica para niños desfavorecidos en India. Desde su creación en 2001, ha impactado positivamente en la vida de miles de niños.; La organización ofrece programas de tutoría, clínicas móviles y campañas de concienciación sobre la salud. También colabora con escuelas locales para mejorar la infraestructura educativa y proporcionar materiales de estudio. Su objetivo es romper el ciclo de pobreza a través de la educación y la salud.',
         'India',
         'info@helpinghands.in',
         '+911234567890',
@@ -666,7 +666,7 @@ VALUES (
         'bfe0e439-a383-11ef-a437-0242ac140002',
         'Solidaridad Española',
         'Solidaridad_Española_740284',
-        'Promueve la inclusión social y proporciona ayuda a comunidades marginadas en España.',
+        'Solidaridad Española promueve la inclusión social y proporciona ayuda a comunidades marginadas en España. Desde su fundación en 1987, ha trabajado en proyectos de integración y apoyo social.; La organización ofrece servicios de asesoramiento legal, apoyo psicológico y programas de formación laboral. También organiza actividades recreativas y culturales para fomentar la cohesión social. Su misión es construir una sociedad más justa e inclusiva.',
         'España',
         'solidaridad@espanola.es',
         '+34912345678',
@@ -683,7 +683,7 @@ VALUES (
         'bfe0e52b-a383-11ef-a437-0242ac140002',
         'Amici della Vita',
         'Amici_della_Vita_982023',
-        'Apoya a familias y niños necesitados, enfocándose en la educación y la atención médica en Italia.',
+        'Amici della Vita apoya a familias y niños necesitados, enfocándose en la educación y la atención médica en Italia. Desde 1990, ha proporcionado recursos esenciales a comunidades vulnerables.; La organización gestiona centros comunitarios, clínicas de salud y programas de apoyo escolar. También trabaja en la sensibilización sobre la importancia de la educación y la salud. Su visión es garantizar que todos los niños tengan acceso a una vida digna y saludable.',
         'Italia',
         'info@amicivita.it',
         '+390123456789',
@@ -700,7 +700,7 @@ VALUES (
         'bfe0e635-a383-11ef-a437-0242ac140002',
         'Manos Unidas México',
         'Manos_Unidas_México_954623',
-        'Proporciona apoyo para programas de desarrollo rural y educación en México.',
+        'Manos Unidas México proporciona apoyo para programas de desarrollo rural y educación en México. Desde su creación en 1998, ha trabajado para mejorar la calidad de vida en comunidades rurales.; La organización implementa proyectos de agricultura sostenible, acceso a agua potable y educación básica. También colabora con gobiernos locales y otras ONGs para maximizar el impacto de sus programas. Su misión es empoderar a las comunidades rurales para que puedan alcanzar un desarrollo sostenible.',
         'México',
         'contacto@manosunidas.mx',
         '+525512345678',
@@ -717,7 +717,7 @@ VALUES (
         'bfe0e6dd-a383-11ef-a437-0242ac140002',
         'Hope for Türkiye',
         'Hope_for_Türkiye_468134',
-        'Ofrece ayuda en casos de desastre y apoya proyectos de reconstrucción comunitaria en Turquía.',
+        'Hope for Türkiye ofrece ayuda en casos de desastre y apoya proyectos de reconstrucción comunitaria en Turquía. Desde su fundación en 2005, ha sido un pilar en la respuesta a emergencias.; La organización proporciona refugio, alimentos y atención médica a las víctimas de desastres naturales. También trabaja en proyectos de reconstrucción y desarrollo comunitario a largo plazo. Su objetivo es ayudar a las comunidades a recuperarse y reconstruir sus vidas después de una crisis.',
         'Turquía',
         'support@hopeforturkiye.tr',
         '+905312345678',
@@ -729,7 +729,6 @@ VALUES (
         '2024-11-15 18:59:32',
         '2024-11-15 18:59:32'
     );
-
 -- --------------------------------------------------------
 
 --
