@@ -51,7 +51,7 @@ public AuthResponse register(RegisterRequest registerRequest) {
     // Establecer valores predeterminados para otros campos
     client.setBio(null);
     client.setPhoneNumber(null);
-    client.setAvatarUrl(null);
+    client.setAvatarUrl("https://i.pravatar.cc/150?u=" + registerRequest.getFirstName());
     client.setAge(null);
     client.setAddress(null);
     client.setIsActive(true);

@@ -5,10 +5,10 @@ import com.QoRders.client.auth.domain.repository.BlacklistTokenRepository;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
-
-import org.springframework.security.core.Authentication;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
@@ -18,14 +18,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class JwtProvider {
 
-    private static final Logger logger = LoggerFactory.getLogger(JwtProvider.class);
+    private static final String ROLE_KEY = "role"; // Constante para la clave del rol
+    private static final String TOKEN_PREFIX = "Bearer ";
 
     private final BlacklistTokenRepository blacklistTokenRepository;
 
@@ -42,17 +41,26 @@ public class JwtProvider {
         return Keys.hmacShaKeyFor(jwtSecret.getBytes());
     }
 
+    /**
+     * Genera un Access Token para un usuario con un email específico.
+     */
     public String generateAccessToken(String email) {
         return generateToken(email, accessTokenExpiration);
     }
 
+    /**
+     * Genera un Refresh Token para un usuario con un email específico.
+     */
     public String generateRefreshToken(String email) {
         return generateToken(email, refreshTokenExpiration);
     }
 
+    /**
+     * Método genérico para generar un token JWT.
+     */
     private String generateToken(String email, long expirationTime) {
         Map<String, Object> claims = new HashMap<>();
-        claims.put("role", "client");
+        claims.put(ROLE_KEY, "client");
 
         return Jwts.builder()
                 .setClaims(claims)
@@ -63,10 +71,13 @@ public class JwtProvider {
                 .compact();
     }
 
+    /**
+     * Extrae y valida el token de acceso, retornando el email.
+     */
     public String parseAccessToken(String token) {
         try {
-            if (token.startsWith("Bearer ")) {
-                token = token.substring(7);
+            if (token.startsWith(TOKEN_PREFIX)) {
+                token = token.substring(TOKEN_PREFIX.length());
             }
             Claims claims = Jwts.parserBuilder()
                     .setSigningKey(getKey())
@@ -74,47 +85,55 @@ public class JwtProvider {
                     .parseClaimsJws(token)
                     .getBody();
 
-            logger.info("Claims decodificados: {}" + claims);
-            return claims.getSubject(); // Asegúrate de que 'subject' contiene el email
+            log.info("Token claims decoded: {}", claims);
+            return claims.getSubject();
         } catch (ExpiredJwtException e) {
-            logger.warn("El token ha expirado: {}" + e.getMessage(), e);
-            throw new IllegalArgumentException("Token ha expirado");
+            log.warn("Token has expired: {}", e.getMessage());
+            throw new IllegalArgumentException("Token has expired", e);
         } catch (JwtException e) {
-            logger.error("Error al parsear el token: {}" + e.getMessage(), e);
-            throw new IllegalArgumentException("Token inválido");
+            log.error("Error parsing token: {}", e.getMessage());
+            throw new IllegalArgumentException("Invalid token", e);
         }
     }
 
+    /**
+     * Invalida un Refresh Token añadiéndolo a la lista negra.
+     */
     public BlacklistTokenEntity invalidateRefreshToken(String token) {
         try {
-            // System.out.println("Token recibido en invalidateRefreshToken: " + token);
-    
-            var claims = Jwts.parserBuilder()
+            Claims claims = Jwts.parserBuilder()
                     .setSigningKey(getKey())
                     .build()
                     .parseClaimsJws(token)
                     .getBody();
-    
-            // System.out.println("Claims parseados: " + claims);
-    
-            var tokenEntity = new BlacklistTokenEntity();
+
+            BlacklistTokenEntity tokenEntity = new BlacklistTokenEntity();
             tokenEntity.setToken(token);
             tokenEntity.setEmail(claims.getSubject());
             tokenEntity.setExpirationDate(claims.getExpiration());
-            return tokenEntity;
+
+            return blacklistTokenRepository.save(tokenEntity);
         } catch (ExpiredJwtException e) {
-            // System.err.println("El token ha expirado: " + e.getMessage());
-            throw new IllegalArgumentException("Token ha expirado");
+            log.warn("Token already expired: {}", e.getMessage());
+            throw new IllegalArgumentException("Token already expired", e);
         } catch (JwtException e) {
-            // System.err.println("Error al parsear el token en invalidateRefreshToken: " + e.getMessage());
-            throw new IllegalArgumentException("Invalid token");
+            log.error("Error parsing token for invalidation: {}", e.getMessage());
+            throw new IllegalArgumentException("Invalid token", e);
         }
     }
 
+    /**
+     * Verifica si un token está en la lista negra.
+     */
     public boolean isTokenBlacklisted(String token) {
-        return blacklistTokenRepository.existsByToken(token);
+        boolean isBlacklisted = blacklistTokenRepository.existsByToken(token);
+        log.debug("Token {} blacklisted: {}", token, isBlacklisted);
+        return isBlacklisted;
     }
 
+    /**
+     * Obtiene los claims de un token.
+     */
     public Claims getClaims(String token) {
         try {
             return Jwts.parserBuilder()
@@ -123,10 +142,14 @@ public class JwtProvider {
                     .parseClaimsJws(token)
                     .getBody();
         } catch (JwtException e) {
-            throw new IllegalArgumentException("Invalid token");
+            log.error("Error parsing claims: {}", e.getMessage());
+            throw new IllegalArgumentException("Invalid token", e);
         }
     }
-    
+
+    /**
+     * Verifica si un token es válido.
+     */
     public boolean isValid(String token) {
         try {
             Jwts.parserBuilder()
@@ -135,12 +158,16 @@ public class JwtProvider {
                     .parseClaimsJws(token);
             return true;
         } catch (JwtException e) {
+            log.warn("Invalid token: {}", e.getMessage());
             return false;
         }
     }
 
+    /**
+     * Retorna la autenticación basada en el email y rol extraídos del token.
+     */
     public Authentication getAuthentication(String email, String role) {
-        var authorities = List.of(new SimpleGrantedAuthority(role)); // Crear autoridad con el rol
-        return new UsernamePasswordAuthenticationToken(email, null, authorities); // Retornar Authentication
+        var authorities = List.of(new SimpleGrantedAuthority(role));
+        return new UsernamePasswordAuthenticationToken(email, null, authorities);
     }
 }

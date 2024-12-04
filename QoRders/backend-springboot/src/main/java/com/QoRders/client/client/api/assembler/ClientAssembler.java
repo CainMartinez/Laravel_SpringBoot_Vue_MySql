@@ -23,6 +23,8 @@ public class ClientAssembler {
                 .phoneNumber(customer.getPhoneNumber())
                 .bio(customer.getBio())
                 .avatarUrl(customer.getAvatarUrl())
+                .age(customer.getAge())
+                .address(customer.getAddress())
                 .hasCoupon(customer.getHasCoupon())
                 .loyaltyPoints(customer.getLoyaltyPoints())
                 .isActive(customer.getIsActive())
@@ -46,6 +48,12 @@ public class ClientAssembler {
         }
         if (clientUpdateDto.getPhoneNumber() != null) {
             customer.setPhoneNumber(clientUpdateDto.getPhoneNumber());
+        }
+        if (clientUpdateDto.getAge() != null) {
+            customer.setAge(clientUpdateDto.getAge());
+        }
+        if (clientUpdateDto.getAddress() != null) {
+            customer.setAddress(clientUpdateDto.getAddress());
         }
     }
 }

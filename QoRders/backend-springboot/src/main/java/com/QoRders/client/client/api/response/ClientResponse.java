@@ -17,6 +17,8 @@ public class ClientResponse {
     private String avatarUrl;
     private Boolean hasCoupon;
     private Integer loyaltyPoints;
+    private Integer age;
+    private String address;
     private Boolean isActive;
     private String createdAt;
     private String updatedAt;
