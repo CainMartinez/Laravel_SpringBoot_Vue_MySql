@@ -6,6 +6,8 @@ import useNgoImages from '../../hooks/useNgoImages';
 import './NgoCard.css';
 
 const NgoCard = ({ ngo }) => {
+    const descriptionParts = ngo.description.split(';');
+
     return (
         <Card className="ngo-card">
             <div className="ngo-card-content">
@@ -15,7 +17,7 @@ const NgoCard = ({ ngo }) => {
                         <h2>{ngo.name}</h2>
                         <img src={ngo.logoUrl} alt={`${ngo.name} Logo`} className="ngo-logo" />
                     </div>
-                    <p className="ngo-description">{ngo.description}</p>
+                    <p className="ngo-description">{descriptionParts[0].trim()}</p>
                     <div className="ngo-actions">
                         <Link to={`/ngos/${ngo.slug}`} className="ngo-view-more">
                             Ver más
