@@ -64,6 +64,7 @@ services:
       - "8081:8081"
     volumes:
       - ./wait-for-it.sh:/usr/local/bin/wait-for-it.sh
+      - ./backend-springboot/logs:/app/logs
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql_container:3306/${DB_DATABASE}
       SPRING_DATASOURCE_USERNAME: ${DB_USERNAME}
@@ -71,6 +72,10 @@ services:
       SPRING_JPA_HIBERNATE_DDL_AUTO: none
       SPRING_JPA_SHOW_SQL: true
       SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.MySQLDialect
+      SPRING_JWT_SECRET: ${SPRING_JWT_SECRET}
+      SPRING_JWT_ACCESS_EXPIRATION: ${SPRING_JWT_ACCESS_EXPIRATION}
+      SPRING_JWT_REFRESH_EXPIRATION: ${SPRING_JWT_REFRESH_EXPIRATION}
+      SPRING_MAIN_ALLOW_BEAN_DEFINITION_OVERRIDING: "true"
     depends_on:
       - mysql
       - laravel
