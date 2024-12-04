@@ -11,13 +11,11 @@ const App = () => {
         <Router>
             <Header />
             <Routes>
-                {/* Ruta para la lista de ONG */}
+                <Route path="/" element={<NgosPage />} />
                 <Route path="/ngos" element={<NgosPage />} />
 
-                {/* Ruta para los detalles de una ONG */}
                 <Route path="/ngos/:slug" element={<NgoDetailsPage />} />
 
-                {/* Ruta para el formulario de donaciones */}
                 <Route path="/donaciones" element={<DonationsPage />} />
             </Routes>
             <Footer />

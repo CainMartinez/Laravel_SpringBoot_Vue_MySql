@@ -6,15 +6,15 @@ const Header = () => {
     return (
         <div className="header">
             <div className="logo">
-                <img src="src\assets\logo.png" alt="QoRders" />
+                <img src="src/assets/logo.png" alt="QoRders" />
             </div>
 
             <div className="menu">
-                <Link to="/home">Inicio</Link>
-                <Link to="/rooms">Carta</Link>
-                <Link to="/reservation">Reserva</Link>
+                <Link to="/">Inicio</Link>
+                {/* <Link to="/rooms">Carta</Link>
+                <Link to="/reservation">Reserva</Link> */}
                 <Link to="/ngos">Organizaciones</Link>
-                <Link to="/donaciones">Donaciones</Link>
+                <Link to="/donations">Donaciones</Link>
             </div>
 
             <div className="login-button">
