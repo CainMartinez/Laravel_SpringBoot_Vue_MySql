@@ -28,8 +28,8 @@ class Waiter extends Authenticatable implements JWTSubject
      // Columnas que pueden ser llenadas masivamente
      protected $fillable = [
           'waiter_uuid',
-          'first_name',
-          'last_name',
+          'firstName',
+          'lastName',
           'email',
           'password',
           'phone_number',
@@ -45,7 +45,7 @@ class Waiter extends Authenticatable implements JWTSubject
      // Métodos requeridos por la interfaz JWTSubject
      public function getJWTIdentifier()
      {
-          return $this->getKey(); // Identificador único del usuario (waiter_id)
+     return $this->email; // Identificador único: email
      }
 
      public function getJWTCustomClaims()
@@ -53,19 +53,15 @@ class Waiter extends Authenticatable implements JWTSubject
           return ['role' => 'waiter']; // Reclamo personalizado para indicar el rol
      }
 
-     // Scope para filtrar solo camareros activos ($activeWaiters = Waiter::active()->get();)
-     //(consulta SQL:SELECT * FROM Waiter WHERE is_active = 1;)
+     // Scope para filtrar solo camareros activos
      public function scopeActive($query)
      {
           return $query->where('is_active', 1);
      }
 
-     // Scope para filtrar solo camareros inactivos ($inactiveWaiters = Waiter::inactive()->get();)
-     //(consulta SQL:SELECT * FROM Waiter WHERE is_active = 0;)
+     // Scope para filtrar solo camareros inactivos
      public function scopeInactive($query)
      {
           return $query->where('is_active', 0);
      }
-
-    // Puedes agregar relaciones aquí si es necesario en el futuro
 }

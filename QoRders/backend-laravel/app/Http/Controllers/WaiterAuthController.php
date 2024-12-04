@@ -14,13 +14,13 @@ class WaiterAuthController extends Controller
      public function register(Request $request)
      {
           $validator = Validator::make($request->all(), [
-               'first_name' => 'required|string|max:100',
-               'last_name' => 'required|string|max:100',
+               'firstName' => 'required|string|max:100',
+               'lastName' => 'required|string|max:100',
                'email' => 'required|string|email|max:150|unique:Waiter,email',
                'password' => 'required|string|min:6',
-               'repeat_password' => 'required|same:password',
+               'repeatPassword' => 'required|same:password',
           ], [
-               'repeat_password.same' => 'The repeat_password must match the password.',
+               'repeatPassword.same' => 'The repeatPassword must match the password.',
           ]);
 
           if ($validator->fails()) {
@@ -32,8 +32,8 @@ class WaiterAuthController extends Controller
 
           try {
                $waiter = Waiter::create([
-                    'first_name' => $request->first_name,
-                    'last_name' => $request->last_name,
+                    'firstName' => $request->firstName,
+                    'lastName' => $request->lastName,
                     'email' => $request->email,
                     'password' => Hash::make($request->password),
                     'waiter_uuid' => \Illuminate\Support\Str::uuid(),
@@ -45,8 +45,8 @@ class WaiterAuthController extends Controller
                     'waiter' => [
                          'id' => $waiter->waiter_id,
                          'uuid' => $waiter->waiter_uuid,
-                         'first_name' => $waiter->first_name,
-                         'last_name' => $waiter->last_name,
+                         'firstName' => $waiter->firstName,
+                         'lastName' => $waiter->lastName,
                          'email' => $waiter->email,
                          'hire_date' => $waiter->hire_date,
                     ],
@@ -82,8 +82,8 @@ class WaiterAuthController extends Controller
                     'user' => [
                          'id' => $waiter->waiter_id,
                          'uuid' => $waiter->waiter_uuid,
-                         'first_name' => $waiter->first_name,
-                         'last_name' => $waiter->last_name,
+                         'firstName' => $waiter->firstName,
+                         'lastName' => $waiter->lastName,
                          'email' => $waiter->email,
                          'is_active' => $waiter->is_active,
                          'role' => 'Waiter',

@@ -14,13 +14,13 @@ class ManagerAuthController extends Controller
      public function register(Request $request)
      {
           $validator = Validator::make($request->all(), [
-               'first_name' => 'required|string|max:100',
-               'last_name' => 'required|string|max:100',
+               'firstName' => 'required|string|max:100',
+               'lastName' => 'required|string|max:100',
                'email' => 'required|string|email|max:150|unique:Manager,email',
                'password' => 'required|string|min:6',
-               'repeat_password' => 'required|same:password',
+               'repeatPassword' => 'required|same:password',
           ], [
-               'repeat_password.same' => 'The repeat_password must match the password.',
+               'repeatPassword.same' => 'The repeatPassword must match the password.',
           ]);
 
           if ($validator->fails()) {
@@ -32,8 +32,8 @@ class ManagerAuthController extends Controller
 
           try {
                $manager = Manager::create([
-                    'first_name' => $request->first_name,
-                    'last_name' => $request->last_name,
+                    'firstName' => $request->firstName,
+                    'lastName' => $request->lastName,
                     'email' => $request->email,
                     'password' => Hash::make($request->password),
                     'manager_uuid' => \Illuminate\Support\Str::uuid(),
@@ -44,8 +44,8 @@ class ManagerAuthController extends Controller
                     'manager' => [
                          'id' => $manager->manager_id,
                          'uuid' => $manager->manager_uuid,
-                         'first_name' => $manager->first_name,
-                         'last_name' => $manager->last_name,
+                         'firstName' => $manager->firstName,
+                         'lastName' => $manager->lastName,
                          'email' => $manager->email,
                     ],
                ], 201);
@@ -77,8 +77,8 @@ class ManagerAuthController extends Controller
                     'user' => [
                          'id' => $manager->manager_id,
                          'uuid' => $manager->manager_uuid,
-                         'first_name' => $manager->first_name,
-                         'last_name' => $manager->last_name,
+                         'firstName' => $manager->firstName,
+                         'lastName' => $manager->lastName,
                          'email' => $manager->email,
                          'is_active' => $manager->is_active,
                          'role' => 'Manager',

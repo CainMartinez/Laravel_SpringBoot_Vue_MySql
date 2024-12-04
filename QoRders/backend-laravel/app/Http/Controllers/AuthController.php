@@ -2,117 +2,203 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use App\Models\Waiter;
 use App\Models\Manager;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
+use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 
 class AuthController extends Controller
 {
-    // Registro para Waiters
-     public function registerWaiter(Request $request)
+     // Registro de usuarios
+     public function register(Request $request)
      {
-          $request->validate([
-               'first_name' => 'required|string|max:100',
-               'last_name' => 'required|string|max:100',
-               'email' => 'required|email|unique:Waiter,email',
-               'password' => 'required|string|min:6|confirmed',
+          $validator = Validator::make($request->all(), [
+          'role' => 'required|string|in:waiter,manager',
+          'firstName' => 'required|string|max:100',
+          'lastName' => 'required|string|max:100',
+          'email' => 'required|string|email|max:150|unique:' . ($request->role === 'waiter' ? 'Waiter' : 'Manager') . ',email',
+          'password' => 'required|string|min:6',
+          'repeatPassword' => 'required|same:password',
+          ], [
+          'repeatPassword.same' => 'The repeatPassword must match the password.',
           ]);
 
-          $waiter = Waiter::create([
-               'waiter_uuid' => (string) \Str::uuid(),
-               'first_name' => $request->first_name,
-               'last_name' => $request->last_name,
-               'email' => $request->email,
-               'password' => bcrypt($request->password), // Encriptamos la contraseña
-          ]);
+          if ($validator->fails()) {
+               return response()->json([
+                    'message' => 'Validation failed',
+                    'errors' => $validator->errors(),
+               ], 422);
+          }
 
-          return response()->json([
-               'message' => 'Waiter registered successfully',
-               'data' => $waiter,
-          ], 201);
+          try {
+               // Crear el usuario según el role
+               $user = $request->role === 'waiter'
+                    ? Waiter::create([
+                         'firstName' => $request->firstName,
+                         'lastName' => $request->lastName,
+                         'email' => $request->email,
+                         'password' => Hash::make($request->password),
+                         'waiter_uuid' => \Illuminate\Support\Str::uuid(),
+                         'hire_date' => now()->toDateString(),
+                    ])
+                    : Manager::create([
+                         'firstName' => $request->firstName,
+                         'lastName' => $request->lastName,
+                         'email' => $request->email,
+                         'password' => Hash::make($request->password),
+                         'manager_uuid' => \Illuminate\Support\Str::uuid(),
+                    ]);
+
+               return response()->json([
+                    'message' => ucfirst($request->role) . ' registered successfully',
+                    'user' => $user,
+               ], 201);
+          } catch (\Exception $e) {
+               return response()->json([
+                    'message' => 'An unexpected error occurred during registration.',
+                    'error' => $e->getMessage(),
+               ], 500);
+          }
      }
 
-     // Registro para Managers
-     public function registerManager(Request $request)
-     {
-          $request->validate([
-               'first_name' => 'required|string|max:100',
-               'last_name' => 'required|string|max:100',
-               'email' => 'required|email|unique:Manager,email',
-               'password' => 'required|string|min:6|confirmed',
-          ]);
-
-          $manager = Manager::create([
-               'manager_uuid' => (string) \Str::uuid(),
-               'first_name' => $request->first_name,
-               'last_name' => $request->last_name,
-               'email' => $request->email,
-               'password' => bcrypt($request->password), // Encriptamos la contraseña
-          ]);
-
-          return response()->json([
-               'message' => 'Manager registered successfully',
-               'data' => $manager,
-          ], 201);
-     }
-
-     // Login común (detecta automáticamente el tipo de usuario)
+    // Login de usuarios
      public function login(Request $request)
      {
-          $request->validate([
-               'email' => 'required|email',
+          $validator = Validator::make($request->all(), [
+               'role' => 'required|string|in:waiter,manager',
+               'email' => 'required|string|email',
                'password' => 'required|string',
           ]);
 
-          // Intentamos loguear como Waiter
-          if ($token = Auth::guard('waiter')->attempt($request->only('email', 'password'))) {
-               return $this->respondWithToken($token, 'waiter');
+          if ($validator->fails()) {
+               return response()->json([
+                    'message' => 'Validation failed',
+                    'errors' => $validator->errors(),
+               ], 422);
           }
 
-          // Intentamos loguear como Manager
-          if ($token = Auth::guard('manager')->attempt($request->only('email', 'password'))) {
-               return $this->respondWithToken($token, 'manager');
-          }
+          try {
+               $credentials = $request->only('email', 'password');
 
-          return response()->json(['message' => 'Unauthorized'], 401);
+               // Buscar usuario según el role
+               $user = $request->role === 'waiter'
+                    ? Waiter::where('email', $request->email)->first()
+                    : Manager::where('email', $request->email)->first();
+
+               if (!$user || !Hash::check($request->password, $user->password)) {
+                    return response()->json([
+                         'message' => 'Unauthorized. Invalid email or password.',
+                    ], 401);
+               }
+
+               // Generar token con email y role
+               $token = JWTAuth::claims([
+                    'email' => $user->email,
+                    'role' => $request->role,
+               ])->fromUser($user);
+
+               // Log para verificar el contenido del token
+               \Log::info('Generated token payload:', [
+                    'token' => $token,
+                    'payload' => JWTAuth::setToken($token)->getPayload()->toArray(),
+               ]);
+
+               return response()->json([
+                    "message" => "Login successful",
+                    "token" => $token,
+                    "user" => [
+                         "uuid" => $request->role === 'waiter' ? $user->waiter_uuid : $user->manager_uuid,
+                         "firstName" => $user->firstName,
+                         "lastName" => $user->lastName,
+                         "email" => $user->email,
+                         "role" => $request->role,
+                    ],
+               ], 200);
+          } catch (\Exception $e) {
+               return response()->json([
+                    'message' => 'An unexpected error occurred during login.',
+                    'error' => $e->getMessage(),
+               ], 500);
+          }
      }
 
-     // Obtener información del usuario autenticado
+     // Obtener perfil del usuario autenticado
      public function me()
      {
-          $user = Auth::user();
+          try {
+               $payload = JWTAuth::getPayload();
+               $role = $payload->get('role');
+               $email = $payload->get('email');
 
-          return response()->json([
-               'message' => 'User retrieved successfully',
-               'data' => $user,
-          ]);
-     }
+               $user = $role === 'waiter'
+                    ? Waiter::where('email', $email)->first()
+                    : Manager::where('email', $email)->first();
 
-     // Logout
-     public function logout()
-     {
-          Auth::logout();
+               if (!$user) {
+                    return response()->json(['message' => 'User not found'], 404);
+               }
 
-          return response()->json(['message' => 'Logged out successfully']);
+               return response()->json([
+                    'message' => 'User profile retrieved successfully',
+                    'user' => $user,
+                    'role' => $role,
+               ], 200);
+          } catch (\Exception $e) {
+               return response()->json(['error' => $e->getMessage()], 500);
+          }
      }
 
      // Refrescar token
      public function refresh()
      {
-          $newToken = Auth::refresh();
+          try {
+               $token = JWTAuth::getToken();
 
-          return $this->respondWithToken($newToken, Auth::user()->role);
+               if (!$token) {
+                    return response()->json([
+                         'message' => 'No token provided',
+                    ], 400);
+               }
+
+               return response()->json([
+                    'message' => 'Token refreshed successfully',
+                    'token' => JWTAuth::refresh($token),
+               ], 200);
+          } catch (\Exception $e) {
+               \Log::error('Error refreshing token:', ['error' => $e->getMessage()]);
+               return response()->json([
+                    'message' => 'An unexpected error occurred while refreshing the token.',
+                    'error' => $e->getMessage(),
+               ], 500);
+          }
      }
 
-     // Respuesta con token
-     protected function respondWithToken($token, $role)
+
+     // Logout de usuarios
+     public function logout()
      {
-          return response()->json([
-               'access_token' => $token,
-               'token_type' => 'bearer',
-               'expires_in' => Auth::factory()->getTTL() * 60, // Tiempo de expiración en segundos
-               'role' => $role,
-          ]);
+          try {
+               $token = JWTAuth::getToken();
+
+               if (!$token) {
+                    return response()->json([
+                         'message' => 'No token provided',
+                    ], 400);
+               }
+
+               JWTAuth::invalidate($token);
+
+               return response()->json([
+                    'message' => 'Logout successful',
+               ], 200);
+          } catch (\Exception $e) {
+               \Log::error('Error during logout:', ['error' => $e->getMessage()]);
+               return response()->json([
+                    'message' => 'An unexpected error occurred during logout.',
+                    'error' => $e->getMessage(),
+               ], 500);
+          }
      }
 }

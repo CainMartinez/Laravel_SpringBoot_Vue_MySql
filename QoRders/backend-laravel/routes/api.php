@@ -1,37 +1,40 @@
 <?php
+
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\NGOController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\RoomController;
 use App\Http\Controllers\BookingController;
-use App\Http\Controllers\WaiterAuthController;
-use App\Http\Controllers\ManagerAuthController;
+use App\Http\Controllers\AuthController;
+use App\Http\Middleware\IsWaiter;
+use App\Http\Middleware\IsManager;
 
-// Rutas para los Waiters
-Route::prefix('waiters')->group(function () {
-    Route::post('/register', [WaiterAuthController::class, 'register']); // Registro de Waiter
-    Route::post('/login', [WaiterAuthController::class, 'login']); // Login de Waiter
+// Rutas públicas (sin middleware)
+Route::prefix('auth')->group(function () {
+    Route::post('/register', [AuthController::class, 'register']); // Registro
+    Route::post('/login', [AuthController::class, 'login']); // Login
+});
 
-    Route::middleware(['auth.jwt'])->group(function () {
-        Route::post('/logout', [WaiterAuthController::class, 'logout']); // Logout de Waiter
-        Route::post('/refresh', [WaiterAuthController::class, 'refresh']); // Refrescar token de Waiter
-        Route::get('/me', [WaiterAuthController::class, 'me']); // Obtener perfil del Waiter autenticado
+
+// Rutas protegidas por middlewares específicos
+Route::group(['prefix' => 'auth'], function () {
+
+    // Rutas para Waiter
+    Route::middleware(['IsWaiter'])->group(function () {
+        Route::post('/waiter/logout', [AuthController::class, 'logout']); // Logout para Waiter
+        Route::post('/waiter/refresh', [AuthController::class, 'refresh']); // Refrescar token para Waiter
+        Route::get('/waiter/me', [AuthController::class, 'me']); // Perfil del Waiter
+    });
+
+    // Rutas para Manager
+    Route::middleware(['IsManager'])->group(function () {
+        Route::post('/manager/logout', [AuthController::class, 'logout']); // Logout para Manager
+        Route::post('/manager/refresh', [AuthController::class, 'refresh']); // Refrescar token para Manager
+        Route::get('/manager/me', [AuthController::class, 'me']); // Perfil del Manager
     });
 });
 
-// Rutas para los Managers
-Route::prefix('managers')->group(function () {
-    Route::post('/register', [ManagerAuthController::class, 'register']); // Registro de Manager
-    Route::post('/login', [ManagerAuthController::class, 'login']); // Login de Manager
-
-    Route::middleware(['auth.jwt'])->group(function () {
-        Route::post('/logout', [ManagerAuthController::class, 'logout']); // Logout de Manager
-        Route::post('/refresh', [ManagerAuthController::class, 'refresh']); // Refrescar token de Manager
-        Route::get('/me', [ManagerAuthController::class, 'me']); // Obtener perfil del Manager autenticado
-    });
-});
-
-// Rutas para NGOs
+// Otros endpoints (NGOs, Products, Rooms, Bookings)
 Route::prefix('ngos')->group(function () {
     Route::get('/', [NGOController::class, 'index']);
     Route::get('/{slug}', [NGOController::class, 'showBySlug']);
@@ -41,7 +44,6 @@ Route::prefix('ngos')->group(function () {
     Route::put('/{slug}/enable', [NGOController::class, 'enableBySlug']); // Habilitar
 });
 
-// Rutas para Products
 Route::prefix('products')->group(function () {
     Route::get('/', [ProductController::class, 'index']);
     Route::get('/{slug}', [ProductController::class, 'showBySlug']);
@@ -51,7 +53,6 @@ Route::prefix('products')->group(function () {
     Route::put('/{slug}/enable', [ProductController::class, 'enableBySlug']); // Habilitar
 });
 
-// Rutas para Rooms
 Route::prefix('rooms')->group(function () {
     Route::get('/', [RoomController::class, 'index']);
     Route::get('/{slug}', [RoomController::class, 'showBySlug']);
@@ -62,7 +63,6 @@ Route::prefix('rooms')->group(function () {
     Route::get('/{slug}/products', [RoomController::class, 'getProductsByRoomSlug']);
 });
 
-// Rutas para Bookings
 Route::prefix('bookings')->group(function () {
     Route::get('/', [BookingController::class, 'index']); // Obtener todas las reservas
     Route::get('/{uuid}', [BookingController::class, 'show']); // Obtener una reserva por UUID

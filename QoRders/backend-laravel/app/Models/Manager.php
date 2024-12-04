@@ -28,8 +28,8 @@ class Manager extends Authenticatable implements JWTSubject
      // Columnas que pueden ser llenadas masivamente
      protected $fillable = [
           'manager_uuid',
-          'first_name',
-          'last_name',
+          'firstName',
+          'lastName',
           'email',
           'password',
           'phone_number',
@@ -43,13 +43,11 @@ class Manager extends Authenticatable implements JWTSubject
      // Métodos requeridos por la interfaz JWTSubject
      public function getJWTIdentifier()
      {
-          return $this->getKey(); // Identificador único del usuario (manager_id)
+     return $this->email; // Identificador único: email
      }
 
      public function getJWTCustomClaims()
      {
           return ['role' => 'manager']; // Reclamo personalizado para indicar el rol
      }
-
-    // Puedes agregar relaciones aquí si es necesario en el futuro
 }
