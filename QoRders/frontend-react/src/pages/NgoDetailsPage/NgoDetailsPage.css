@@ -1,0 +1,72 @@
+.ngo-details-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+    background-color: #f8f9fa;
+    height: 100vh;
+    width: 100vw;
+}
+
+.ngo-details-content {
+    display: flex;
+    flex-direction: row;
+    gap: 3rem;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+    max-width: 1500px;
+    min-height: 700px;
+}
+
+.ngo-info-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.ngo-info-section h1 {
+    font-size: 2.5rem;
+    color: #007ad9;
+    margin-bottom: 1rem;
+}
+
+.ngo-info-section p {
+    font-size: 1.2rem;
+    color: #555;
+    line-height: 1.6;
+    margin-bottom: 1rem;
+}
+
+.ngo-logo {
+    width: 150px;
+    height: 150px;
+    object-fit: contain;
+    border-radius: 10px;
+    margin-bottom: 1rem;
+}
+
+.ngo-donate-button {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #007ad9;
+    color: #fff;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    text-align: center;
+}
+
+.ngo-donate-button:hover {
+    background-color: #005bb5;
+}
+
+.ngo-carousel-section {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-height: 700px;
+}

@@ -15,7 +15,7 @@ export const getNgoBySlug = async (ngoSlug) => {
         const response = await api_spring.get(`/ngos/${ngoSlug}`);
         return response.data;
     } catch (error) {
-        console.error(`Error al obtener el NGO con slug: ${ngoSlug}`, error);
+        console.error(`Error al obtener la ONG con slug: ${ngoSlug}`, error.message);
         throw error;
     }
 };
