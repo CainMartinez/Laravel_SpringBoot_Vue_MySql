@@ -1,24 +1,48 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import './Header.css';
 
 const Header = () => {
     return (
         <div className="header">
             <div className="logo">
-                <img src="src/assets/logo.png" alt="QoRders" />
+                <img src="/assets/logo.png" alt="Logo" />
             </div>
 
             <div className="menu">
-                <Link to="/">Inicio</Link>
-                {/* <Link to="/rooms">Carta</Link>
-                <Link to="/reservation">Reserva</Link> */}
-                <Link to="/ngos">Organizaciones</Link>
-                <Link to="/donations">Donaciones</Link>
+                <NavLink
+                    to="/home"
+                    className={({ isActive }) => (isActive ? 'active-link' : 'link')}
+                >
+                    Inicio
+                </NavLink>
+                {/* <NavLink
+                    to="/rooms"
+                    className={({ isActive }) => (isActive ? 'active-link' : 'link')}
+                >
+                    Carta
+                </NavLink> */}
+                <NavLink
+                    to="/ngos"
+                    className={({ isActive }) => (isActive ? 'active-link' : 'link')}
+                >
+                    Organizaciones
+                </NavLink>
+                <NavLink
+                    to="/donations"
+                    className={({ isActive }) => (isActive ? 'active-link' : 'link')}
+                >
+                    Donaciones
+                </NavLink>
             </div>
 
             <div className="login-button">
-                <Link to="/login">Iniciar sesión</Link>
+                <NavLink
+                    to="/login"
+                    className={({ isActive }) => (isActive ? 'active-link' : 'link')}
+                >
+                    Iniciar sesión
+                </NavLink>
             </div>
         </div>
     );

@@ -11,7 +11,6 @@
     flex-direction: row;
     gap: 3.5rem;
     align-items: center;
-    /* padding: 1.5rem; */
 }
 
 .ngo-info {
@@ -33,7 +32,7 @@
 
 .ngo-header h2 {
     font-size: 28px;
-    color: #007ad9;
+    color: #333;
     margin: 0;
 }
 
@@ -53,7 +52,7 @@
 }
 
 .ngo-view-more {
-    color: #007ad9;
+    color: #333;
     font-size: 16px;
     text-decoration: none;
     margin-top: 16px;

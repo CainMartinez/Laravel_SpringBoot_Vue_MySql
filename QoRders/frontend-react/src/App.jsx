@@ -13,9 +13,7 @@ const App = () => {
             <Routes>
                 <Route path="/" element={<NgosPage />} />
                 <Route path="/ngos" element={<NgosPage />} />
-
                 <Route path="/ngos/:slug" element={<NgoDetailsPage />} />
-
                 <Route path="/donaciones" element={<DonationsPage />} />
             </Routes>
             <Footer />

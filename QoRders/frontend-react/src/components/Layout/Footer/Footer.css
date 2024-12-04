@@ -3,25 +3,24 @@
     flex-direction: column;
     align-items: center;
     padding: 10px 20px;
-    background-color: #f8f9fa;
+    background-color: #e9ecef;
     box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1);
-    background-color: #f3f3f3;
     color: #333;
 }
 
 p {
-    color: #495057;
+    color: #555;
 }
 
 a {
     padding: 6px 12px;
-    background-color: #f8f9fa;
-    color: #495057;
+    background-color: #e9ecef;
+    color: #333;
     border: none;
     border-radius: 4px;
     text-decoration: none;
 }
 
 a:hover {
-    background-color: #e9ecef;
+    background-color: #d6d8db;
 }
