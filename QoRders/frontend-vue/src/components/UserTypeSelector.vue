@@ -1,28 +1,31 @@
 <template>
     <div class="radio-input">
         <label>
-            <input type="radio" value="cliente" v-model="selectedType" />
+            <input type="radio" value="client" v-model="selectedType" />
             <p>Cliente</p>
         </label>
         <label>
-            <input type="radio" value="camarero" v-model="selectedType" />
+            <input type="radio" value="waiter" v-model="selectedType" />
             <p>Camarero</p>
         </label>
         <label>
-            <input type="radio" value="gerente" v-model="selectedType" />
-            <p>Gerente</p>
+            <input type="radio" value="manager" v-model="selectedType" />
+            <p>Manager</p>
         </label>
         <span class="selection"></span>
     </div>
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 
-const selectedType = ref('cliente');
+const selectedType = ref('client');
 
-// Emitir tipo de usuario cuando cambie
 const emit = defineEmits(['update:selectedType']);
+
+watch(selectedType, (newValue) => {
+    emit('update:selectedType', newValue);
+});
 </script>
 
 <style scoped>

@@ -4,25 +4,36 @@ import { useStore } from 'vuex';
 export default function useAuth() {
     const store = useStore();
     const isLoginView = ref(true);
+    const errorMessage = ref('');
 
-    const login = async (email, password) => {
-        // Lógica para autenticarse
-        try {
-            await store.dispatch('auth/login', { email, password });
-        } catch (error) {
-            throw new Error('Error en el login: ' + error.message);
+    // Login
+    const login = async (email, password, role) => {
+        if (role !== undefined) {
+            console.log('Login:', email, password, role);
+            try {
+                await store.dispatch('storeAuth/login', { email, password, role });
+            } catch (error) {
+                errorMessage.value = 'Email o contraseña incorrectos.';
+                throw new Error('Error en el login: ' + error.message);
+            }
         }
     };
 
-    const register = async (email, password) => {
-        // Lógica para registrarse
-        try {
-            await store.dispatch('auth/register', { email, password });
-        } catch (error) {
-            throw new Error('Error en el registro: ' + error.message);
+    // Registro
+    const register = async (firstName, lastName, email, password, repeatPassword, role) => {
+        if (role !== undefined) {
+
+            console.log('Register:', firstName, lastName, email, password, repeatPassword, role);
+            try {
+                await store.dispatch('storeAuth/register', { firstName, lastName, email, password, repeatPassword, role });
+            } catch (error) {
+                errorMessage.value = 'Error al registrar el usuario.';
+                throw new Error('Error en el registro: ' + error.message);
+            }
         }
     };
 
+    // Alternar entre el formulario de login y registro
     const toggleForm = () => {
         isLoginView.value = !isLoginView.value;
     };
@@ -31,6 +42,7 @@ export default function useAuth() {
         login,
         register,
         isLoginView,
-        toggleForm
+        toggleForm,
+        errorMessage
     };
 }

@@ -39,25 +39,26 @@ import { ref } from 'vue';
 import useAuth from '../composables/useAuth';
 import useValidation from '../composables/useValidation';
 
+const props = defineProps({
+    selectedType: {
+        type: String,
+        required: true
+    }
+});
+
 const email = ref('');
 const password = ref('');
 const repeatPassword = ref('');
 const firstName = ref('');
 const lastName = ref('');
 const { register } = useAuth();
-
-const {
-    emailError,
-    passwordError,
-    repeatPasswordError,
-    generalError,
-    validateRegisterForm,
-} = useValidation();
+const { emailError, passwordError, repeatPasswordError, generalError, validateRegisterForm } = useValidation();
 
 const handleRegister = async () => {
+    console.log('RegisterForm handleRegister props.selectedType:', props.selectedType);
     if (validateRegisterForm(email.value, password.value, repeatPassword.value)) {
         try {
-            await register(firstName.value, lastName.value, email.value, password.value, repeatPassword.value, 'client');
+            await register(firstName.value, lastName.value, email.value, password.value, repeatPassword.value, props.selectedType);
         } catch (error) {
             console.error('Error al registrar:', error);
         }

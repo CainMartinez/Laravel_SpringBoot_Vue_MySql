@@ -23,23 +23,22 @@ import { ref } from 'vue';
 import useAuth from '../composables/useAuth';
 import useValidation from '../composables/useValidation';
 
+const props = defineProps({
+    selectedType: {
+        type: String,
+        required: true
+    }
+});
+
 const email = ref('');
 const password = ref('');
-const role = ref('client');
 const { login } = useAuth();
-
-const {
-    emailError,
-    passwordError,
-    generalError,
-    validateLoginForm,
-} = useValidation();
+const { emailError, passwordError, generalError, validateLoginForm } = useValidation();
 
 const handleLogin = async () => {
     if (validateLoginForm(email.value, password.value)) {
         try {
-            await login(email.value, password.value, role.value);
-            // Redirigir al usuario después de un login exitoso
+            await login(email.value, password.value, props.selectedType);
         } catch (error) {
             console.error('Login failed:', error);
         }

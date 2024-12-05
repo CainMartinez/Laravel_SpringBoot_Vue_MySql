@@ -3,11 +3,11 @@
         <h1>{{ isLoginView ? 'Iniciar sesión' : 'Registrar cuenta' }}</h1>
 
         <!-- Selector de tipo de usuario -->
-        <UserTypeSelector />
+        <UserTypeSelector @update:selectedType="selectedType = $event" />
 
         <!-- Formulario de login o registro -->
-        <LoginForm v-if="isLoginView" @submit="login" />
-        <RegisterForm v-else @submit="register" />
+        <LoginForm v-if="isLoginView" :selectedType="selectedType" @submit="login" />
+        <RegisterForm v-else :selectedType="selectedType" @submit="register" />
 
         <!-- Alternar entre login y registro -->
         <a @click="toggleForm" class="toggle-link">{{ isLoginView ? 'Crear una cuenta' : 'Ya tengo cuenta' }}</a>
@@ -15,13 +15,18 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import LoginForm from '../components/LoginForm.vue';
 import RegisterForm from '../components/RegisterForm.vue';
 import UserTypeSelector from '../components/UserTypeSelector.vue';
 import useAuth from '../composables/useAuth';
 
 const { login, register, isLoginView, toggleForm } = useAuth();
+const selectedType = ref('client');
+
+watch(selectedType, (newValue) => {
+    console.log('AuthPage selectedType:', newValue);
+});
 </script>
 
 <style scoped>
@@ -31,7 +36,6 @@ const { login, register, isLoginView, toggleForm } = useAuth();
     align-items: center;
     justify-content: center;
     padding: 20px;
-    height: 100vh;
     background-color: #f7f7f7;
     color: #333;
     font-family: Arial, sans-serif;
@@ -40,7 +44,7 @@ const { login, register, isLoginView, toggleForm } = useAuth();
 h1 {
     font-size: 2.5em;
     margin-bottom: 30px;
-    margin-top: 40px;
+    margin-top: 100px;
 }
 
 button {
