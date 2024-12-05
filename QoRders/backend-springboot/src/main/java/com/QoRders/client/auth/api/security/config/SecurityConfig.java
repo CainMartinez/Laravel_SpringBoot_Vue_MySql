@@ -35,7 +35,7 @@ public class SecurityConfig {
                 .sessionCreationPolicy(org.springframework.security.config.http.SessionCreationPolicy.STATELESS))
             .authorizeRequests(auth -> auth
                 .requestMatchers("/api/auth/register", "/api/auth/login").permitAll() // Endpoints públicos
-                .anyRequest().authenticated()) // Proteger otros endpoints
+                .requestMatchers("/api/client/**", "/api/auth/logout", "/api/auth/refresh").authenticated()) // Proteger otros endpoints
             .addFilterBefore(
                 new JwtAuthenticationFilter(jwtProvider, null, null), 
                 UsernamePasswordAuthenticationFilter.class // Insertar el filtro antes del estándar
