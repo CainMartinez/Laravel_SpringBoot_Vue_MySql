@@ -17,11 +17,12 @@ return [
 
     'allowed_methods' => ['*'], // Métodos permitidos (GET, POST, etc.)
 
-     'allowed_origins' => [
-     'http://localhost:8085',
-     'http://vue_container:8085',
-     'http://localhost:8086',
-     'http://react_container:8086',
+    'allowed_origins' => [
+    'http://localhost:8085',
+    'http://vue_container:8085',
+    'http://localhost:8086',
+    'http://react_container:8086',
+    'http://springboot_container:8081',
 ],
 
 
