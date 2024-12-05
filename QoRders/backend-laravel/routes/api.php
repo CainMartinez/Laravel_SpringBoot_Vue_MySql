@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Redis;
 use App\Http\Controllers\NGOController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\RoomController;
@@ -69,4 +70,20 @@ Route::prefix('bookings')->group(function () {
     Route::post('/', [BookingController::class, 'store']); // Crear una nueva reserva
     Route::put('/{uuid}', [BookingController::class, 'update']); // Actualizar una reserva por UUID
     Route::put('/{uuid}/unable', [BookingController::class, 'unable']); // Desactivar una reserva
+});
+
+Route::get('/redis-test-set', function () {
+    // Guardar datos en Redis
+    Redis::set('test_key', json_encode(['message' => 'Hello Redis!']));
+    Redis::expire('test_key', 60); // Clave expira en 60 segundos
+    return response()->json(['status' => 'Data stored successfully in Redis']);
+});
+
+Route::get('/redis-test-get', function () {
+    // Recuperar datos desde Redis
+    $data = Redis::get('test_key');
+    if ($data) {
+        return response()->json(['status' => 'Data retrieved from Redis', 'data' => json_decode($data, true)]);
+    }
+    return response()->json(['status' => 'No data found for key']);
 });
