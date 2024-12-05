@@ -13,6 +13,7 @@ services:
       - laravel
       - springboot
       - mysql
+      - redis
     environment:
       VITE_PORT: 8085
 
@@ -30,6 +31,7 @@ services:
       - laravel
       - springboot
       - mysql
+      - redis
     environment:
       PORT: 8086
 
@@ -49,8 +51,12 @@ services:
       DB_DATABASE: QoRders
       DB_USERNAME: ${DB_USERNAME}
       DB_PASSWORD: ${DB_PASSWORD}
+      REDIS_HOST: redis_container
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
     depends_on:
       - mysql
+      - redis
     command: >+
       bash -c "/usr/local/bin/wait-for-it.sh mysql_container 3306 ${DB_USERNAME} ${DB_PASSWORD} ${DB_DATABASE} -- 
               php artisan key:generate &&
@@ -76,9 +82,13 @@ services:
       SPRING_JWT_ACCESS_EXPIRATION: ${SPRING_JWT_ACCESS_EXPIRATION}
       SPRING_JWT_REFRESH_EXPIRATION: ${SPRING_JWT_REFRESH_EXPIRATION}
       SPRING_MAIN_ALLOW_BEAN_DEFINITION_OVERRIDING: "true"
+      SPRING_REDIS_HOST: redis_container
+      SPRING_REDIS_PORT: 6379
+      SPRING_REDIS_PASSWORD: ${REDIS_PASSWORD}
     depends_on:
       - mysql
       - laravel
+      - redis
     command: >
       bash -c "/app/wait-for-it.sh mysql_container 3306 root root QoRders --
             java -jar app.jar"
@@ -94,6 +104,7 @@ services:
       - /app/node_modules
     depends_on:
       - mysql
+      - redis
     environment:
       RESEND_API_KEY: ${RESEND_API_KEY}
     command: >
@@ -111,6 +122,9 @@ services:
     environment:
       ULTRAMSG_INSTANCE_ID: ${ULTRAMSG_INSTANCE_ID}
       ULTRAMSG_TOKEN: ${ULTRAMSG_TOKEN}
+      REDIS_HOST: redis_container
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
     command: >
       sh -c "npm install && npm run dev"
       
@@ -127,6 +141,17 @@ services:
       - mysql_data:/var/lib/mysql
       - ./database/${DB_DATABASE}.sql:/docker-entrypoint-initdb.d/${DB_DATABASE}.sql
 
+  redis:
+    image: redis:latest
+    container_name: redis_container
+    ports:
+      - "6379:6379"
+    environment:
+      REDIS_PASSWORD: yourpassword
+    command: ["redis-server", "--requirepass", "yourpassword"]
+    volumes:
+      - redis_data:/data
+
   phpmyadmin:
     image: phpmyadmin/phpmyadmin:5.2.1
     container_name: phpmyadmin_container
@@ -142,3 +167,4 @@ services:
 
 volumes:
   mysql_data:
+  redis_data:
