@@ -1,34 +1,67 @@
 <template>
-    <form @submit.prevent="handleSubmit">
+    <form @submit.prevent="handleRegister">
+        <div>
+            <label for="firstName">Nombre:</label>
+            <input type="text" id="firstName" v-model="firstName" required />
+        </div>
+
+        <div>
+            <label for="lastName">Apellidos:</label>
+            <input type="text" id="lastName" v-model="lastName" required />
+        </div>
+
         <div>
             <label for="email">Correo electrónico:</label>
-            <input type="email" id="email" v-model="email" required />
+            <input type="text" id="email" v-model="email" required />
+            <p v-if="emailError" class="error">{{ emailError }}</p>
         </div>
 
         <div>
             <label for="password">Contraseña:</label>
             <input type="password" id="password" v-model="password" required />
+            <p v-if="passwordError" class="error">{{ passwordError }}</p>
+        </div>
+
+        <div>
+            <label for="repeatPassword">Repetir Contraseña:</label>
+            <input type="password" id="repeatPassword" v-model="repeatPassword" required />
+            <p v-if="repeatPasswordError" class="error">{{ repeatPasswordError }}</p>
         </div>
 
         <button type="submit">Registrarse</button>
 
-        <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
+        <p v-if="generalError" class="error">{{ generalError }}</p>
     </form>
 </template>
 
 <script setup>
 import { ref } from 'vue';
+import useAuth from '../composables/useAuth';
+import useValidation from '../composables/useValidation';
 
 const email = ref('');
 const password = ref('');
-const errorMessage = ref('');
+const repeatPassword = ref('');
+const firstName = ref('');
+const lastName = ref('');
+const { register } = useAuth();
 
-const handleSubmit = () => {
-    // Llamada al composable useAuth para manejar el registro
-    register(email.value, password.value)
-        .catch(err => {
-            errorMessage.value = err.message;
-        });
+const {
+    emailError,
+    passwordError,
+    repeatPasswordError,
+    generalError,
+    validateRegisterForm,
+} = useValidation();
+
+const handleRegister = async () => {
+    if (validateRegisterForm(email.value, password.value, repeatPassword.value)) {
+        try {
+            await register(firstName.value, lastName.value, email.value, password.value, repeatPassword.value, 'client');
+        } catch (error) {
+            console.error('Error al registrar:', error);
+        }
+    }
 };
 </script>
 

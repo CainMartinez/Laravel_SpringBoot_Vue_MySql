@@ -1,33 +1,49 @@
 <template>
-    <form @submit.prevent="handleSubmit">
+    <form @submit.prevent="handleLogin">
         <div>
             <label for="email">Correo electrónico:</label>
-            <input type="email" id="email" v-model="email" required />
+            <input type="text" id="email" v-model="email" required />
+            <p v-if="emailError" class="error">{{ emailError }}</p>
         </div>
 
         <div>
             <label for="password">Contraseña:</label>
             <input type="password" id="password" v-model="password" required />
+            <p v-if="passwordError" class="error">{{ passwordError }}</p>
         </div>
 
         <button type="submit">Iniciar sesión</button>
 
-        <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
+        <p v-if="generalError" class="error">{{ generalError }}</p>
     </form>
 </template>
 
 <script setup>
 import { ref } from 'vue';
+import useAuth from '../composables/useAuth';
+import useValidation from '../composables/useValidation';
 
 const email = ref('');
 const password = ref('');
-const errorMessage = ref('');
+const role = ref('client');
+const { login } = useAuth();
 
-const handleSubmit = () => {
-    login(email.value, password.value)
-        .catch(err => {
-            errorMessage.value = err.message;
-        });
+const {
+    emailError,
+    passwordError,
+    generalError,
+    validateLoginForm,
+} = useValidation();
+
+const handleLogin = async () => {
+    if (validateLoginForm(email.value, password.value)) {
+        try {
+            await login(email.value, password.value, role.value);
+            // Redirigir al usuario después de un login exitoso
+        } catch (error) {
+            console.error('Login failed:', error);
+        }
+    }
 };
 </script>
 
