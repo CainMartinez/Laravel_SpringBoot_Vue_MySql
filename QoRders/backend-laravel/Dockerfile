@@ -19,6 +19,13 @@ COPY . .
 # Instala dependencias de Composer
 RUN composer install --no-dev --optimize-autoloader || exit 1
 
+# Limpia cachés de Laravel y Composer durante la construcción
+RUN php artisan config:clear && \
+    php artisan cache:clear && \
+    php artisan route:clear && \
+    php artisan view:clear && \
+    composer dump-autoload
+
 # Ajusta permisos de las carpetas requeridas
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache && \
     chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
