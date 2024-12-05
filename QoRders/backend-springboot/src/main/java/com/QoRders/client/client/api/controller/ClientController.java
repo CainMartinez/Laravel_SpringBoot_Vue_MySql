@@ -13,6 +13,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/api/client")
+@CrossOrigin(origins = "http://localhost:8085")
 @RequiredArgsConstructor
 public class ClientController {
 
