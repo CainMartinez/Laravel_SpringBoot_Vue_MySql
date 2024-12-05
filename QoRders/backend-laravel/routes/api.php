@@ -9,6 +9,7 @@ use App\Http\Controllers\BookingController;
 use App\Http\Controllers\AuthController;
 use App\Http\Middleware\IsWaiter;
 use App\Http\Middleware\IsManager;
+use App\Http\Controllers\DonationController;
 
 // Rutas públicas (sin middleware)
 Route::prefix('auth')->group(function () {
@@ -87,3 +88,6 @@ Route::get('/redis-test-get', function () {
     }
     return response()->json(['status' => 'No data found for key']);
 });
+
+// Ruta para crear una donación
+Route::post('/donations', [DonationController::class, 'store']);
