@@ -9234,6 +9234,18 @@ VALUES (
         '2024-11-15 18:56:29'
     );
 
+-- Crear la tabla sin la clave primaria
+CREATE TABLE Donations (
+    `donation_id` INT AUTO_INCREMENT,
+    `customer_username` VARCHAR(255) NOT NULL,
+    `quantity` DECIMAL(10, 2) NOT NULL,
+    `ngo_slug` VARCHAR(255) NOT NULL,
+    `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Añadir la clave primaria
+ALTER TABLE Donations ADD PRIMARY KEY (`donation_id`);
+
 --
 -- Índices para tablas volcadas
 --
