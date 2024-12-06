@@ -7,6 +7,7 @@ import com.QoRders.client.auth.api.security.jwt.JwtProvider;
 import com.QoRders.client.auth.domain.repository.BlacklistTokenRepository;
 import com.QoRders.client.client.domain.entity.ClientEntity;
 import com.QoRders.client.client.domain.repository.ClientRepository;
+import com.QoRders.client.redis.RedisService;
 
 import io.jsonwebtoken.ExpiredJwtException;
 
@@ -27,6 +28,7 @@ public class AuthService {
     private final JwtProvider jwtProvider;
     private final Argon2PasswordEncoder passwordEncoder;
     private final AuthAssembler authAssembler;
+    private final RedisService redisService; // Inyectar RedisService
 
     @Transactional
     public AuthResponse register(RegisterRequest registerRequest) {
@@ -48,7 +50,7 @@ public class AuthService {
         client.setFirstName(registerRequest.getFirstName());
         client.setLastName(registerRequest.getLastName());
 
-        // Establecer valores predeterminados para otros campos
+        // Guardar datos adicionales
         client.setBio(null);
         client.setPhoneNumber(null);
         client.setAvatarUrl("https://i.pravatar.cc/150?u=" + registerRequest.getFirstName());
@@ -57,6 +59,10 @@ public class AuthService {
         client.setIsActive(true);
 
         var savedClient = clientRepository.save(client);
+
+        // Guardar en Redis las credenciales
+        String redisKey = "email:password:" + savedClient.getEmail();
+        redisService.save(redisKey, savedClient.getPassword(), 0); // Sin expiración
 
         // Generar tokens
         var accessToken = jwtProvider.generateAccessToken(savedClient.getEmail());
@@ -72,81 +78,91 @@ public class AuthService {
 
     @Transactional
     public AuthResponse login(LoginRequest loginRequest) {
-        // Validate client
-        var client = clientRepository.findByEmail(loginRequest.getEmail())
-                .orElseThrow(() -> new IllegalArgumentException("Invalid email or password"));
+        // Buscar en Redis las credenciales
+        String redisKey = "email:password:" + loginRequest.getEmail();
+        String hashedPassword = (String) redisService.get(redisKey);
 
-        if (!passwordEncoder.matches(loginRequest.getPassword(), client.getPassword())) {
-            throw new IllegalArgumentException("Invalid email or password");
+        if (hashedPassword == null) {
+            // Si no está en Redis, buscar en la base de datos
+            var client = clientRepository.findByEmail(loginRequest.getEmail())
+                    .orElseThrow(() -> new IllegalArgumentException("Invalid email or password"));
+
+            // Validar contraseña
+            if (!passwordEncoder.matches(loginRequest.getPassword(), client.getPassword())) {
+                throw new IllegalArgumentException("Invalid email or password");
+            }
+
+            // Guardar en Redis para futuros logins
+            redisService.save(redisKey, client.getPassword(), 0); // Sin expiración
+            hashedPassword = client.getPassword(); // Actualizar la referencia
+        } else {
+            // Validar contraseña directamente desde Redis
+            if (!passwordEncoder.matches(loginRequest.getPassword(), hashedPassword)) {
+                throw new IllegalArgumentException("Invalid email or password");
+            }
         }
 
-        // Generate tokens
-        var accessToken = jwtProvider.generateAccessToken(client.getEmail());
-        var refreshToken = jwtProvider.generateRefreshToken(client.getEmail());
+        // Generar tokens
+        var accessToken = jwtProvider.generateAccessToken(loginRequest.getEmail());
+        var refreshToken = jwtProvider.generateRefreshToken(loginRequest.getEmail());
 
-        // Update refresh token in the database
+        // Guardar el refresh token en la base de datos
+        var client = clientRepository.findByEmail(loginRequest.getEmail())
+                .orElseThrow(() -> new IllegalArgumentException("Invalid email or password"));
         client.setRefreshToken(refreshToken);
         clientRepository.save(client);
 
-        // Return response
+        // Guardar el accessToken en Redis con TTL
+        String accessTokenKey = "access:token:" + loginRequest.getEmail();
+        redisService.save(accessTokenKey, accessToken, jwtProvider.getAccessTokenExpiration() / 1000);
+
+        // Retornar respuesta
         return authAssembler.toAuthResponse(client, accessToken, refreshToken);
     }
 
     @Transactional
     public void logout(String accessToken) {
         try {
-            // System.out.println("Token recibido para logout: " + accessToken);
-            
             if (accessToken.startsWith("Bearer ")) {
                 accessToken = accessToken.substring(7); // Quitar el prefijo "Bearer "
             }
-
-            // var email = jwtProvider.parseAccessToken(accessToken);
-            // System.out.println("Email parseado del token: " + email);
 
             if (jwtProvider.isTokenBlacklisted(accessToken)) {
                 throw new IllegalArgumentException("Token ya está en la blacklist");
             }
 
-            // Invalidate token
+            // Invalidate token y agregarlo a la blacklist
             var tokenEntity = jwtProvider.invalidateRefreshToken(accessToken);
-
-            // Add token to blacklist
             blacklistTokenRepository.save(tokenEntity);
-            System.out.println("Token agregado a la blacklist: " + tokenEntity.getToken());
+
+            // Eliminar el token de Redis
+            String accessTokenKey = "access:token:" + jwtProvider.parseAccessToken(accessToken);
+            redisService.delete(accessTokenKey);
         } catch (Exception e) {
-            System.err.println("Error durante el logout: " + e.getMessage());
-            throw new IllegalArgumentException("Invalid token");
+            throw new IllegalArgumentException("Invalid token", e);
         }
     }
 
     @Transactional
     public AuthResponse refreshAccessToken(String accessToken) {
-        // Eliminar "Bearer " del token si está presente
         accessToken = accessToken.replace("Bearer ", "");
 
         String email;
         try {
-            // Intentar parsear el access token (puede fallar si ha expirado)
             email = jwtProvider.parseAccessToken(accessToken);
         } catch (ExpiredJwtException e) {
-            // Si el token expiró, intentar manejarlo con el refresh token
             email = e.getClaims().getSubject();
         }
 
-        // Buscar el cliente en la base de datos
         var client = clientRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("Client not found"));
 
-        // Verificar el refresh token en la base de datos
         String refreshToken = client.getRefreshToken();
         if (!jwtProvider.isValid(refreshToken)) {
-            // Si el refresh token no es válido, llamar al logout
             logout(refreshToken);
             throw new IllegalArgumentException("Refresh token expired or invalid");
         }
 
-        // Verificar que el email del access token coincide con el refresh token
         String refreshEmail = jwtProvider.parseAccessToken(refreshToken);
         if (!email.equals(refreshEmail)) {
             throw new IllegalArgumentException("Access and Refresh tokens do not match");
@@ -155,7 +171,10 @@ public class AuthService {
         // Generar un nuevo access token
         String newAccessToken = jwtProvider.generateAccessToken(email);
 
-        // Retornar la respuesta con el nuevo access token
+        // Actualizar el accessToken en Redis
+        String accessTokenKey = "access:token:" + email;
+        redisService.save(accessTokenKey, newAccessToken, jwtProvider.getAccessTokenExpiration() / 1000);
+
         return authAssembler.toAuthResponse(client, newAccessToken, refreshToken);
     }
 }

@@ -170,4 +170,18 @@ public class JwtProvider {
         var authorities = List.of(new SimpleGrantedAuthority(role));
         return new UsernamePasswordAuthenticationToken(email, null, authorities);
     }
+
+    /**
+     * Devuelve el tiempo de expiración del Access Token en milisegundos.
+     */
+    public long getAccessTokenExpiration() {
+        return accessTokenExpiration;
+    }
+
+    /**
+     * Devuelve el tiempo de expiración del Access Token en segundos.
+     */
+    public long getAccessTokenExpirationInSeconds() {
+        return accessTokenExpiration / 1000;
+    }
 }

@@ -13,7 +13,11 @@ public class RedisService {
     private RedisTemplate<String, Object> redisTemplate;
 
     public void save(String key, Object value, long ttlInSeconds) {
-        redisTemplate.opsForValue().set(key, value, ttlInSeconds, TimeUnit.SECONDS);
+        if (ttlInSeconds > 0) {
+            redisTemplate.opsForValue().set(key, value, ttlInSeconds, TimeUnit.SECONDS);
+        } else {
+            redisTemplate.opsForValue().set(key, value);
+        }
     }
 
     public Object get(String key) {
