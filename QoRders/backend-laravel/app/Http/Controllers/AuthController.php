@@ -15,14 +15,14 @@ class AuthController extends Controller
      public function register(Request $request)
      {
           $validator = Validator::make($request->all(), [
-          'role' => 'required|string|in:waiter,manager',
-          'firstName' => 'required|string|max:100',
-          'lastName' => 'required|string|max:100',
-          'email' => 'required|string|email|max:150|unique:' . ($request->role === 'waiter' ? 'Waiter' : 'Manager') . ',email',
-          'password' => 'required|string|min:6',
-          'repeatPassword' => 'required|same:password',
+               'role' => 'required|string|in:waiter,manager',
+               'firstName' => 'required|string|max:100',
+               'lastName' => 'required|string|max:100',
+               'email' => 'required|string|email|max:150|unique:' . ($request->role === 'waiter' ? 'Waiter' : 'Manager') . ',email',
+               'password' => 'required|string|min:6',
+               'repeatPassword' => 'required|same:password',
           ], [
-          'repeatPassword.same' => 'The repeatPassword must match the password.',
+               'repeatPassword.same' => 'The repeatPassword must match the password.',
           ]);
 
           if ($validator->fails()) {
@@ -33,6 +33,9 @@ class AuthController extends Controller
           }
 
           try {
+               // Generar el avatar_url utilizando el rol y el email
+               $avatarUrl = $this->generateAvatarUrl($request->role, $request->email);
+
                // Crear el usuario según el role
                $user = $request->role === 'waiter'
                     ? Waiter::create([
@@ -42,6 +45,7 @@ class AuthController extends Controller
                          'password' => Hash::make($request->password),
                          'waiter_uuid' => \Illuminate\Support\Str::uuid(),
                          'hire_date' => now()->toDateString(),
+                         'avatar_url' => $avatarUrl, // Añadir el avatar URL
                     ])
                     : Manager::create([
                          'firstName' => $request->firstName,
@@ -49,6 +53,7 @@ class AuthController extends Controller
                          'email' => $request->email,
                          'password' => Hash::make($request->password),
                          'manager_uuid' => \Illuminate\Support\Str::uuid(),
+                         'avatar_url' => $avatarUrl, // Añadir el avatar URL
                     ]);
 
                return response()->json([
@@ -63,9 +68,11 @@ class AuthController extends Controller
           }
      }
 
+
     // Login de usuarios
      public function login(Request $request)
      {
+          // Validar los datos de entrada
           $validator = Validator::make($request->all(), [
                'role' => 'required|string|in:waiter,manager',
                'email' => 'required|string|email',
@@ -80,31 +87,32 @@ class AuthController extends Controller
           }
 
           try {
-               $credentials = $request->only('email', 'password');
-
-               // Buscar usuario según el role
+               // Buscar usuario según el rol
                $user = $request->role === 'waiter'
                     ? Waiter::where('email', $request->email)->first()
                     : Manager::where('email', $request->email)->first();
 
-               if (!$user || !Hash::check($request->password, $user->password)) {
+               // Comprobar si el email existe
+               if (!$user) {
                     return response()->json([
-                         'message' => 'Unauthorized. Invalid email or password.',
-                    ], 401);
+                         'message' => 'The email address does not exist in our records.',
+                    ], 404); // HTTP 404 Not Found
                }
 
-               // Generar token con email y role
+               // Comprobar si la contraseña es incorrecta
+               if (!Hash::check($request->password, $user->password)) {
+                    return response()->json([
+                         'message' => 'The password is incorrect.',
+                    ], 401); // HTTP 401 Unauthorized
+               }
+
+               // Generar el token JWT
                $token = JWTAuth::claims([
                     'email' => $user->email,
                     'role' => $request->role,
                ])->fromUser($user);
 
-               // Log para verificar el contenido del token
-               \Log::info('Generated token payload:', [
-                    'token' => $token,
-                    'payload' => JWTAuth::setToken($token)->getPayload()->toArray(),
-               ]);
-
+               // Respuesta exitosa
                return response()->json([
                     "message" => "Login successful",
                     "token" => $token,
@@ -114,6 +122,7 @@ class AuthController extends Controller
                          "lastName" => $user->lastName,
                          "email" => $user->email,
                          "role" => $request->role,
+                         "avatar_url" => $user->avatar_url,
                     ],
                ], 200);
           } catch (\Exception $e) {
@@ -123,6 +132,7 @@ class AuthController extends Controller
                ], 500);
           }
      }
+
 
      // Obtener perfil del usuario autenticado
      public function me()
@@ -200,5 +210,11 @@ class AuthController extends Controller
                     'error' => $e->getMessage(),
                ], 500);
           }
+     }
+
+     private function generateAvatarUrl(string $role, string $email): string
+     {
+          $uniqueIdentifier = md5(strtolower(trim($role . $email))); // Crear identificador único
+          return "https://i.pravatar.cc/300?u={$uniqueIdentifier}";
      }
 }
