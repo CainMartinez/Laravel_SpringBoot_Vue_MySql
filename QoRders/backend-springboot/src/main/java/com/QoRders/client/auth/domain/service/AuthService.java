@@ -29,46 +29,46 @@ public class AuthService {
     private final AuthAssembler authAssembler;
 
     @Transactional
-public AuthResponse register(RegisterRequest registerRequest) {
-    // Validar que las contraseñas coincidan
-    if (!registerRequest.getPassword().equals(registerRequest.getRepeatPassword())) {
-        throw new IllegalArgumentException("Passwords do not match");
+    public AuthResponse register(RegisterRequest registerRequest) {
+        // Validar que las contraseñas coincidan
+        if (!registerRequest.getPassword().equals(registerRequest.getRepeatPassword())) {
+            throw new IllegalArgumentException("Passwords do not match");
+        }
+
+        // Comprobar si el email ya existe
+        if (clientRepository.findByEmail(registerRequest.getEmail()).isPresent()) {
+            throw new IllegalArgumentException("Email already in use");
+        }
+
+        // Crear usuario con los campos permitidos
+        var client = new ClientEntity();
+        client.setCustomerUuid(UUID.randomUUID().toString()); // Generar UUID único
+        client.setEmail(registerRequest.getEmail());
+        client.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
+        client.setFirstName(registerRequest.getFirstName());
+        client.setLastName(registerRequest.getLastName());
+
+        // Establecer valores predeterminados para otros campos
+        client.setBio(null);
+        client.setPhoneNumber(null);
+        client.setAvatarUrl("https://i.pravatar.cc/150?u=" + registerRequest.getFirstName());
+        client.setAge(null);
+        client.setAddress(null);
+        client.setIsActive(true);
+
+        var savedClient = clientRepository.save(client);
+
+        // Generar tokens
+        var accessToken = jwtProvider.generateAccessToken(savedClient.getEmail());
+        var refreshToken = jwtProvider.generateRefreshToken(savedClient.getEmail());
+
+        // Guardar el refresh token en el usuario
+        savedClient.setRefreshToken(refreshToken);
+        clientRepository.save(savedClient);
+
+        // Retornar respuesta
+        return authAssembler.toAuthResponse(savedClient, accessToken, refreshToken);
     }
-
-    // Comprobar si el email ya existe
-    if (clientRepository.findByEmail(registerRequest.getEmail()).isPresent()) {
-        throw new IllegalArgumentException("Email already in use");
-    }
-
-    // Crear usuario con los campos permitidos
-    var client = new ClientEntity();
-    client.setCustomerUuid(UUID.randomUUID().toString()); // Generar UUID único
-    client.setEmail(registerRequest.getEmail());
-    client.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
-    client.setFirstName(registerRequest.getFirstName());
-    client.setLastName(registerRequest.getLastName());
-
-    // Establecer valores predeterminados para otros campos
-    client.setBio(null);
-    client.setPhoneNumber(null);
-    client.setAvatarUrl("https://i.pravatar.cc/150?u=" + registerRequest.getFirstName());
-    client.setAge(null);
-    client.setAddress(null);
-    client.setIsActive(true);
-
-    var savedClient = clientRepository.save(client);
-
-    // Generar tokens
-    var accessToken = jwtProvider.generateAccessToken(savedClient.getEmail());
-    var refreshToken = jwtProvider.generateRefreshToken(savedClient.getEmail());
-
-    // Guardar el refresh token en el usuario
-    savedClient.setRefreshToken(refreshToken);
-    clientRepository.save(savedClient);
-
-    // Retornar respuesta
-    return authAssembler.toAuthResponse(savedClient, accessToken, refreshToken);
-}
 
     @Transactional
     public AuthResponse login(LoginRequest loginRequest) {
