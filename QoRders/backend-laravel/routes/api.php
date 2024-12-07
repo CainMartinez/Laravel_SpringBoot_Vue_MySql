@@ -26,6 +26,7 @@ Route::group(['prefix' => 'auth'], function () {
         Route::post('/waiter/logout', [AuthController::class, 'logout']); // Logout para Waiter
         Route::post('/waiter/refresh', [AuthController::class, 'refresh']); // Refrescar token para Waiter
         Route::get('/waiter/me', [AuthController::class, 'me']); // Perfil del Waiter
+        // Router::put('/waiter/update', [AuthController::class, 'update']); // Actualizar perfil del Waiter
     });
 
     // Rutas para Manager
@@ -33,6 +34,7 @@ Route::group(['prefix' => 'auth'], function () {
         Route::post('/manager/logout', [AuthController::class, 'logout']); // Logout para Manager
         Route::post('/manager/refresh', [AuthController::class, 'refresh']); // Refrescar token para Manager
         Route::get('/manager/me', [AuthController::class, 'me']); // Perfil del Manager
+        // Router::put('/manager/update', [AuthController::class, 'update']); // Actualizar perfil del Manager
     });
 });
 
@@ -71,22 +73,6 @@ Route::prefix('bookings')->group(function () {
     Route::post('/', [BookingController::class, 'store']); // Crear una nueva reserva
     Route::put('/{uuid}', [BookingController::class, 'update']); // Actualizar una reserva por UUID
     Route::put('/{uuid}/unable', [BookingController::class, 'unable']); // Desactivar una reserva
-});
-
-Route::get('/redis-test-set', function () {
-    // Guardar datos en Redis
-    Redis::set('test_key', json_encode(['message' => 'Hello Redis!']));
-    Redis::expire('test_key', 60); // Clave expira en 60 segundos
-    return response()->json(['status' => 'Data stored successfully in Redis']);
-});
-
-Route::get('/redis-test-get', function () {
-    // Recuperar datos desde Redis
-    $data = Redis::get('test_key');
-    if ($data) {
-        return response()->json(['status' => 'Data retrieved from Redis', 'data' => json_decode($data, true)]);
-    }
-    return response()->json(['status' => 'No data found for key']);
 });
 
 // Ruta para crear una donación

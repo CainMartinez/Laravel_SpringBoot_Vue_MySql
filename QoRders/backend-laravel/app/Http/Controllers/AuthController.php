@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
+use Illuminate\Support\Facades\Redis;
 
 class AuthController extends Controller
 {
@@ -45,7 +46,7 @@ class AuthController extends Controller
                          'password' => Hash::make($request->password),
                          'waiter_uuid' => \Illuminate\Support\Str::uuid(),
                          'hire_date' => now()->toDateString(),
-                         'avatar_url' => $avatarUrl, // Añadir el avatar URL
+                         'avatar_url' => $avatarUrl,
                     ])
                     : Manager::create([
                          'firstName' => $request->firstName,
@@ -53,12 +54,20 @@ class AuthController extends Controller
                          'email' => $request->email,
                          'password' => Hash::make($request->password),
                          'manager_uuid' => \Illuminate\Support\Str::uuid(),
-                         'avatar_url' => $avatarUrl, // Añadir el avatar URL
+                         'avatar_url' => $avatarUrl,
                     ]);
 
+               // // Guardar los datos del usuario en Redis
+               // $redisKey = 'register_' . $request->role;
+               // $redisData = [
+               //      $request->role => $user,
+               // ];
+
+               // Redis::set($redisKey, json_encode($redisData));
+               // Redis::expire($redisKey, 300); // Expira en 5 minutos
+
                return response()->json([
-                    'message' => ucfirst($request->role) . ' registered successfully',
-                    'user' => $user,
+                    'message' => ucfirst($request->role) . ' registered successfully: ' . $request->email,
                ], 201);
           } catch (\Exception $e) {
                return response()->json([
@@ -68,8 +77,7 @@ class AuthController extends Controller
           }
      }
 
-
-    // Login de usuarios
+     // Login de usuarios
      public function login(Request $request)
      {
           // Validar los datos de entrada
@@ -112,18 +120,22 @@ class AuthController extends Controller
                     'role' => $request->role,
                ])->fromUser($user);
 
+               // Crear clave para Redis y datos del usuario
+               $redisKey = "logged_{$request->role}_{$user->email}";
+               // Convertir el modelo a un array con todos los campos
+               $redisData = [
+                    $request->role => $user,
+                    'token' => $token,
+               ];
+
+               // Guardar en Redis con TTL igual a JWT_TTL
+               $ttl = config('jwt.ttl') * 60; // Convertir minutos a segundos
+               Redis::set($redisKey, json_encode($redisData));
+               Redis::expire($redisKey, $ttl);
+
                // Respuesta exitosa
                return response()->json([
-                    "message" => "Login successful",
-                    "token" => $token,
-                    "user" => [
-                         "uuid" => $request->role === 'waiter' ? $user->waiter_uuid : $user->manager_uuid,
-                         "firstName" => $user->firstName,
-                         "lastName" => $user->lastName,
-                         "email" => $user->email,
-                         "role" => $request->role,
-                         "avatar_url" => $user->avatar_url,
-                    ],
+                    "message" => "Login successful for {$request->role}: laravel_{$redisKey}",
                ], 200);
           } catch (\Exception $e) {
                return response()->json([
@@ -133,30 +145,35 @@ class AuthController extends Controller
           }
      }
 
-
      // Obtener perfil del usuario autenticado
      public function me()
      {
           try {
+               // Obtener el payload del token JWT
                $payload = JWTAuth::getPayload();
-               $role = $payload->get('role');
-               $email = $payload->get('email');
+               $role = $payload->get('role'); // Obtener el rol del token
+               $email = $payload->get('email'); // Obtener el email del token
 
-               $user = $role === 'waiter'
-                    ? Waiter::where('email', $email)->first()
-                    : Manager::where('email', $email)->first();
+               // Generar la clave de Redis
+               $redisKey = "logged_{$role}_{$email}";
 
-               if (!$user) {
-                    return response()->json(['message' => 'User not found'], 404);
+               // Comprobar si la clave existe en Redis
+               if (Redis::exists($redisKey)) {
+                    return response()->json([
+                         'message' => 'User data is available in Redis for: laravel_' . $redisKey,
+                    ], 200);
                }
 
+               // Si no se encuentra la clave en Redis
                return response()->json([
-                    'message' => 'User profile retrieved successfully',
-                    'user' => $user,
-                    'role' => $role,
-               ], 200);
+                    'message' => 'User data not found in Redis.',
+               ], 404);
           } catch (\Exception $e) {
-               return response()->json(['error' => $e->getMessage()], 500);
+               // Manejar errores y excepciones
+               return response()->json([
+                    'error' => 'An error occurred while verifying data in Redis.',
+                    'details' => $e->getMessage(),
+               ], 500);
           }
      }
 
@@ -185,25 +202,50 @@ class AuthController extends Controller
           }
      }
 
-
      // Logout de usuarios
      public function logout()
      {
           try {
+               // Obtener el token del encabezado de la solicitud
                $token = JWTAuth::getToken();
 
+               // Verificar que el token exista
                if (!$token) {
                     return response()->json([
                          'message' => 'No token provided',
                     ], 400);
                }
 
-               JWTAuth::invalidate($token);
+               // Obtener el payload del token
+               $payload = JWTAuth::getPayload();
+               $role = $payload->get('role'); // Obtener el rol del token
+               $email = $payload->get('email'); // Obtener el email del token
 
-               return response()->json([
-                    'message' => 'Logout successful',
-               ], 200);
+               // Generar la clave en Redis
+               $redisKey = "logged_{$role}_{$email}";
+
+               // Eliminar el registro de Redis
+               if (Redis::exists($redisKey)) {
+                    if(Redis::del($redisKey)){ // Borra la clave de Redis
+                         // Invalidar el token
+                         JWTAuth::invalidate($token);
+
+                         return response()->json([
+                              'message' => 'Logout successful and Redis data cleared for: laravel_' . $redisKey,
+                         ], 200);
+                    }else{
+                         return response()->json([
+                              'message' => 'Error deleting Redis data.',
+                         ], 500);
+                    }
+               }else{
+                    return response()->json([
+                         'message' => 'User data not found in Redis.',
+                    ], 404);
+               }
+
           } catch (\Exception $e) {
+               // Manejar errores y excepciones
                \Log::error('Error during logout:', ['error' => $e->getMessage()]);
                return response()->json([
                     'message' => 'An unexpected error occurred during logout.',
