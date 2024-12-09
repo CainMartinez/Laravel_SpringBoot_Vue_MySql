@@ -50,10 +50,6 @@ public class AuthServiceImpl implements AuthService {
 
         var savedClient = clientRepository.save(client);
 
-        // Guardar credenciales en Redis
-        String redisKey = "email:password:" + savedClient.getEmail();
-        redisService.save(redisKey, savedClient.getPassword(), 0);
-
         // Generar tokens
         var accessToken = jwtProvider.generateAccessToken(savedClient.getEmail());
         var refreshToken = jwtProvider.generateRefreshToken(savedClient.getEmail());
@@ -66,33 +62,29 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     @Transactional
-    public AuthResponse login(LoginRequest loginRequest) {
-        String redisKey = "email:password:" + loginRequest.getEmail();
-        String hashedPassword = (String) redisService.get(redisKey);
-
-        if (hashedPassword == null) {
-            var client = clientRepository.findByEmail(loginRequest.getEmail())
-                    .orElseThrow(() -> new IllegalArgumentException("Invalid email or password"));
-            if (!passwordEncoder.matches(loginRequest.getPassword(), client.getPassword())) {
-                throw new IllegalArgumentException("Invalid email or password");
-            }
-            redisService.save(redisKey, client.getPassword(), 0);
-            hashedPassword = client.getPassword();
-        } else if (!passwordEncoder.matches(loginRequest.getPassword(), hashedPassword)) {
-            throw new IllegalArgumentException("Invalid email or password");
-        }
-
-        var accessToken = jwtProvider.generateAccessToken(loginRequest.getEmail());
-        var refreshToken = jwtProvider.generateRefreshToken(loginRequest.getEmail());
-
+        public AuthResponse login(LoginRequest loginRequest) {
+        // Buscar el cliente en la base de datos
         var client = clientRepository.findByEmail(loginRequest.getEmail())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid email or password"));
+    
+        // Comprobar si la contraseña es incorrecta
+        if (!passwordEncoder.matches(loginRequest.getPassword(), client.getPassword())) {
+            throw new IllegalArgumentException("Invalid email or password");
+        }
+    
+        // Generar tokens
+        var accessToken = jwtProvider.generateAccessToken(loginRequest.getEmail());
+        var refreshToken = jwtProvider.generateRefreshToken(loginRequest.getEmail());
+    
+        // Guardar el refresh token en el cliente
         client.setRefreshToken(refreshToken);
         clientRepository.save(client);
-
+    
+        // Guardar el access token en Redis
         String accessTokenKey = "access:token:" + loginRequest.getEmail();
         redisService.save(accessTokenKey, accessToken, jwtProvider.getAccessTokenExpiration() / 1000);
-
+    
+        // Retornar la respuesta de autenticación
         return authAssembler.toAuthResponse(client, accessToken, refreshToken);
     }
 
