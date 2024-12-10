@@ -9,7 +9,7 @@ import lombok.Setter;
 @Builder
 public class AuthResponse {
 
-    private String accessToken;
+    private String token;
     private String email;
     private String firstName;
     private String lastName;

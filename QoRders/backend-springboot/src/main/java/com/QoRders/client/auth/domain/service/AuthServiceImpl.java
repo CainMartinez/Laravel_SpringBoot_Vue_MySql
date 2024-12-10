@@ -15,6 +15,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -30,7 +32,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     @Transactional
-    public AuthResponse register(RegisterRequest registerRequest) {
+    public void register(RegisterRequest registerRequest) {
         // Validar contraseñas y guardar cliente
         if (!registerRequest.getPassword().equals(registerRequest.getRepeatPassword())) {
             throw new IllegalArgumentException("Passwords do not match");
@@ -48,64 +50,75 @@ public class AuthServiceImpl implements AuthService {
         client.setAvatarUrl("https://i.pravatar.cc/150?u=" + registerRequest.getFirstName());
         client.setIsActive(true);
 
-        var savedClient = clientRepository.save(client);
-
-        // Generar tokens
-        var accessToken = jwtProvider.generateAccessToken(savedClient.getEmail());
-        var refreshToken = jwtProvider.generateRefreshToken(savedClient.getEmail());
-
-        savedClient.setRefreshToken(refreshToken);
-        clientRepository.save(savedClient);
-
-        return authAssembler.toAuthResponse(savedClient, accessToken, refreshToken);
+        clientRepository.save(client);
     }
 
     @Override
     @Transactional
-        public AuthResponse login(LoginRequest loginRequest) {
+    public String login(LoginRequest loginRequest) {
         // Buscar el cliente en la base de datos
         var client = clientRepository.findByEmail(loginRequest.getEmail())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid email or password"));
-    
+
         // Comprobar si la contraseña es incorrecta
         if (!passwordEncoder.matches(loginRequest.getPassword(), client.getPassword())) {
             throw new IllegalArgumentException("Invalid email or password");
         }
-    
+
         // Generar tokens
         var accessToken = jwtProvider.generateAccessToken(loginRequest.getEmail());
         var refreshToken = jwtProvider.generateRefreshToken(loginRequest.getEmail());
-    
+
         // Guardar el refresh token en el cliente
         client.setRefreshToken(refreshToken);
         clientRepository.save(client);
-    
-        // Guardar el access token en Redis
-        String accessTokenKey = "access:token:" + loginRequest.getEmail();
-        redisService.save(accessTokenKey, accessToken, jwtProvider.getAccessTokenExpiration() / 1000);
-    
+
+        // Crear la clave de Redis
+        String redisKey = "springboot_logged_customer_" + loginRequest.getEmail();
+
+        // Crear los datos para guardar en Redis
+        Map<String, Object> redisData = new HashMap<>();
+        redisData.put("customer", client);
+        redisData.put("token", accessToken);
+
+        // Calcular el TTL del token en segundos
+        long ttl = jwtProvider.getAccessTokenExpiration() / 1000;
+
+        // Guardar en Redis con TTL
+        redisService.save(redisKey, redisData, ttl);
+
         // Retornar la respuesta de autenticación
-        return authAssembler.toAuthResponse(client, accessToken, refreshToken);
+        return authAssembler.toTokenResponse(accessToken);
     }
 
     @Override
     @Transactional
     public void logout(String accessToken) {
         try {
+            // Verificar si el token es del tipo Bearer y limpiarlo
             if (accessToken.startsWith("Bearer ")) {
                 accessToken = accessToken.substring(7);
             }
+
+            // Verificar si el token ya está en la blacklist
             if (jwtProvider.isTokenBlacklisted(accessToken)) {
                 throw new IllegalArgumentException("Token ya está en la blacklist");
             }
 
+            // Añadir el token a la blacklist
             var tokenEntity = jwtProvider.invalidateRefreshToken(accessToken);
             blacklistTokenRepository.save(tokenEntity);
 
-            String accessTokenKey = "access:token:" + jwtProvider.parseAccessToken(accessToken);
-            redisService.delete(accessTokenKey);
+            // Obtener el email del cliente desde el token
+            String email = jwtProvider.parseAccessToken(accessToken);
+
+            // Clave para Redis
+            String redisKey = "springboot_logged_customer_" + email;
+
+            // Eliminar el registro completo en Redis
+            redisService.delete(redisKey);
         } catch (Exception e) {
-            throw new IllegalArgumentException("Invalid token", e);
+            throw new IllegalArgumentException("Invalid token during logout", e);
         }
     }
 
@@ -132,6 +145,6 @@ public class AuthServiceImpl implements AuthService {
         String accessTokenKey = "access:token:" + email;
         redisService.save(accessTokenKey, newAccessToken, jwtProvider.getAccessTokenExpiration() / 1000);
 
-        return authAssembler.toAuthResponse(client, newAccessToken, refreshToken);
+        return authAssembler.toAuthResponse(client, newAccessToken);
     }
 }

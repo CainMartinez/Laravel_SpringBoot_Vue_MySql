@@ -4,7 +4,13 @@ import com.QoRders.client.auth.api.request.LoginRequest;
 import com.QoRders.client.auth.api.request.RegisterRequest;
 import com.QoRders.client.auth.api.response.AuthResponse;
 import com.QoRders.client.auth.domain.service.AuthService;
+
 import lombok.RequiredArgsConstructor;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,21 +25,25 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/register")
-    public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest registerDto) {
-        var authResponse = authService.register(registerDto);
-        return ResponseEntity.ok(authResponse);
+    public ResponseEntity<Map<String, String>> register(@Valid @RequestBody RegisterRequest registerDto) {
+        authService.register(registerDto);
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Customer registered successfully.");
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest loginDto) {
+    public ResponseEntity<String> login(@Valid @RequestBody LoginRequest loginDto) {
         var authResponse = authService.login(loginDto);
         return ResponseEntity.ok(authResponse);
     }
 
-    @PostMapping("/logout")
-    public ResponseEntity<Void> logout(@RequestHeader("Authorization") String accessToken) {
+    @PostMapping("/customer/logout")
+    public ResponseEntity<Map<String, String>> logout(@RequestHeader("Authorization") String accessToken) {
         authService.logout(accessToken);
-        return ResponseEntity.noContent().build();
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Customer logged out successfully.");
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/refresh")

@@ -8,12 +8,16 @@ import org.springframework.stereotype.Component;
 @Component
 public class AuthAssembler {
 
-    public AuthResponse toAuthResponse(ClientEntity user, String accessToken, String refreshToken) {
+    public AuthResponse toAuthResponse(ClientEntity user, String accessToken) {
         return AuthResponse.builder()
                 .email(user.getEmail())
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
-                .accessToken(accessToken)
+                .token(accessToken)
                 .build();
+    }
+
+    public String toTokenResponse(String accessToken) {
+        return accessToken;
     }
 }
