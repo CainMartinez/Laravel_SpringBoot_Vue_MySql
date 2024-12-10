@@ -57,17 +57,8 @@ class AuthController extends Controller
                          'avatar_url' => $avatarUrl,
                     ]);
 
-               // // Guardar los datos del usuario en Redis
-               // $redisKey = 'register_' . $request->role;
-               // $redisData = [
-               //      $request->role => $user,
-               // ];
-
-               // Redis::set($redisKey, json_encode($redisData));
-               // Redis::expire($redisKey, 300); // Expira en 5 minutos
-
                return response()->json([
-                    'message' => ucfirst($request->role) . ' registered successfully: ' . $request->email,
+                    'message' => ucfirst($request->role) . ' registered successfully.',
                ], 201);
           } catch (\Exception $e) {
                return response()->json([
@@ -134,9 +125,7 @@ class AuthController extends Controller
                Redis::expire($redisKey, $ttl);
 
                // Respuesta exitosa
-               return response()->json([
-                    "message" => "Login successful for {$request->role}: laravel_{$redisKey}",
-               ], 200);
+               return response()->json($token, 200);
           } catch (\Exception $e) {
                return response()->json([
                     'message' => 'An unexpected error occurred during login.',
@@ -159,9 +148,11 @@ class AuthController extends Controller
 
                // Comprobar si la clave existe en Redis
                if (Redis::exists($redisKey)) {
-                    return response()->json([
-                         'message' => 'User data is available in Redis for: laravel_' . $redisKey,
-                    ], 200);
+                    // Obtener los datos del usuario de Redis
+                    $userData = json_decode(Redis::get($redisKey), true);
+                    return response()->json(
+                         $userData,
+                    200);
                }
 
                // Si no se encuentra la clave en Redis
@@ -231,7 +222,7 @@ class AuthController extends Controller
                          JWTAuth::invalidate($token);
 
                          return response()->json([
-                              'message' => 'Logout successful and Redis data cleared for: laravel_' . $redisKey,
+                              'message' => $role . ' logged out successfully.',
                          ], 200);
                     }else{
                          return response()->json([
