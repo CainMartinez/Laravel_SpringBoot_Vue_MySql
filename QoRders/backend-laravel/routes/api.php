@@ -26,7 +26,7 @@ Route::group(['prefix' => 'auth'], function () {
         Route::post('/waiter/logout', [AuthController::class, 'logout']); // Logout para Waiter
         Route::post('/waiter/refresh', [AuthController::class, 'refresh']); // Refrescar token para Waiter
         Route::get('/waiter/me', [AuthController::class, 'me']); // Perfil del Waiter
-        // Router::put('/waiter/update', [AuthController::class, 'update']); // Actualizar perfil del Waiter
+        Route::put('/waiter/update', [AuthController::class, 'updateWaiter']); // Actualizar perfil del Waiter
     });
 
     // Rutas para Manager
@@ -34,7 +34,7 @@ Route::group(['prefix' => 'auth'], function () {
         Route::post('/manager/logout', [AuthController::class, 'logout']); // Logout para Manager
         Route::post('/manager/refresh', [AuthController::class, 'refresh']); // Refrescar token para Manager
         Route::get('/manager/me', [AuthController::class, 'me']); // Perfil del Manager
-        // Router::put('/manager/update', [AuthController::class, 'update']); // Actualizar perfil del Manager
+        Route::put('/manager/update', [AuthController::class, 'updateManager']); // Actualizar perfil del Manager
     });
 });
 
