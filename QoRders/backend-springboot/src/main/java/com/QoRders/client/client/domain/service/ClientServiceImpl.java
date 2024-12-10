@@ -12,6 +12,8 @@ import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -25,30 +27,77 @@ public class ClientServiceImpl implements ClientService {
     private final JwtProvider jwtProvider;
 
     @Override
-    public ClientEntity getProfile(String email, String token) {
-        String redisKey = "client:" + email;
-        ClientEntity client = (ClientEntity) redisService.get(redisKey);
-        if (client != null) {
-            return client;
+    public Map<String, Object> getProfile(String token) {
+        // Extraer el email desde el token
+        String email = extractEmailFromToken(token);
+
+        // Generar la clave de Redis
+        String redisKey = "springboot_logged_customer_" + email;
+
+        // Obtener los datos de Redis
+        @SuppressWarnings("unchecked")
+        Map<String, Object> redisData = (Map<String, Object>) redisService.get(redisKey);
+
+        if (redisData == null) {
+            throw new ClientNotFoundException("Client data not found in Redis for email: " + email);
         }
 
-        client = clientRepository.findByEmail(email)
-                .orElseThrow(() -> new ClientNotFoundException("Client not found with email: " + email));
-        long ttlInSeconds = jwtProvider.getAccessTokenExpirationInSeconds();
-        redisService.save(redisKey, client, ttlInSeconds);
+        // Retornar los datos sin @class
+        return cleanRedisData(redisData);
+    }
 
-        return client;
+    /**
+     * Elimina las referencias a @class del mapa de Redis.
+     *
+     * @param redisData Datos obtenidos desde Redis.
+     * @return Datos limpios sin referencias a @class.
+     */
+    @SuppressWarnings("unchecked")
+    private Map<String, Object> cleanRedisData(Map<String, Object> redisData) {
+        // Crear un mapa limpio
+        Map<String, Object> cleanData = new HashMap<>();
+
+        redisData.forEach((key, value) -> {
+            if (value instanceof Map) {
+                cleanData.put(key, cleanRedisData((Map<String, Object>) value)); // Limpiar mapas anidados
+            } else {
+                cleanData.put(key, value);
+            }
+        });
+
+        return cleanData;
+    }
+
+    /**
+     * Extrae el email del token JWT.
+     *
+     * @param token El token JWT.
+     * @return El email extraído del token.
+     */
+    private String extractEmailFromToken(String token) {
+        if (token.startsWith("Bearer ")) {
+            token = token.substring(7);
+        }
+        return jwtProvider.parseAccessToken(token);
     }
 
     @Override
     @Transactional
-    public ClientEntity updateProfile(ClientEntity client, String token) {
-        ClientEntity updatedClient = clientRepository.save(client);
-        String redisKey = "client:" + client.getEmail();
-        long ttlInSeconds = jwtProvider.getAccessTokenExpirationInSeconds();
-        redisService.save(redisKey, updatedClient, ttlInSeconds);
+    public Map<String, Object> updateProfile(ClientEntity client, String token) {
+        // Actualizar el cliente en la base de datos
+        var updatedClient = clientRepository.save(client);
 
-        return updatedClient;
+        // Sobrescribir los datos en Redis
+        String redisKey = "springboot_logged_customer_" + client.getEmail();
+        Map<String, Object> redisData = new HashMap<>();
+        redisData.put("customer", updatedClient);
+        redisData.put("token", token);
+        long ttl = jwtProvider.getAccessTokenExpirationInSeconds();
+
+        redisService.save(redisKey, redisData, ttl);
+
+        // Retornar los datos actualizados
+        return redisData;
     }
 
     @Override

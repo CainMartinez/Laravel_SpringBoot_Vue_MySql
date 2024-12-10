@@ -3,12 +3,16 @@ package com.QoRders.client.client.api.controller;
 import com.QoRders.client.auth.api.security.authorization.CheckSecurity;
 import com.QoRders.client.client.api.assembler.ClientAssembler;
 import com.QoRders.client.client.api.request.ClientUpdateRequest;
-import com.QoRders.client.client.api.response.ClientResponse;
 import com.QoRders.client.client.domain.entity.ClientEntity;
 import com.QoRders.client.client.domain.service.ClientService;
 
 import lombok.RequiredArgsConstructor;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -29,18 +33,10 @@ public class ClientController {
      */
     @GetMapping
     @CheckSecurity.Protected.canManage
-    public ClientResponse getCurrentClient(@RequestHeader("Authorization") String authorization) {
-        try {
-            // Extract email from token and retrieve the client profile
-            String token = authorization.replace("Bearer ", "");
-            String email = clientService.getCurrentClient().getEmail();
-
-            ClientEntity client = clientService.getProfile(email, token);
-            return clientAssembler.toResponse(client);
-        } catch (IllegalArgumentException e) {
-            // Handle the case where no client is authenticated or found
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "No client authenticated");
-        }
+    public ResponseEntity<Map<String, Object>> getCurrentClient(@RequestHeader("Authorization") String authorization) {
+        String token = authorization.replace("Bearer ", "");
+        Map<String, Object> redisData = clientService.getProfile(token);
+        return ResponseEntity.ok(clientAssembler.toResponse(redisData));
     }
 
     /**
@@ -52,21 +48,29 @@ public class ClientController {
      */
     @PutMapping
     @CheckSecurity.Protected.canManage
-    public ClientResponse updateCurrentClient(
+    public ResponseEntity<Map<String, Object>> updateCurrentClient(
             @RequestHeader("Authorization") String authorization,
             @RequestBody ClientUpdateRequest clientUpdateDto) {
         try {
-            // Extract email from token and retrieve the current client
+            // Extraer el token del encabezado
             String token = authorization.replace("Bearer ", "");
+
+            // Obtener el cliente actual
             ClientEntity currentClient = clientService.getCurrentClient();
 
-            // Update the current client's details
+            // Actualizar los detalles del cliente
             clientAssembler.copyToEntity(clientUpdateDto, currentClient);
-            ClientEntity updatedClient = clientService.updateProfile(currentClient, token);
+            Map<String, Object> updatedData = clientService.updateProfile(currentClient, token);
 
-            return clientAssembler.toResponse(updatedClient);
+            // Construir la respuesta en el formato deseado
+            Map<String, Object> response = new HashMap<>();
+            response.put("message", "Customer updated successfully");
+            response.put("customer", updatedData.get("customer"));
+            response.put("token", updatedData.get("token"));
+
+            return ResponseEntity.ok(response);
         } catch (IllegalArgumentException e) {
-            // Handle the case where no client is authenticated or found
+            // Manejar el caso donde no haya cliente autenticado o encontrado
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "No client authenticated");
         }
     }

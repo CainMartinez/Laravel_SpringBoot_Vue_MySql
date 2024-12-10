@@ -1,59 +1,56 @@
 package com.QoRders.client.client.api.assembler;
 
+import com.QoRders.client.client.api.request.ClientUpdateRequest;
+import com.QoRders.client.client.domain.entity.ClientEntity;
 import org.springframework.stereotype.Component;
 
-import com.QoRders.client.client.api.request.ClientUpdateRequest;
-import com.QoRders.client.client.api.response.ClientResponse;
-import com.QoRders.client.client.domain.entity.ClientEntity;
-
-import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.Map;
 
 @Component
 public class ClientAssembler {
 
-    @SuppressWarnings("unused")
-    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-
-    public ClientResponse toResponse(ClientEntity customer) {
-        return ClientResponse.builder()
-                .uuid(customer.getCustomerUuid())
-                .firstName(customer.getFirstName())
-                .lastName(customer.getLastName())
-                .email(customer.getEmail())
-                .phoneNumber(customer.getPhoneNumber())
-                .bio(customer.getBio())
-                .avatarUrl(customer.getAvatarUrl())
-                .age(customer.getAge())
-                .address(customer.getAddress())
-                .hasCoupon(customer.getHasCoupon())
-                .loyaltyPoints(customer.getLoyaltyPoints())
-                .isActive(customer.getIsActive())
-                .createdAt(customer.getCreatedAt() != null ? customer.getCreatedAt().toString() : null)
-                .updatedAt(customer.getUpdatedAt() != null ? customer.getUpdatedAt().toString() : null)
-                .build();
+    /**
+     * Construye una respuesta a partir de los datos almacenados en Redis.
+     *
+     * @param redisData Datos recuperados de Redis.
+     * @return Mapa de respuesta con mensaje, cliente y token.
+     */
+    public Map<String, Object> toResponse(Map<String, Object> redisData) {
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", "Customer data retrieved successfully");
+        response.put("customer", redisData.get("customer"));
+        response.put("token", redisData.get("token"));
+        return response;
     }
 
-    public void copyToEntity(ClientUpdateRequest clientUpdateDto, ClientEntity customer) {
-        if (clientUpdateDto.getFirstName() != null) {
-            customer.setFirstName(clientUpdateDto.getFirstName());
+    /**
+     * Copia los datos de un `ClientUpdateRequest` al objeto `ClientEntity`.
+     *
+     * @param clientUpdateRequest Objeto que contiene los datos a actualizar.
+     * @param client              Entidad del cliente que se actualizará.
+     */
+    public void copyToEntity(ClientUpdateRequest clientUpdateRequest, ClientEntity client) {
+        if (clientUpdateRequest.getFirstName() != null) {
+            client.setFirstName(clientUpdateRequest.getFirstName());
         }
-        if (clientUpdateDto.getLastName() != null) {
-            customer.setLastName(clientUpdateDto.getLastName());
+        if (clientUpdateRequest.getLastName() != null) {
+            client.setLastName(clientUpdateRequest.getLastName());
         }
-        if (clientUpdateDto.getBio() != null) {
-            customer.setBio(clientUpdateDto.getBio());
+        if (clientUpdateRequest.getBio() != null) {
+            client.setBio(clientUpdateRequest.getBio());
         }
-        if (clientUpdateDto.getAvatarUrl() != null) {
-            customer.setAvatarUrl(clientUpdateDto.getAvatarUrl());
+        if (clientUpdateRequest.getAvatarUrl() != null) {
+            client.setAvatarUrl(clientUpdateRequest.getAvatarUrl());
         }
-        if (clientUpdateDto.getPhoneNumber() != null) {
-            customer.setPhoneNumber(clientUpdateDto.getPhoneNumber());
+        if (clientUpdateRequest.getPhoneNumber() != null) {
+            client.setPhoneNumber(clientUpdateRequest.getPhoneNumber());
         }
-        if (clientUpdateDto.getAge() != null) {
-            customer.setAge(clientUpdateDto.getAge());
+        if (clientUpdateRequest.getAge() != null) {
+            client.setAge(clientUpdateRequest.getAge());
         }
-        if (clientUpdateDto.getAddress() != null) {
-            customer.setAddress(clientUpdateDto.getAddress());
+        if (clientUpdateRequest.getAddress() != null) {
+            client.setAddress(clientUpdateRequest.getAddress());
         }
     }
 }
