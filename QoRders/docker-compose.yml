@@ -96,7 +96,7 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - ./backend-resend:/app
+      - ./resend-express:/app
       - /app/node_modules
     depends_on:
       - mysql
