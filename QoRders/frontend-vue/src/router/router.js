@@ -50,8 +50,7 @@ const routes = [
         component: () => import('../pages/AuthPage.vue'),
         beforeEnter: (to, from, next) => {
             const store = useStore();
-            console.log(store.getters['storeAuth/isAuthenticated']);
-            if (store.getters['storeAuth/isAuthenticated']) {
+            if (store.getters['storeAuth/getIsAuthenticated']) {
                 next('/');
             } else {
                 next();
@@ -64,14 +63,16 @@ const routes = [
         component: ReactWrapper,
     },
     {
-        path: '/profile-client',
-        name: 'ClientDashboard',
+        path: '/profile',
+        name: 'ClientProfile',
         component: () => import('../pages/ClientProfilePage.vue'),
         beforeEnter: (to, from, next) => {
             const store = useStore();
+            const isAuthenticated = store.getters['storeAuth/getIsAuthenticated'];
             const userType = store.getters['storeAuth/getUserType'];
-            console.log(userType);
-            if (userType === 'client') {
+            console.log('isAuthenticated:', isAuthenticated);
+            console.log('userType:', userType);
+            if (isAuthenticated && userType === 'client') {
                 next();
             } else {
                 next('/');
@@ -84,9 +85,11 @@ const routes = [
         component: () => import('../pages/WaiterDashboardPage.vue'),
         beforeEnter: (to, from, next) => {
             const store = useStore();
+            const isAuthenticated = store.getters['storeAuth/getIsAuthenticated'];
             const userType = store.getters['storeAuth/getUserType'];
-            console.log(userType);
-            if (userType === 'waiter') {
+            console.log('isAuthenticated:', isAuthenticated);
+            console.log('userType:', userType);
+            if (isAuthenticated && userType === 'waiter') {
                 next();
             } else {
                 next('/');
@@ -99,9 +102,11 @@ const routes = [
         component: () => import('../pages/ManagerDashboardPage.vue'),
         beforeEnter: (to, from, next) => {
             const store = useStore();
+            const isAuthenticated = store.getters['storeAuth/getIsAuthenticated'];
             const userType = store.getters['storeAuth/getUserType'];
-            console.log(userType);
-            if (userType === 'manager') {
+            console.log('isAuthenticated:', isAuthenticated);
+            console.log('userType:', userType);
+            if (isAuthenticated && userType === 'manager') {
                 next();
             } else {
                 next('/');
@@ -113,6 +118,23 @@ const routes = [
 const router = createRouter({
     history: createWebHistory(),
     routes,
+});
+
+router.beforeEach(async (to, from, next) => {
+    const store = useStore();
+    const isAuthenticated = store.getters['storeAuth/getIsAuthenticated'];
+    console.log('isAuthenticated:', isAuthenticated);
+    const token = store.getters['storeAuth/getToken'];
+    console.log('token:', token);
+
+    if (isAuthenticated && token) {
+        await store.dispatch('storeAuth/populate');
+        next();
+    } else if (to.meta.requiresAuth) {
+        // next({ name: 'Iniciar sesión' });
+    } else {
+        next();
+    }
 });
 
 export default router;
