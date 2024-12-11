@@ -45,22 +45,14 @@ const WaiterService = {
     },
 
     // Método para obtener los datos del camarero autenticado
-    async getMe() {
+    async getCurrentUser(token) {
         try {
-            const response = await api_laravel.get('/auth/waiter/me');
+            const response = await api_laravel.get('/auth/waiter/me', {
+                headers: { Authorization: `Bearer ${token}` },
+            });
             return response.data;
         } catch (error) {
             console.error("Error al obtener los datos del camarero:", error);
-            throw error;
-        }
-    },
-
-    async refresh() {
-        try {
-            const response = await api_laravel.post('/auth/waiter/refresh');
-            return response.data;
-        } catch (error) {
-            console.error("Error al actualizar el token del camarero:", error);
             throw error;
         }
     }

@@ -43,22 +43,14 @@ const ManagerService = {
     },
 
     // Método para obtener los datos del gerente autenticado
-    async getMe() {
+    async getCurrentUser(token) {
         try {
-            const response = await api_laravel.get('/auth/manager/me');
+            const response = await api_laravel.get('/auth/manager/me', {
+                headers: { Authorization: `Bearer ${token}` },
+            });
             return response.data;
         } catch (error) {
             console.error("Error al obtener los datos del gerente:", error);
-            throw error;
-        }
-    },
-
-    async refresh() {
-        try {
-            const response = await api_laravel.post('/auth/manager/refresh');
-            return response.data;
-        } catch (error) {
-            console.error("Error al actualizar el token del gerente:", error);
             throw error;
         }
     }

@@ -1,10 +1,15 @@
 import { ref } from 'vue';
 import { useStore } from 'vuex';
+import { onMounted } from 'vue';
 
 export default function useAuth() {
     const store = useStore();
     const isLoginView = ref(true);
     const errorMessage = ref('');
+
+    onMounted(() => {
+        store.dispatch('storeAuth/populate');
+    });
 
     // Login
     const login = async (email, password, role) => {
@@ -22,10 +27,10 @@ export default function useAuth() {
     // Registro
     const register = async (firstName, lastName, email, password, repeatPassword, role) => {
         if (role !== undefined) {
-
             console.log('Register:', firstName, lastName, email, password, repeatPassword, role);
             try {
                 await store.dispatch('storeAuth/register', { firstName, lastName, email, password, repeatPassword, role });
+                location.reload();
             } catch (error) {
                 errorMessage.value = 'Error al registrar el usuario.';
                 throw new Error('Error en el registro: ' + error.message);

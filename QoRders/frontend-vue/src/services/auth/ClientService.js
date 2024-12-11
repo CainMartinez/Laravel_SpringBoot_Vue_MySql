@@ -1,10 +1,10 @@
 import { api_spring } from "../api";
 
 const ClientService = {
-    async login(email, password) {
+    async login(email, password, role) {
         try {
             console.log("ClientService login");
-            console.log({ email, password });
+            console.log({ email, password, role });
             const response = await api_spring.post('/auth/login', {
                 role,
                 email,
@@ -40,7 +40,7 @@ const ClientService = {
         try {
             const response = await api_spring.get('/client', {
                 headers: { Authorization: `Bearer ${token}` },
-            }); 
+            });
             return response.data;
         } catch (error) {
             console.error("Error al obtener el usuario actual:", error);
