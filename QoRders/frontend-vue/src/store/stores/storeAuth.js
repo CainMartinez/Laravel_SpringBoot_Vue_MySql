@@ -120,7 +120,8 @@ const actions = {
         }
     },
 
-    async register({ firstName, lastName, email, password, repeatPassword, role }) {
+    async register({ commit }, { firstName, lastName, email, password, repeatPassword, role }) {
+        console.log('Registrando usuario:', firstName, lastName, email, password, repeatPassword, role);
         try {
             let response;
             switch (role) {
