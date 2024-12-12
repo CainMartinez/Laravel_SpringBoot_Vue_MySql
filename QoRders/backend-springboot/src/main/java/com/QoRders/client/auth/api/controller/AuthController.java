@@ -28,7 +28,7 @@ public class AuthController {
     public ResponseEntity<Map<String, String>> register(@Valid @RequestBody RegisterRequest registerDto) {
         authService.register(registerDto);
         Map<String, String> response = new HashMap<>();
-        response.put("message", "Customer registered successfully.");
+        response.put("message", "Client registered successfully.");
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
@@ -38,11 +38,11 @@ public class AuthController {
         return ResponseEntity.ok(authResponse);
     }
 
-    @PostMapping("/customer/logout")
+    @PostMapping("/client/logout")
     public ResponseEntity<Map<String, String>> logout(@RequestHeader("Authorization") String accessToken) {
         authService.logout(accessToken);
         Map<String, String> response = new HashMap<>();
-        response.put("message", "Customer logged out successfully.");
+        response.put("message", "Client logged out successfully.");
         return ResponseEntity.ok(response);
     }
 

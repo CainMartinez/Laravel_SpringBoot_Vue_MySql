@@ -32,7 +32,7 @@ public class ClientServiceImpl implements ClientService {
         String email = extractEmailFromToken(token);
 
         // Generar la clave de Redis
-        String redisKey = "springboot_logged_customer_" + email;
+        String redisKey = "springboot_logged_client_" + email;
 
         // Obtener los datos de Redis
         @SuppressWarnings("unchecked")
@@ -88,9 +88,9 @@ public class ClientServiceImpl implements ClientService {
         var updatedClient = clientRepository.save(client);
 
         // Sobrescribir los datos en Redis
-        String redisKey = "springboot_logged_customer_" + client.getEmail();
+        String redisKey = "springboot_logged_client_" + client.getEmail();
         Map<String, Object> redisData = new HashMap<>();
-        redisData.put("customer", updatedClient);
+        redisData.put("client", updatedClient);
         redisData.put("token", token);
         long ttl = jwtProvider.getAccessTokenExpirationInSeconds();
 

@@ -64,8 +64,8 @@ public class ClientController {
 
             // Construir la respuesta en el formato deseado
             Map<String, Object> response = new HashMap<>();
-            response.put("message", "Customer updated successfully");
-            response.put("customer", updatedData.get("customer"));
+            response.put("message", "Client updated successfully");
+            response.put("client", updatedData.get("client"));
             response.put("token", updatedData.get("token"));
 
             return ResponseEntity.ok(response);

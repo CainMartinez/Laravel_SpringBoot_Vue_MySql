@@ -18,8 +18,8 @@ public class ClientAssembler {
      */
     public Map<String, Object> toResponse(Map<String, Object> redisData) {
         Map<String, Object> response = new HashMap<>();
-        response.put("message", "Customer data retrieved successfully");
-        response.put("customer", redisData.get("customer"));
+        response.put("message", "Client data retrieved successfully");
+        response.put("client", redisData.get("client"));
         response.put("token", redisData.get("token"));
         return response;
     }

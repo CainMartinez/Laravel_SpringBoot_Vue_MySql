@@ -74,11 +74,11 @@ public class AuthServiceImpl implements AuthService {
         clientRepository.save(client);
 
         // Crear la clave de Redis
-        String redisKey = "springboot_logged_customer_" + loginRequest.getEmail();
+        String redisKey = "springboot_logged_client_" + loginRequest.getEmail();
 
         // Crear los datos para guardar en Redis
         Map<String, Object> redisData = new HashMap<>();
-        redisData.put("customer", client);
+        redisData.put("client", client);
         redisData.put("token", accessToken);
 
         // Calcular el TTL del token en segundos
@@ -113,7 +113,7 @@ public class AuthServiceImpl implements AuthService {
             String email = jwtProvider.parseAccessToken(accessToken);
 
             // Clave para Redis
-            String redisKey = "springboot_logged_customer_" + email;
+            String redisKey = "springboot_logged_client_" + email;
 
             // Eliminar el registro completo en Redis
             redisService.delete(redisKey);
