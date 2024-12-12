@@ -55,7 +55,6 @@ const { register } = useAuth();
 const { emailError, passwordError, repeatPasswordError, generalError, validateRegisterForm } = useValidation();
 
 const handleRegister = async () => {
-    console.log('RegisterForm handleRegister props.selectedType:', props.selectedType);
     if (validateRegisterForm(email.value, password.value, repeatPassword.value)) {
         try {
             await register(firstName.value, lastName.value, email.value, password.value, repeatPassword.value, props.selectedType);

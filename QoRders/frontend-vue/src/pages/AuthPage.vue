@@ -24,9 +24,6 @@ import useAuth from '../composables/useAuth';
 const { login, register, isLoginView, toggleForm } = useAuth();
 const selectedType = ref('client');
 
-watch(selectedType, (newValue) => {
-    console.log('AuthPage selectedType:', newValue);
-});
 </script>
 
 <style scoped>

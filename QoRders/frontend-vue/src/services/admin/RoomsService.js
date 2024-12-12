@@ -4,7 +4,6 @@ const RoomsService = {
     async createRoom() {
         try {
             const response = await api_laravel.post('/rooms');
-            console.log("Salas obtenidas:", response.data);
             return response.data;
         } catch (error) {
             console.error("Error al obtener las salas:", error);

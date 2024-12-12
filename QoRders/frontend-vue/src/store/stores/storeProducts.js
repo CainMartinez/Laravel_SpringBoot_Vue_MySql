@@ -7,7 +7,6 @@ const state = {
 
 const mutations = {
     setProductsByRoom(state, { products, total }) {
-        // console.log("storeProducts.js: Mutating productsByRoom ->", products, "Total products:", total); // Debug
         state.productsByRoom = products;
         state.totalProducts = total;
     },
@@ -16,14 +15,12 @@ const mutations = {
 const actions = {
     async fetchProductsByRoom({ commit }, { room_slug, filters }) {
         if (!room_slug) {
-            console.error("storeProducts.js: room_slug is not defined."); // Debug
+            console.error("storeProducts.js: room_slug is not defined.");
             return;
         }
         try {
-            // console.log("storeProducts.js: Fetching products for room:", room_slug, "with filters:", filters); // Debug
             const productsData = await ProductsService.getProductByRoom(room_slug, filters);
 
-            // console.log("storeProducts.js: Fetched products for room ->", productsData); // Debug
             commit('setProductsByRoom', {
                 products: productsData.content,
                 total: productsData.totalElements,
@@ -36,11 +33,9 @@ const actions = {
 
 const getters = {
     getProductsByRoom(state) {
-        // console.log("storeProducts.js: Getter productsByRoom ->", state.productsByRoom); // Debug
         return state.productsByRoom;
     },
     getTotalProducts(state) {
-        // console.log("storeProducts.js: Getter totalProducts ->", state.totalProducts); // Debug
         return state.totalProducts;
     },
 };

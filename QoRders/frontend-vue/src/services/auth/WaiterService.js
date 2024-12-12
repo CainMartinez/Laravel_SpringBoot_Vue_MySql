@@ -17,8 +17,6 @@ const WaiterService = {
 
     async register(firstName, lastName, email, password, repeatPassword, role) {
         try {
-            console.log("WaiterService register");
-            console.log({ firstName, lastName, email, password, repeatPassword, role });
             const response = await api_laravel.post('/auth/register', {
                 role,
                 firstName,

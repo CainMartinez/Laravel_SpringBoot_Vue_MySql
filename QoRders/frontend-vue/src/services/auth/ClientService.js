@@ -3,8 +3,6 @@ import { api_spring } from "../api";
 const ClientService = {
     async login(email, password, role) {
         try {
-            console.log("ClientService login");
-            console.log({ email, password, role });
             const response = await api_spring.post('/auth/login', {
                 role,
                 email,
@@ -19,8 +17,6 @@ const ClientService = {
 
     async register(firstName, lastName, email, password, repeatPassword, role) {
         try {
-            console.log("ClientService register");
-            console.log({ firstName, lastName, email, password, repeatPassword, role });
             const response = await api_spring.post('/auth/register', {
                 role,
                 firstName,

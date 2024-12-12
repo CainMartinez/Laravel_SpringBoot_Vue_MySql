@@ -4,7 +4,6 @@ const ProductsService = {
     async createProduct() {
         try {
             const response = await api_laravel.post('/products');
-            console.log("Productos obtenidos:", response.data);
             return response.data;
         } catch (error) {
             console.error("Error al obtener los productos:", error);

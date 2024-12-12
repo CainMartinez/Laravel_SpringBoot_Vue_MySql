@@ -35,7 +35,6 @@ const mutations = {
 
 const actions = {
     async populate({ commit, state }) {
-        console.log('Populating storeAuth');
         if (state.accessToken) {
             try {
                 let response;
@@ -43,35 +42,27 @@ const actions = {
                     case 'client':
                         response = await ClientService.getCurrentUser(state.accessToken);
                         commit('setUserData', response);
-                        console.log('Client data:', state.userData);
                         break;
                     case 'waiter':
                         response = await WaiterService.getCurrentUser(state.accessToken);
                         commit('setUserData', response.waiter);
-                        console.log('Waiter data:', state.userData);
                         break;
                     case 'manager':
                         response = await ManagerService.getCurrentUser(state.accessToken);
                         commit('setUserData', response.manager);
-                        console.log('Manager data:', state.userData);
                         break;
                     default:
                         throw new Error('Rol de usuario no válido');
                 }
 
-                // Si la respuesta es exitosa, actualizamos el store
                 commit('setAuthenticated', true);
                 commit('setUserType', state.userType);
                 commit('setToken', state.accessToken);
-                console.log('Token:', state.accessToken);
-                console.log('User type:', state.userType);
-                console.log('User authenticated:', state.isAuthenticated);
 
             } catch (error) {
-                // Si el token es inválido o ha expirado, hacemos logout
                 console.error('Error al verificar el token:', error.message);
-                // commit('logout');
-                // window.location.href = '/login';
+                commit('logout');
+                window.location.href = '/login';
             }
         }
     },
@@ -94,7 +85,6 @@ const actions = {
             }
 
             const token = response;
-            console.log('Login successful, token:', token);
 
             localStorage.setItem('token', token);
             localStorage.setItem('userType', role);
@@ -121,7 +111,6 @@ const actions = {
     },
 
     async register({ commit }, { firstName, lastName, email, password, repeatPassword, role }) {
-        console.log('Registrando usuario:', firstName, lastName, email, password, repeatPassword, role);
         try {
             let response;
             switch (role) {
@@ -148,14 +137,11 @@ const actions = {
     },
 
     async logout({ commit }, state) {
-        console.log('Logging out');
-        console.log('User type:', state.userType);
         try {
             let response;
             switch (state.userType) {
                 case 'client':
                     response = await ClientService.logout(state.accessToken);
-                    console.log('CLIENT logout response:', response);
                     break;
                 case 'waiter':
                     response = await WaiterService.logout(state.accessToken);
@@ -169,7 +155,6 @@ const actions = {
             localStorage.removeItem('token');
             localStorage.removeItem('userType');
             window.location.href = '/login';
-            console.log('Logged out successfully');
         } catch (error) {
             console.error('Error during logout:', error.message);
             throw error;

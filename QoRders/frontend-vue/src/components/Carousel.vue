@@ -22,8 +22,6 @@ const props = defineProps({
     }
 });
 
-console.log(props.rooms);
-
 </script>
 
 <style scoped>

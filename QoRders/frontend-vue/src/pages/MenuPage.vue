@@ -54,7 +54,6 @@ const updateStore = () => {
         order: orderBy.value,
         productType: selectedType.value,
     };
-    console.log(filters);
 
     store.dispatch('storeProducts/fetchProductsByRoom', { room_slug: room_slug.value, filters });
 };

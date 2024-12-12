@@ -14,7 +14,6 @@ export default function useAuth() {
     // Login
     const login = async (email, password, role) => {
         if (role !== undefined) {
-            console.log('Login:', email, password, role);
             try {
                 await store.dispatch('storeAuth/login', { email, password, role });
             } catch (error) {
@@ -27,7 +26,6 @@ export default function useAuth() {
     // Registro
     const register = async (firstName, lastName, email, password, repeatPassword, role) => {
         if (role !== undefined) {
-            console.log('Register:', firstName, lastName, email, password, repeatPassword, role);
             try {
                 await store.dispatch('storeAuth/register', { firstName, lastName, email, password, repeatPassword, role });
                 location.reload();

@@ -70,8 +70,6 @@ const routes = [
             const store = useStore();
             const isAuthenticated = store.getters['storeAuth/getIsAuthenticated'];
             const userType = store.getters['storeAuth/getUserType'];
-            console.log('isAuthenticated:', isAuthenticated);
-            console.log('userType:', userType);
             if (isAuthenticated && userType === 'client') {
                 next();
             } else {
@@ -87,8 +85,6 @@ const routes = [
             const store = useStore();
             const isAuthenticated = store.getters['storeAuth/getIsAuthenticated'];
             const userType = store.getters['storeAuth/getUserType'];
-            console.log('isAuthenticated:', isAuthenticated);
-            console.log('userType:', userType);
             if (isAuthenticated && userType === 'waiter') {
                 next();
             } else {
@@ -104,8 +100,6 @@ const routes = [
             const store = useStore();
             const isAuthenticated = store.getters['storeAuth/getIsAuthenticated'];
             const userType = store.getters['storeAuth/getUserType'];
-            console.log('isAuthenticated:', isAuthenticated);
-            console.log('userType:', userType);
             if (isAuthenticated && userType === 'manager') {
                 next();
             } else {
@@ -123,9 +117,7 @@ const router = createRouter({
 router.beforeEach(async (to, from, next) => {
     const store = useStore();
     const isAuthenticated = store.getters['storeAuth/getIsAuthenticated'];
-    console.log('isAuthenticated:', isAuthenticated);
     const token = store.getters['storeAuth/getToken'];
-    console.log('token:', token);
 
     if (isAuthenticated && token) {
         await store.dispatch('storeAuth/populate');

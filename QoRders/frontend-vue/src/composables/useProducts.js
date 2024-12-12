@@ -5,7 +5,6 @@ export default function useProducts(room_slug) {
     const store = useStore();
     const products = computed(() => store.getters['storeProducts/getProductsByRoom']);
     const totalProducts = computed(() => store.getters['storeProducts/getTotalProducts']);
-    console.log(room_slug)
 
     // Filtros
     const selectedType = ref(null);
