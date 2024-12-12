@@ -1,9 +1,5 @@
 <template>
   <div class="header">
-    <div class="logo">
-      <img src="/src/assets/logo.png" alt="Logo" />
-    </div>
-
     <div class="menu">
       <router-link to="/home">Inicio</router-link>
       <router-link to="/rooms">Carta</router-link>
@@ -11,16 +7,33 @@
       <router-link to="/donations">Donaciones</router-link>
     </div>
 
-    <div class="login-button">
+    <div class="logo">
+      <img src="/src/assets/logo.png" alt="Logo" />
+    </div>
+
+    <div class="user-info" v-if="isAuthenticated">
+      <UserHeaderInfo :user="userData" :userClient="userClient" :userType="userType" />
+    </div>
+
+    <div v-else class="login-button">
       <router-link to="/login">Iniciar sesión</router-link>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import router from '../router/router';
+import { computed } from 'vue';
+import { useStore } from 'vuex';
+import UserHeaderInfo from './UserHeaderInfo.vue';
 
+const store = useStore();
+const isAuthenticated = computed(() => store.getters['storeAuth/getIsAuthenticated']);
+const userType = computed(() => store.getters['storeAuth/getUserType']);
+const userData = computed(() => store.getters['storeAuth/getUserData']);
+
+const userClient = computed(() => {
+  return userType.value === 'client' ? userData.value.client : null;
+});
 
 </script>
 
@@ -49,11 +62,18 @@ import router from '../router/router';
 }
 
 .menu {
-  background: transparent;
-  border: none;
+  flex-grow: 1;
+  display: flex;
+  justify-content: flex-start;
 }
 
 .login-button {
+  display: flex;
+  justify-content: flex-end;
+  flex-grow: 1;
+}
+
+.user-info {
   display: flex;
   justify-content: flex-end;
   flex-grow: 1;
