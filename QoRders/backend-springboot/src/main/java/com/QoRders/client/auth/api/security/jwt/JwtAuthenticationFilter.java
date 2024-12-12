@@ -98,7 +98,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             var client = clientRepository.findByEmail(email)
                     .orElseThrow(() -> new IllegalArgumentException("Client not found"));
 
-            String refreshToken = client.getRefreshToken();
+            String refreshToken = client.getRefresh_token();
 
             // Validar Refresh Token
             if (!jwtProvider.isValid(refreshToken)) {

@@ -42,13 +42,13 @@ public class AuthServiceImpl implements AuthService {
         }
 
         var client = new ClientEntity();
-        client.setCustomerUuid(UUID.randomUUID().toString());
+        client.setClient_uuid(UUID.randomUUID().toString());
         client.setEmail(registerRequest.getEmail());
         client.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
         client.setFirstName(registerRequest.getFirstName());
         client.setLastName(registerRequest.getLastName());
-        client.setAvatarUrl("https://i.pravatar.cc/150?u=" + registerRequest.getFirstName());
-        client.setIsActive(true);
+        client.setAvatar_url("https://i.pravatar.cc/150?u=" + registerRequest.getFirstName());
+        client.setIs_active(true);
 
         clientRepository.save(client);
     }
@@ -70,7 +70,7 @@ public class AuthServiceImpl implements AuthService {
         var refreshToken = jwtProvider.generateRefreshToken(loginRequest.getEmail());
 
         // Guardar el refresh token en el cliente
-        client.setRefreshToken(refreshToken);
+        client.setRefresh_token(refreshToken);
         clientRepository.save(client);
 
         // Crear la clave de Redis
@@ -131,7 +131,7 @@ public class AuthServiceImpl implements AuthService {
         var client = clientRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("Client not found"));
 
-        String refreshToken = client.getRefreshToken();
+        String refreshToken = client.getRefresh_token();
         if (!jwtProvider.isValid(refreshToken)) {
             logout(refreshToken);
             throw new IllegalArgumentException("Refresh token expired or invalid");

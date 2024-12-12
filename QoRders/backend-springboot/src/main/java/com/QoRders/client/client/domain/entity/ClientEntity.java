@@ -15,10 +15,10 @@ public class ClientEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "customer_id")
-    private Integer customerId;
+    private Integer client_id;
 
     @Column(name = "customer_uuid", nullable = false, unique = true)
-    private String customerUuid;
+    private String client_uuid;
 
     @Column(name = "first_name", nullable = false, length = 100)
     private String firstName;
@@ -36,43 +36,43 @@ public class ClientEntity {
     private String email;
 
     @Column(name = "phone_number", length = 15)
-    private String phoneNumber;
+    private String phone_number;
 
     @Column(name = "password", nullable = false, length = 255)
     private String password;
 
     @Column(name = "avatar_url", columnDefinition = "TEXT")
-    private String avatarUrl;
+    private String avatar_url;
 
     @Column(name = "bio", columnDefinition = "TEXT")
     private String bio;
 
     @Column(name = "has_coupon", nullable = false)
-    private Boolean hasCoupon = false;
+    private Boolean has_coupon = false;
 
     @Column(name = "loyalty_points", nullable = false)
-    private Integer loyaltyPoints = 0;
+    private Integer loyalty_points = 0;
 
     @Column(name = "is_active", nullable = false)
-    private Boolean isActive = true;
+    private Boolean is_active = true;
 
     @Column(name = "refresh_token", length = 100)
-    private String refreshToken;
+    private String refresh_token;
 
     @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime createdAt = LocalDateTime.now();
+    private LocalDateTime created_at = LocalDateTime.now();
 
     @Column(name = "updated_at")
-    private LocalDateTime updatedAt = LocalDateTime.now();
+    private LocalDateTime updated_at = LocalDateTime.now();
 
     @PrePersist
     protected void onCreate() {
-        this.createdAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();
+        this.created_at = LocalDateTime.now();
+        this.updated_at = LocalDateTime.now();
     }
 
     @PreUpdate
     protected void onUpdate() {
-        this.updatedAt = LocalDateTime.now();
+        this.updated_at = LocalDateTime.now();
     }
 }
