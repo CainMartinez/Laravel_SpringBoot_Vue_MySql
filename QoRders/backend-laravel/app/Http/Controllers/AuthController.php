@@ -327,12 +327,14 @@ class AuthController extends Controller
 
                         // Recuperar el registro actualizado completo desde Redis
                          $updatedRecord = json_decode(Redis::get($redisKey), true);
+                         $ttl = config('jwt.ttl') * 60; // Convertir minutos a segundos
+                         Redis::expire($redisKey, $ttl);
 
                          // Responder con el mensaje de éxito y los datos actualizados en Redis
                          return response()->json([
                          'message' => 'Waiter profile updated successfully',
-                         'waiter' => $updatedRecord['waiter'], // Asegúrate de usar comillas
-                         'token' => $updatedRecord['token'],  // Asegúrate de usar comillas
+                         'waiter' => $updatedRecord['waiter'], 
+                         'token' => $updatedRecord['token'],  
                          ], 200);
                     }
 
@@ -357,6 +359,118 @@ class AuthController extends Controller
           }
      }
 
+     public function updateManager(Request $request)
+     {
+          // Obtener el payload del token
+          $payload = JWTAuth::getPayload();
+          $email = $payload->get('email');
+          $role = $payload->get('role');
+
+          try {
+               // Validar los datos recibidos
+               $validator = Validator::make($request->all(), [
+                    'firstName' => 'string|max:100',
+                    'lastName' => 'string|max:100',
+                    'phone_number' => 'string|max:15',
+                    'address' => 'string|nullable',
+                    'bio' => 'string|nullable',
+                    'avatar_url' => 'url',
+               ]);
+
+               if ($validator->fails()) {
+                    return response()->json([
+                         'message' => 'Validation failed',
+                         'errors' => $validator->errors(),
+                    ], 422);
+               }
+
+               // Filtrar solo los campos presentes en la request
+               $updateData = array_filter($request->only([
+                    'firstName',
+                    'lastName',
+                    'phone_number',
+                    'address',
+                    'bio',
+                    'avatar_url',
+               ]), function ($value) {
+                    return !is_null($value); // Solo incluir campos que no sean nulos
+               });
+
+               // Iniciar una transacción para garantizar consistencia
+               DB::beginTransaction();
+
+               // Buscar el manager en la base de datos
+               $manager = Manager::where('email', $email)->first();
+
+               if (!$manager) {
+                    DB::rollBack(); // Revertir cambios si no se encuentra el manager
+                    return response()->json([
+                         'message' => 'Manager not found',
+                    ], 404);
+               }
+
+               // Actualizar solo los campos enviados
+               $manager->update($updateData);
+
+               // Generar la clave en Redis
+               $redisKey = "logged_manager_{$email}";
+
+               // Recuperar el registro existente desde Redis
+               $existingData = Redis::get($redisKey);
+               if ($existingData) {
+                    // Decodificar los datos existentes
+                    $decodedData = json_decode($existingData, true);
+
+                    // Verificar si el campo 'manager' existe en el registro
+                    if (isset($decodedData['manager'])) {
+                         // Actualizar solo los campos enviados en la request dentro del objeto 'manager'
+                         $decodedData['manager'] = array_merge($decodedData['manager'], $updateData);
+
+                         // Guardar los datos actualizados en Redis
+                         Redis::set($redisKey, json_encode($decodedData));
+
+                         // Extender el TTL del registro en Redis
+                         $ttl = Redis::ttl($redisKey); // Obtén el TTL actual
+                         if ($ttl > 0) { // Asegúrate de que el TTL sea válido
+                              Redis::expire($redisKey, $ttl); // Renueva el TTL al mismo tiempo
+                         }
+
+                         // Confirmar la transacción
+                         DB::commit();
+
+                         // Recuperar el registro actualizado completo desde Redis
+                         $updatedRecord = json_decode(Redis::get($redisKey), true);
+                         $ttl = config('jwt.ttl') * 60; // Convertir minutos a segundos
+                         Redis::expire($redisKey, $ttl);
+
+                         // Responder con el mensaje de éxito y los datos actualizados en Redis
+                         return response()->json([
+                              'message' => 'Manager profile updated successfully',
+                              'manager' => $updatedRecord['manager'], 
+                              'token' => $updatedRecord['token'],  
+                         ], 200);
+                    }
+
+                    DB::rollBack(); // Revertir cambios si no se encuentra el objeto manager en Redis
+                    return response()->json([
+                         'message' => 'No manager object found in Redis record',
+                    ], 404);
+               }
+
+               // Manejar el error si no existe el registro en Redis
+               DB::rollBack();
+               return response()->json([
+                    'message' => 'Redis record not found for the given manager',
+               ], 404);
+          } catch (\Exception $e) {
+               DB::rollBack(); // Asegurar la reversión en caso de error
+               \Log::error('Error during manager update:', ['error' => $e->getMessage()]);
+               return response()->json([
+                    'message' => 'An unexpected error occurred during manager update.',
+                    'error' => $e->getMessage(),
+               ], 500);
+          }
+     }
 
      // Generar URL de avatar
      private function generateAvatarUrl(string $role, string $email): string
