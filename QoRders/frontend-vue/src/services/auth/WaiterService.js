@@ -34,9 +34,11 @@ const WaiterService = {
         }
     },
 
-    async logout() {
+    async logout(token) {
         try {
-            const response = await api_laravel.post('/auth/waiter/logout');
+            const response = await api_laravel.post('/auth/waiter/logout', {}, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
             return response.data;
         } catch (error) {
             console.error("Error al cerrar sesión del camarero:", error);

@@ -104,10 +104,10 @@ const actions = {
                     window.location.href = '/home';
                     break;
                 case 'waiter':
-                    // window.location.href = '/dashboard-waiter';
+                    window.location.href = '/dashboard-waiter';
                     break;
                 case 'manager':
-                    // window.location.href = '/dashboard-manager';
+                    window.location.href = '/dashboard-manager';
                     break;
                 default:
                     break;
@@ -138,7 +138,7 @@ const actions = {
                     throw new Error("Invalid role");
             }
 
-            console.log('Registration successful:', response.message);
+            window.location.href = '/login';
 
             return response;
         } catch (error) {
@@ -147,23 +147,27 @@ const actions = {
         }
     },
 
-    async logout({ commit }) {
+    async logout({ commit }, state) {
+        console.log('Logging out');
+        console.log('User type:', state.userType);
         try {
             let response;
             switch (state.userType) {
                 case 'client':
-                    response = await ClientService.logout();
+                    response = await ClientService.logout(state.accessToken);
+                    console.log('CLIENT logout response:', response);
                     break;
                 case 'waiter':
-                    response = await WaiterService.logout();
+                    response = await WaiterService.logout(state.accessToken);
                     break;
                 case 'manager':
-                    response = await ManagerService.logout();
+                    response = await ManagerService.logout(state.accessToken);
                     break;
             }
 
             commit('logout');
             localStorage.removeItem('token');
+            localStorage.removeItem('userType');
             window.location.href = '/login';
             console.log('Logged out successfully');
         } catch (error) {

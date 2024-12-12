@@ -32,12 +32,14 @@ const ManagerService = {
         }
     },
 
-    async logout() {
+    async logout(token) {
         try {
-            const response = await api_laravel.post('/auth/manager/logout');
+            const response = await api_laravel.post('/auth/manager/logout', {}, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
             return response.data;
         } catch (error) {
-            console.error("Error al cerrar sesión del gerente:", error);
+            console.error("Error al cerrar sesión del manager:", error);
             throw error;
         }
     },

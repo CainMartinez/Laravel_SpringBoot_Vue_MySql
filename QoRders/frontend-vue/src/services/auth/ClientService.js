@@ -36,6 +36,21 @@ const ClientService = {
         }
     },
 
+    async logout(token) {
+        try {
+            const response = await api_spring.post('auth/client/logout', {}, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+            return response.data;
+        } catch (error) {
+            console.error("Error al cerrar sesión del cliente:", error);
+            if (error.response && error.response.status === 401) {
+                console.error("Token inválido o expirado.");
+            }
+            throw error;
+        }
+    },
+
     async getCurrentUser(token) {
         try {
             const response = await api_spring.get('/client', {
@@ -47,16 +62,6 @@ const ClientService = {
             throw error;
         }
     },
-
-    async logout() {
-        try {
-            const response = await api_spring.post('/auth/logout');
-            return response.data;
-        } catch (error) {
-            console.error("Error al cerrar sesión:", error);
-            throw error;
-        }
-    }
 };
 
 export default ClientService;

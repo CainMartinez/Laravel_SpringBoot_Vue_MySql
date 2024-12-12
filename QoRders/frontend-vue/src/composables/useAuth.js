@@ -43,9 +43,19 @@ export default function useAuth() {
         isLoginView.value = !isLoginView.value;
     };
 
+    const logout = async () => {
+        try {
+            await store.dispatch('storeAuth/logout', store.state.storeAuth);
+        } catch (error) {
+            errorMessage.value = 'Error al cerrar sesión.';
+            throw new Error('Error en el logout: ' + error.message);
+        }
+    };
+
     return {
         login,
         register,
+        logout,
         isLoginView,
         toggleForm,
         errorMessage

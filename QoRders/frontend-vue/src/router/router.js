@@ -131,7 +131,7 @@ router.beforeEach(async (to, from, next) => {
         await store.dispatch('storeAuth/populate');
         next();
     } else if (to.meta.requiresAuth) {
-        // next({ name: 'Iniciar sesión' });
+        next({ name: 'Iniciar sesión' });
     } else {
         next();
     }
