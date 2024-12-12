@@ -36,22 +36,22 @@ public class ClientEntity {
     private String email;
 
     @Column(name = "phone_number", length = 15)
-    private String phoneNumber;
+    private String phone_number;
 
     @Column(name = "password", nullable = false, length = 255)
     private String password;
 
     @Column(name = "avatar_url", columnDefinition = "TEXT")
-    private String avatarUrl;
+    private String avatar_url;
 
     @Column(name = "bio", columnDefinition = "TEXT")
     private String bio;
 
     @Column(name = "has_coupon", nullable = false)
-    private Boolean hasCoupon = false;
+    private Boolean has_coupon = false;
 
     @Column(name = "loyalty_points", nullable = false)
-    private Integer loyaltyPoints = 0;
+    private Integer loyalty_points = 0;
 
     @Column(name = "is_active", nullable = false)
     private Boolean isActive = true;

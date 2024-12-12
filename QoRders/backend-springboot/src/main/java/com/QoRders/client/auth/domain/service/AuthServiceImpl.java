@@ -47,7 +47,7 @@ public class AuthServiceImpl implements AuthService {
         client.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
         client.setFirstName(registerRequest.getFirstName());
         client.setLastName(registerRequest.getLastName());
-        client.setAvatarUrl("https://i.pravatar.cc/150?u=" + registerRequest.getFirstName());
+        client.setAvatar_url("https://i.pravatar.cc/150?u=" + registerRequest.getFirstName());
         client.setIsActive(true);
 
         clientRepository.save(client);
