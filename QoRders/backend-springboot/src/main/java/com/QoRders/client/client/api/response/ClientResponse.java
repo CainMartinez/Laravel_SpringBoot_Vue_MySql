@@ -12,14 +12,14 @@ public class ClientResponse {
     private String firstName;
     private String lastName;
     private String email;
-    private String phone_number;
+    private String phoneNumber;
     private String bio;
-    private String avatar_url;
-    private Boolean has_coupon;
-    private Integer loyalty_points;
+    private String avatarUrl;
+    private Boolean hasCoupon;
+    private Integer loyaltyPoints;
     private Integer age;
     private String address;
-    private Boolean is_active;
-    private String created_at;
-    private String updated_at;
+    private Boolean isActive;
+    private String createdAt;
+    private String updatedAt;
 }

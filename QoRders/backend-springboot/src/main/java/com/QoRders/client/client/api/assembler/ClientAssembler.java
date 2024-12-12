@@ -41,10 +41,10 @@ public class ClientAssembler {
             client.setBio(clientUpdateRequest.getBio());
         }
         if (clientUpdateRequest.getAvatarUrl() != null) {
-            client.setAvatar_url(clientUpdateRequest.getAvatarUrl());
+            client.setAvatarUrl(clientUpdateRequest.getAvatarUrl());
         }
         if (clientUpdateRequest.getPhoneNumber() != null) {
-            client.setPhone_number(clientUpdateRequest.getPhoneNumber());
+            client.setPhoneNumber(clientUpdateRequest.getPhoneNumber());
         }
         if (clientUpdateRequest.getAge() != null) {
             client.setAge(clientUpdateRequest.getAge());
