@@ -14,12 +14,12 @@ const NgoCard = ({ ngo }) => {
                 <NgoCarousel images={useNgoImages(ngo)} />
                 <div className="ngo-info">
                     <div className="ngo-header">
-                        <h2>{ngo.name}</h2>
-                        <img src={ngo.logoUrl} alt={`${ngo.name} Logo`} className="ngo-logo" />
+                        <h2>{ngo.ngo_name}</h2>
+                        <img src={ngo.logo_url} alt={`${ngo.ngo_name} Logo`} className="ngo-logo" />
                     </div>
                     <p className="ngo-description">{descriptionParts[0].trim()}</p>
                     <div className="ngo-actions">
-                        <Link to={`/ngos/${ngo.slug}`} className="ngo-view-more">
+                        <Link to={`/ngos/${ngo.ngo_slug}`} className="ngo-view-more">
                             Ver más
                         </Link>
                     </div>

@@ -3,6 +3,7 @@ import { Carousel } from 'primereact/carousel';
 import './NgoCarousel.css';
 
 const NgoCarousel = ({ images }) => {
+    console.log('NgoCarousel', images);
     const carouselTemplate = (image) => (
         <img src={image.url} alt="NGO Image" className="carousel-image" />
     );

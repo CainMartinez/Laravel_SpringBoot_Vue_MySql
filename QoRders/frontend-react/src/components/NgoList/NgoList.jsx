@@ -10,7 +10,7 @@ const NgoList = ({ ngos }) => {
     return (
         <div className="ngo-list">
             {ngos.map((ngo) => (
-                <NgoCard key={ngo.slug} ngo={ngo} />
+                <NgoCard key={ngo.ngo_slug} ngo={ngo} />
             ))}
         </div>
     );

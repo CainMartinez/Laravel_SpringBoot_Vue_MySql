@@ -12,9 +12,10 @@ const App = () => {
             <Header />
             <Routes>
                 <Route path="/" element={<NgosPage />} />
+                <Route path="/home" element={<NgosPage />} />
                 <Route path="/ngos" element={<NgosPage />} />
-                <Route path="/ngos/:slug" element={<NgoDetailsPage />} />
-                <Route path="/donaciones" element={<DonationsPage />} />
+                <Route path="/ngos/:ngo_slug" element={<NgoDetailsPage />} />
+                <Route path="/donations" element={<DonationsPage />} />
             </Routes>
             <Footer />
         </Router>

@@ -11,32 +11,32 @@ const NgoService = {
         }
     },
 
-    async updateNgo(slug, data) {
+    async updateNgo(ngo_slug, data) {
         try {
-            const response = await api_laravel.put(`/ngos/${slug}`, data);
+            const response = await api_laravel.put(`/ngos/${ngo_slug}`, data);
             return response.data;
         } catch (error) {
-            console.error(`Error al actualizar el NGO con slug: ${slug}`, error);
+            console.error(`Error al actualizar el NGO con slug: ${ngo_slug}`, error);
             throw error;
         }
     },
 
-    async unableNgo(slug) {
+    async unableNgo(ngo_slug) {
         try {
-            const response = await api_laravel.put(`/ngos/${slug}/unable`);
+            const response = await api_laravel.put(`/ngos/${ngo_slug}/unable`);
             return response.data;
         } catch (error) {
-            console.error(`Error al deshabilitar el NGO con slug: ${slug}`, error);
+            console.error(`Error al deshabilitar el NGO con slug: ${ngo_slug}`, error);
             throw error;
         }
     },
 
-    async enableNgo(slug) {
+    async enableNgo(ngo_slug) {
         try {
-            const response = await api_laravel.put(`/ngos/${slug}/enable`);
+            const response = await api_laravel.put(`/ngos/${ngo_slug}/enable`);
             return response.data;
         } catch (error) {
-            console.error(`Error al habilitar el NGO con slug: ${slug}`, error);
+            console.error(`Error al habilitar el NGO con slug: ${ngo_slug}`, error);
             throw error;
         }
     }

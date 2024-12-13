@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { getNgoBySlug } from '../services/client/NgoService';
 
-const useFetchNgo = (ngoSlug) => {
+const useFetchNgo = (ngo_slug) => {
     const [ngo, setNgo] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -10,8 +10,8 @@ const useFetchNgo = (ngoSlug) => {
         const fetchNgo = async () => {
             try {
                 setLoading(true);
-                const data = await getNgoBySlug(ngoSlug);
-                setNgo(data);
+                const data = await getNgoBySlug(ngo_slug);
+                setNgo(data.data);
             } catch (err) {
                 setError(err.message);
             } finally {
@@ -19,10 +19,10 @@ const useFetchNgo = (ngoSlug) => {
             }
         };
 
-        if (ngoSlug) {
+        if (ngo_slug) {
             fetchNgo();
         }
-    }, [ngoSlug]);
+    }, [ngo_slug]);
 
     return { ngo, loading, error };
 };
