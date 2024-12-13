@@ -2,6 +2,31 @@ import { createRouter, createWebHistory } from 'vue-router';
 import ReactWrapper from '../components/ReactWrapper.vue';
 import { useStore } from 'vuex';
 
+// Función para verificar autenticación y tipo de usuario
+const requireAuth = (userType) => (to, from, next) => {
+    const store = useStore();
+    const isAuthenticated = store.getters['storeAuth/getIsAuthenticated'];
+    const currentUserType = store.getters['storeAuth/getUserType'];
+    if (isAuthenticated && currentUserType === userType) {
+        next();
+    } else {
+        next('/');
+    }
+};
+
+// Función para cargar datos de una sala
+const loadRoomData = async (to, from, next) => {
+    const store = useStore();
+    if (to.params.slug) {
+        await store.dispatch('storeProducts/fetchProductsByRoom', { room_slug: to.params.slug, filters: {} });
+        await store.dispatch('storeRooms/fetchRoomBySlug', to.params.slug);
+        next();
+    } else {
+        console.error("El parámetro 'slug' no está definido en la ruta.");
+        next(false);
+    }
+};
+
 // Definición de rutas
 const routes = [
     {
@@ -27,17 +52,7 @@ const routes = [
         path: '/room/:slug',
         name: 'menu',
         component: () => import('../pages/MenuPage.vue'),
-        beforeEnter: (to, from, next) => {
-            const store = useStore();
-            if (to.params.slug) {
-                store.dispatch('storeProducts/fetchProductsByRoom', { room_slug: to.params.slug, filters: {} });
-                store.dispatch('storeRooms/fetchRoomBySlug', to.params.slug);
-                next();
-            } else {
-                console.error("El parámetro 'slug' no está definido en la ruta.");
-                next(false);
-            }
-        },
+        beforeEnter: loadRoomData,
     },
     {
         path: '/reservation',
@@ -66,46 +81,19 @@ const routes = [
         path: '/profile',
         name: 'ClientProfile',
         component: () => import('../pages/ClientProfilePage.vue'),
-        beforeEnter: (to, from, next) => {
-            const store = useStore();
-            const isAuthenticated = store.getters['storeAuth/getIsAuthenticated'];
-            const userType = store.getters['storeAuth/getUserType'];
-            if (isAuthenticated && userType === 'client') {
-                next();
-            } else {
-                next('/');
-            }
-        },
+        beforeEnter: requireAuth('client'),
     },
     {
         path: '/dashboard-waiter',
         name: 'WaiterDashboard',
         component: () => import('../pages/WaiterDashboardPage.vue'),
-        beforeEnter: (to, from, next) => {
-            const store = useStore();
-            const isAuthenticated = store.getters['storeAuth/getIsAuthenticated'];
-            const userType = store.getters['storeAuth/getUserType'];
-            if (isAuthenticated && userType === 'waiter') {
-                next();
-            } else {
-                next('/');
-            }
-        },
+        beforeEnter: requireAuth('waiter'),
     },
     {
         path: '/dashboard-manager',
         name: 'ManagerDashboard',
         component: () => import('../pages/ManagerDashboardPage.vue'),
-        beforeEnter: (to, from, next) => {
-            const store = useStore();
-            const isAuthenticated = store.getters['storeAuth/getIsAuthenticated'];
-            const userType = store.getters['storeAuth/getUserType'];
-            if (isAuthenticated && userType === 'manager') {
-                next();
-            } else {
-                next('/');
-            }
-        },
+        beforeEnter: requireAuth('manager'),
     },
 ];
 
