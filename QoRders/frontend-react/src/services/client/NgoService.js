@@ -4,7 +4,6 @@ import { api_laravel } from '../api';
 export const getNgos = async () => {
     try {
         const response = await api_laravel.get('/ngos');
-        console.log('getNgos', response.data.data);
         return response.data.data;
     } catch (error) {
         console.error('Error al obtener los NGOs', error);

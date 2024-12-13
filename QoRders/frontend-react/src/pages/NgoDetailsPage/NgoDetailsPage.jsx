@@ -9,9 +9,7 @@ const NgoDetailsPage = () => {
     const [isDataLoaded, setIsDataLoaded] = useState(false);
 
     useEffect(() => {
-        console.log('NgoDetailsPage', ngo);
         if (ngo) {
-            console.log(ngo);
             setIsDataLoaded(true);
         }
     }, [ngo]);
