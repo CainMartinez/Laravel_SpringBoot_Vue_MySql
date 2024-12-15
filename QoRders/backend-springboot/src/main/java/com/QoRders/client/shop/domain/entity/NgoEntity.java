@@ -1,12 +1,13 @@
 package com.QoRders.client.shop.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.QoRders.client.home.domain.entity.RoomEntity;
+
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
-
-import com.QoRders.client.home.domain.entity.RoomEntity;
 
 @Entity
 @Table(name = "NGO")
@@ -59,6 +60,7 @@ public class NgoEntity {
     private Boolean isActive;
 
     @OneToOne(mappedBy = "ngo", cascade = CascadeType.ALL)
+    @JsonManagedReference // Permite serialización
     private RoomEntity room;
 
     @OneToMany(mappedBy = "country", cascade = CascadeType.ALL, orphanRemoval = true)

@@ -1,12 +1,13 @@
 package com.QoRders.client.home.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.QoRders.client.shop.domain.entity.NgoEntity;
+
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-
-import com.QoRders.client.shop.domain.entity.NgoEntity;
 
 @Entity
 @Table(name = "Room")
@@ -51,5 +52,6 @@ public class RoomEntity {
 
     @OneToOne
     @JoinColumn(name = "ngo_id", referencedColumnName = "ngo_id", nullable = false)
+    @JsonBackReference // Evita la recursión en la serialización
     private NgoEntity ngo;
 }

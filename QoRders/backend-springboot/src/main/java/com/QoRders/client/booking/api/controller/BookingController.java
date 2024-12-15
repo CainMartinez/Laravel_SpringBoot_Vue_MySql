@@ -23,26 +23,24 @@ public class BookingController {
 
     private final BookingService bookingService;
 
-    /**
-     * Endpoint para crear una nueva reserva.
-     * 
-     * @param request Los datos de la reserva.
-     * @return La respuesta con los datos de la reserva creada.
-     */
     @PostMapping
-    public ResponseEntity<?> createBooking(@RequestBody @Valid BookingRequest request) {
+    public ResponseEntity<?> createBooking(
+            @RequestHeader("Authorization") String authorizationHeader,
+            @RequestBody @Valid BookingRequest request) {
         try {
-            // Llama al servicio para crear la reserva
-            BookingResponse bookingResponse = bookingService.createBooking(request);
+            // Extraer el token sin el prefijo "Bearer"
+            String token = authorizationHeader.replace("Bearer ", "");
 
-            // Construye la respuesta
+            // Llama al servicio para crear la reserva
+            BookingResponse bookingResponse = bookingService.createBooking(request, token);
+
+            // Construir la respuesta
             Map<String, Object> response = new HashMap<>();
             response.put("message", "Reserva creada con éxito. Pendiente de confirmación.");
             response.put("data", bookingResponse);
 
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } catch (ResponseStatusException e) {
-            // Devuelve el error lanzado por el servicio
             return ResponseEntity.status(e.getStatusCode()).body(Map.of("error", e.getReason()));
         }
     }

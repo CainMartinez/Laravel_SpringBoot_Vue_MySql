@@ -3,12 +3,12 @@ package com.QoRders.client.booking.domain.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import com.QoRders.client.client.domain.entity.ClientEntity;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
+import com.QoRders.client.client.domain.entity.ClientEntity;
 
 @Entity
 @Table(name = "Booking")
@@ -27,7 +27,7 @@ public class BookingEntity {
     private String uuid = UUID.randomUUID().toString();
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "customer_id", nullable = false)
+    @JoinColumn(name = "email", referencedColumnName = "email", nullable = false)
     private ClientEntity client;
 
     @ManyToOne(fetch = FetchType.LAZY)

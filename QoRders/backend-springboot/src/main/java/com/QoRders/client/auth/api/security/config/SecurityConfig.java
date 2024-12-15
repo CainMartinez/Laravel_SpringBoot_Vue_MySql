@@ -48,7 +48,7 @@ public class SecurityConfig {
                 .sessionCreationPolicy(org.springframework.security.config.http.SessionCreationPolicy.STATELESS)) // Política de sesión sin estado
             .authorizeRequests(auth -> auth
                 .requestMatchers("/api/auth/register", "/api/auth/login").permitAll() // Endpoints públicos
-                .requestMatchers("/api/client/**", "/api/auth/logout", "/api/auth/refresh").authenticated()) // Proteger otros endpoints
+                .requestMatchers("/api/client/**", "/api/auth/logout", "/api/auth/refresh","/api/booking").authenticated()) // Proteger otros endpoints
             .exceptionHandling(handling -> handling
                 .authenticationEntryPoint(customAuthenticationEntryPoint)) // Manejo de errores de autenticación
             .addFilterBefore(
