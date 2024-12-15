@@ -45,7 +45,7 @@ CREATE TABLE `Blacklist` (
 CREATE TABLE `Booking` (
   `booking_id` int NOT NULL,
   `booking_uuid` char(36) NOT NULL,
-  `customer_id` int NOT NULL,
+  `email` varchar(150) NOT NULL,
   `room_shift_id` int NOT NULL,
   `guest_count` int NOT NULL,
   `status` enum('Pending','Confirmed','InProgress','Completed') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'Pending',
