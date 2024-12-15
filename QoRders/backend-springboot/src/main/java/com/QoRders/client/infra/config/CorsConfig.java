@@ -10,7 +10,7 @@ public class CorsConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(@SuppressWarnings("null") CorsRegistry registry) {
         registry.addMapping("/**") // Aplica a todos los endpoints
-                .allowedOrigins("http://localhost:8090") // Permitir solicitudes desde Vue
+                .allowedOrigins("http://localhost:8090", "http://localhost:8086", "http://localhost:8085") // Permitir solicitudes desde el proxy y react
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // Métodos permitidos
                 .allowedHeaders("*") // Permitir todos los headers
                 .exposedHeaders("Authorization", "Content-Type") // Exponer headers necesarios
