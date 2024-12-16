@@ -19,3 +19,7 @@ jwt.access-expiration=3600000 # 1 hour
 jwt.refresh-expiration=604800000 # 7 days
 # Rate Limit
 spring.main.allow-bean-definition-overriding=true
+#Redis
+spring.data.redis.host=redis_container
+spring.data.redis.port=6379
+spring.data.redis.password=your_password
