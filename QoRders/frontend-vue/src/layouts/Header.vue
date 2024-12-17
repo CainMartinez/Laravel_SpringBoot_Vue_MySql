@@ -11,7 +11,7 @@
       <img src="/src/assets/logo.png" alt="Logo" />
     </div>
 
-    <div class="user-info" v-if="isAuthenticated">
+    <div class="user-info" v-if="isAuthenticated && userData">
       <UserHeaderInfo :user="userData" :userClient="userClient" :userType="userType" />
     </div>
 
@@ -32,9 +32,8 @@ const userType = computed(() => store.getters['storeAuth/getUserType']);
 const userData = computed(() => store.getters['storeAuth/getUserData']);
 
 const userClient = computed(() => {
-  return userType.value === 'client' ? userData.value.client : null;
+  return userType.value === 'client' && userData.value ? userData.value.client : null;
 });
-
 </script>
 
 <style scoped>
