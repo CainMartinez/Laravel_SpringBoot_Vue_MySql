@@ -47,5 +47,7 @@ const setCurrentView = (view) => {
     flex-grow: 1;
     padding: 20px;
     margin-top: 80px;
+    overflow-y: auto;
+    margin-bottom: 20px;
 }
 </style>

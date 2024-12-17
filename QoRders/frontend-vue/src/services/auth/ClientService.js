@@ -58,6 +58,18 @@ const ClientService = {
             throw error;
         }
     },
+
+    async update(userData) {
+        try {
+            const response = await api_spring.put('/client', userData, {
+                headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+            });
+            return response.data;
+        } catch (error) {
+            console.error('Error al actualizar los datos del cliente:', error);
+            throw error;
+        }
+    },
 };
 
 export default ClientService;

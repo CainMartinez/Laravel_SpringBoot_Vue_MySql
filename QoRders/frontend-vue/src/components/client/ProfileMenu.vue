@@ -9,7 +9,7 @@
                 <li :class="{ active: activeView === 'ReservationsHistory' }" @click="changeView('ReservationsHistory')">Historial de Reservas</li>
                 <li :class="{ active: activeView === 'OrdersHistory' }" @click="changeView('OrdersHistory')">Historial de Pedidos</li>
                 <li :class="{ active: activeView === 'Feedback' }" @click="changeView('Feedback')">Comentarios</li>
-                <li :class="{ active: activeView === 'Settings' }" @click="changeView('Settings')">Ajustes</li>
+                <li :class="{ active: activeView === 'ClientSettings' }" @click="changeView('ClientSettings')">Ajustes</li>
             </ul>
         </nav>
     </div>

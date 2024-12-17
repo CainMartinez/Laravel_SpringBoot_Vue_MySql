@@ -7,7 +7,6 @@
             <p><strong>Email:</strong> {{ userData.email }}</p>
             <p><strong>Edad:</strong> {{ userData.age }}</p>
             <p><strong>Dirección:</strong> {{ userData.address }}</p>
-            <p><strong>Número de teléfono:</strong> {{ userData.phone_number }}</p>
             <p><strong>Bio:</strong> {{ userData.bio }}</p>
         </div>
     </div>

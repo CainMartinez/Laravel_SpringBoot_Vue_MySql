@@ -160,6 +160,28 @@ const actions = {
             throw error;
         }
     },
+    async updateUser({ commit, state }, userData) {
+        try {
+            let response;
+            switch (state.userType) {
+                case 'client':
+                    response = await ClientService.update(userData);
+                    break;
+                case 'waiter':
+                    response = await WaiterService.update(userData);
+                    break;
+                case 'manager':
+                    response = await ManagerService.update(userData);
+                    break;
+            }
+            commit('setUserData', response);
+        } catch (error) {
+            console.error('Error al actualizar los datos:', error);
+            throw error;
+        }
+    },
+
+
 };
 
 const getters = {
