@@ -5,11 +5,11 @@
 
         <nav>
             <ul>
-                <li :class="{ active: activeView === 'ClientData' }" @click="changeView('ClientData')">Datos Personales</li>
+                <li :class="{ active: activeView === 'Data' }" @click="changeView('Data')">Datos Personales</li>
                 <li :class="{ active: activeView === 'ReservationsHistory' }" @click="changeView('ReservationsHistory')">Historial de Reservas</li>
                 <li :class="{ active: activeView === 'OrdersHistory' }" @click="changeView('OrdersHistory')">Historial de Pedidos</li>
                 <li :class="{ active: activeView === 'Feedback' }" @click="changeView('Feedback')">Comentarios</li>
-                <li :class="{ active: activeView === 'ClientSettings' }" @click="changeView('ClientSettings')">Ajustes</li>
+                <li :class="{ active: activeView === 'Settings' }" @click="changeView('Settings')">Ajustes</li>
             </ul>
         </nav>
     </div>
@@ -18,14 +18,21 @@
 <script setup>
 import { computed, ref } from 'vue';
 import { useStore } from 'vuex';
+import { defineProps, defineEmits } from 'vue';
+
+const props = defineProps({
+    userType: {
+        type: String,
+        required: true
+    }
+});
 
 const store = useStore();
-const userType = computed(() => store.getters['storeAuth/getUserType']);
-const userName = computed(() => userType.value === 'client' ? store.getters['storeAuth/getUserData'].client.firstName : store.getters['storeAuth/getUserData'].firstName);
-const userImageUrl = computed(() => userType.value === 'client' ? store.getters['storeAuth/getUserData'].client.avatar_url : store.getters['storeAuth/getUserData'].avatar_url);
+const userName = computed(() => props.userType === 'client' ? store.getters['storeAuth/getUserData'].client.firstName : store.getters['storeAuth/getUserData'].firstName);
+const userImageUrl = computed(() => props.userType === 'client' ? store.getters['storeAuth/getUserData'].client.avatar_url : store.getters['storeAuth/getUserData'].avatar_url);
 
 const emit = defineEmits(['change-view']);
-const activeView = ref('ClientData');
+const activeView = ref('Data');
 
 const changeView = (view) => {
     activeView.value = view;
