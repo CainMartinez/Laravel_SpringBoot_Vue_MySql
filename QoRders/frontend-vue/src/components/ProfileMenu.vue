@@ -20,8 +20,9 @@ import { computed, ref } from 'vue';
 import { useStore } from 'vuex';
 
 const store = useStore();
-const userName = computed(() => store.getters['storeAuth/getUserData'].client.firstName);
-const userImageUrl = computed(() => store.getters['storeAuth/getUserData'].client.avatar_url);
+const userType = computed(() => store.getters['storeAuth/getUserType']);
+const userName = computed(() => userType.value === 'client' ? store.getters['storeAuth/getUserData'].client.firstName : store.getters['storeAuth/getUserData'].firstName);
+const userImageUrl = computed(() => userType.value === 'client' ? store.getters['storeAuth/getUserData'].client.avatar_url : store.getters['storeAuth/getUserData'].avatar_url);
 
 const emit = defineEmits(['change-view']);
 const activeView = ref('ClientData');

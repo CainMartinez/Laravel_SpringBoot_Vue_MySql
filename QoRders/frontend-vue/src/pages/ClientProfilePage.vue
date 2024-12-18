@@ -16,11 +16,11 @@
 
 <script setup>
 import { ref } from 'vue';
-import ProfileMenu from '../components/client/ProfileMenu.vue';
+import ProfileMenu from '../components/ProfileMenu.vue';
 import ClientData from '../components/client/ClientData.vue';
-import ReservationsHistory from '../components/client/ReservationsHistory.vue';
-import OrdersHistory from '../components/client/OrdersHistory.vue';
-import Feedback from '../components/client/Feedback.vue';
+import ReservationsHistory from '../components/ReservationsHistory.vue';
+import OrdersHistory from '../components/OrdersHistory.vue';
+import Feedback from '../components/Feedback.vue';
 import ClientSettings from '../components/client/ClientSettings.vue';
 
 const currentView = ref('ClientData');
