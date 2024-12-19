@@ -15,13 +15,13 @@ public interface RoomShiftRepository extends JpaRepository<RoomShiftEntity, Inte
     /**
      * Busca un turno por nombre de sala, tipo de turno y fecha.
      * 
-     * @param roomName Nombre de la sala.
+     * @param roomSlug Nombre de la sala.
      * @param shiftType Tipo de turno (almuerzo o cena).
      * @param shiftDate Fecha del turno.
      * @return Un Optional con el turno si existe.
      */
-    Optional<RoomShiftEntity> findByRoomRoomNameAndShiftShiftTypeAndShiftShiftDate(
-            String roomName,
+    Optional<RoomShiftEntity> findByRoomRoomSlugAndShiftShiftTypeAndShiftShiftDate(
+            String roomSlug,
             ShiftEntity.ShiftType shiftType,
             LocalDate shiftDate);
 }

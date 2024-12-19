@@ -10,6 +10,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
+import com.QoRders.client.home.domain.entity.RoomEntity;
+
 @Entity
 @Table(name = "Waiter")
 @Getter
@@ -69,6 +71,10 @@ public class WaiterEntity {
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt = LocalDateTime.now();
+
+    @ManyToOne
+    @JoinColumn(name = "room_id", nullable = false)
+    private RoomEntity room;
 
     @OneToMany(mappedBy = "waiter", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<BookingWaiterEntity> bookingWaiters;

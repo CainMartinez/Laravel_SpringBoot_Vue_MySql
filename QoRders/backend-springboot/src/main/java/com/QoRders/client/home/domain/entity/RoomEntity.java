@@ -1,6 +1,7 @@
 package com.QoRders.client.home.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.QoRders.client.booking.domain.entity.WaiterEntity;
 import com.QoRders.client.shop.domain.entity.NgoEntity;
 
 import jakarta.persistence.*;
@@ -8,6 +9,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Entity
 @Table(name = "Room")
@@ -49,6 +51,9 @@ public class RoomEntity {
 
     @Column(name = "is_active", nullable = false)
     private Boolean isActive;
+
+    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<WaiterEntity> waiters;
 
     @OneToOne
     @JoinColumn(name = "ngo_id", referencedColumnName = "ngo_id", nullable = false)

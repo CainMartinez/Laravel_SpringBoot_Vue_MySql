@@ -16,8 +16,8 @@ public class BookingRequest {
     private String date;
 
     @NotBlank(message = "Room is required")
-    @Size(max = 100, message = "Room name must be less than 100 characters")
-    private String room;
+    @Size(max = 100, message = "Room must be less than 100 characters")
+    private String room_slug;
 
     @NotBlank(message = "Name is required")
     @Size(max = 100, message = "Name must be less than 100 characters")
@@ -38,4 +38,8 @@ public class BookingRequest {
     @NotBlank(message = "Phone number is required")
     @Size(min = 9, max = 15, message = "Phone number must be between 9 and 15 characters")
     private String phoneNumber;
+
+    @Size(max = 100, message = "Name must be less than 100 characters")
+    private String notes;
+
 }
