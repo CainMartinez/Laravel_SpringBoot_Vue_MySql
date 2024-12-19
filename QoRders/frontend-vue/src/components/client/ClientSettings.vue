@@ -29,6 +29,12 @@
             </div>
 
             <div class="form-group">
+                <label for="avatar_url">URL del Avatar</label>
+                <input type="text" id="avatar_url" v-model="form.avatarUrl" placeholder="Introduce la URL del avatar" />
+            </div>
+
+
+            <div class="form-group">
                 <label for="bio">Bio</label>
                 <textarea id="bio" v-model="form.bio" placeholder="Cuéntanos algo sobre ti" />
             </div>
@@ -57,6 +63,7 @@ const form = ref({
     email: userData.email,
     age: userData.age,
     address: userData.address,
+    avatarUrl: userData.avatar_url,
     bio: userData.bio,
 });
 
