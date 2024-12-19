@@ -6,8 +6,18 @@
         <nav>
             <ul>
                 <li :class="{ active: activeView === 'Data' }" @click="changeView('Data')">Datos Personales</li>
-                <li :class="{ active: activeView === 'ReservationsHistory' }" @click="changeView('ReservationsHistory')">Historial de Reservas</li>
-                <li :class="{ active: activeView === 'OrdersHistory' }" @click="changeView('OrdersHistory')">Historial de Pedidos</li>
+                <li v-if="props.userType !== 'manager'" :class="{ active: activeView === 'ReservationsHistory' }"
+                    @click="changeView('ReservationsHistory')">Historial de Reservas</li>
+                <li v-if="props.userType !== 'manager'" :class="{ active: activeView === 'OrdersHistory' }"
+                    @click="changeView('OrdersHistory')">Historial de Pedidos</li>
+                <li v-if="props.userType === 'manager'" :class="{ active: activeView === 'RoomManagement' }"
+                    @click="changeView('RoomManagement')">Gestion de Salas</li>
+                <li v-if="props.userType === 'manager'" :class="{ active: activeView === 'MenuManagement' }"
+                    @click="changeView('MenuManagement')">Gestion de Carta</li>
+                <li v-if="props.userType === 'manager'" :class="{ active: activeView === 'ReservationManagement' }"
+                    @click="changeView('ReservationManagement')">Gestion de Reserva</li>
+                <li v-if="props.userType === 'manager'" :class="{ active: activeView === 'StaffManagement' }"
+                    @click="changeView('StaffManagement')">Gestion de Personal</li>
                 <li :class="{ active: activeView === 'Feedback' }" @click="changeView('Feedback')">Comentarios</li>
                 <li :class="{ active: activeView === 'Settings' }" @click="changeView('Settings')">Ajustes</li>
             </ul>
@@ -18,7 +28,6 @@
 <script setup>
 import { computed, ref } from 'vue';
 import { useStore } from 'vuex';
-import { defineEmits } from 'vue';
 
 const props = defineProps({
     userType: {
