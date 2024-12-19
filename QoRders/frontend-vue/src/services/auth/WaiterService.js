@@ -44,7 +44,6 @@ const WaiterService = {
         }
     },
 
-    // Método para obtener los datos del camarero autenticado
     async getCurrentUser(token) {
         try {
             const response = await api_laravel.get('/auth/waiter/me', {
@@ -55,7 +54,19 @@ const WaiterService = {
             console.error("Error al obtener los datos del camarero:", error);
             throw error;
         }
-    }
+    },
+
+    async update(userData) {
+        try {
+            const response = await api_laravel.put('/auth/waiter/update', userData, {
+                headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+            });
+            return response.data;
+        } catch (error) {
+            console.error('Error al actualizar los datos del cliente:', error);
+            throw error;
+        }
+    },
 };
 
 export default WaiterService;
