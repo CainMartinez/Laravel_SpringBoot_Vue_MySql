@@ -56,6 +56,9 @@ public class ClientEntity {
     @Column(name = "is_active", nullable = false)
     private Boolean isActive = true;
 
+    @Column(name = "is_seated", nullable = false)
+    private Boolean is_seated = false;
+
     @Column(name = "refresh_token", length = 100)
     private String refreshToken;
 
