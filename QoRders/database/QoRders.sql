@@ -104,6 +104,7 @@ CREATE TABLE `Customer` (
     `has_coupon` tinyint(1) DEFAULT '0',
     `loyalty_points` int DEFAULT '0',
     `is_active` tinyint(1) DEFAULT '1',
+    `is_seated` tinyint(1) DEFAULT '0',
     `refresh_token` varchar(255) DEFAULT NULL,
     `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
     `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
@@ -129,6 +130,7 @@ INSERT INTO
         `has_coupon`,
         `loyalty_points`,
         `is_active`,
+        `is_seated`,
         `refresh_token`,
         `created_at`,
         `updated_at`
@@ -148,6 +150,7 @@ VALUES (
         0,
         0,
         1,
+        0,
         NULL,
         '2024-12-11 22:38:47',
         '2024-12-11 22:38:47'
