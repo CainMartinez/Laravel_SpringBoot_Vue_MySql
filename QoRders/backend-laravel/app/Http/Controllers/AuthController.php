@@ -258,7 +258,7 @@ class AuthController extends Controller
                $validator = Validator::make($request->all(), [
                     'firstName' => 'string|max:100',
                     'lastName' => 'string|max:100',
-                    'phone_number' => 'string|max:15',
+                    'phone_number' => 'string|nullable|max:15',
                     'shift_disponibility' => 'in:Lunch,Dinner,Flexible',
                     'bio' => 'string|nullable',
                     'avatar_url' => 'url',
@@ -371,7 +371,7 @@ class AuthController extends Controller
                $validator = Validator::make($request->all(), [
                     'firstName' => 'string|max:100',
                     'lastName' => 'string|max:100',
-                    'phone_number' => 'string|max:15',
+                    'phone_number' => 'string|nullable|max:15',
                     'address' => 'string|nullable',
                     'bio' => 'string|nullable',
                     'avatar_url' => 'url',
