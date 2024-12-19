@@ -6,6 +6,7 @@
             <p><strong>Nombre:</strong> {{ userData.firstName }} {{ userData.lastName }}</p>
             <p><strong>Email:</strong> {{ userData.email }}</p>
             <p><strong>Bio:</strong> {{ userData.bio }}</p>
+            <p><strong>Numero de Teléfono</strong> {{ userData.phone_number }}</p>
             <p><strong>Fecha de Contratación:</strong> {{ userData.hire_date }}</p>
             <p><strong>Salario:</strong> {{ userData.salary }} €</p>
             <p><strong>Disponibilidad de Turno:</strong> {{ userData.shift_disponibility }}</p>

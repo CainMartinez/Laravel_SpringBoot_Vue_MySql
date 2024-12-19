@@ -13,6 +13,12 @@
             </div>
 
             <div class="form-group">
+                <label for="phone_number">Número de Teléfono</label>
+                <input type="text" id="phone_number" v-model="form.phone_number"
+                    placeholder="Introduce tu número de teléfono" />
+            </div>
+
+            <div class="form-group">
                 <label for="email">Email</label>
                 <input type="email" id="email" v-model="form.email" placeholder="Email" disabled />
             </div>
@@ -61,6 +67,7 @@ const waiterData = store.getters['storeAuth/getUserData'];
 const form = ref({
     firstName: waiterData.firstName,
     lastName: waiterData.lastName,
+    phone_number: waiterData.phone_number,
     email: waiterData.email,
     avatar_url: waiterData.avatar_url,
     bio: waiterData.bio,
