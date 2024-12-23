@@ -171,6 +171,23 @@ services:
     depends_on:
       - laravel
       - springboot
+  
+  stripe:
+    build:
+      context: ./stripe-payment
+    container_name: stripe_container
+    ports:
+      - "3002:3000"
+    volumes:
+      - ./stripe-payment:/app
+      - /app/node_modules
+    environment:
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY}
+      PORT: 3000
+    depends_on:
+      - redis
+    command: >
+      sh -c "npm install && node server.js"
 
 volumes:
   mysql_data:
