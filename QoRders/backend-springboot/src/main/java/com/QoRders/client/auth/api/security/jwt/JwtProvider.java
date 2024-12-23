@@ -49,6 +49,13 @@ public class JwtProvider {
     }
 
     /**
+     * Genera un Access Token temporal para un usuario con un email específico.
+     */
+    public String generateTemporalAccessToken(String email, long expirationTime) {
+        return generateToken(email, expirationTime);
+    }
+
+    /**
      * Genera un Refresh Token para un usuario con un email específico.
      */
     public String generateRefreshToken(String email) {

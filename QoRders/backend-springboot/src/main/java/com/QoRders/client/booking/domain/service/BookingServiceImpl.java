@@ -8,7 +8,10 @@ import com.QoRders.client.booking.domain.entity.*;
 import com.QoRders.client.booking.domain.repository.*;
 import com.QoRders.client.client.domain.repository.ClientRepository;
 
+import org.springframework.beans.factory.annotation.Value;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -25,12 +28,18 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class BookingServiceImpl implements BookingService {
 
+    private static final Logger log = LoggerFactory.getLogger(BookingServiceImpl.class);
     private final BookingRepository bookingRepository;
     private final RoomShiftRepository roomShiftRepository;
     private final ClientRepository clientRepository;
     private final BookingAssembler bookingAssembler;
     private final JwtProvider jwtProvider;
     private final WebClient webClient;
+    private final QRCodeService qrCodeService;
+    private final QRCodeRepository qrCodeRepository;
+    
+    @Value("${aes.encryption.key}")
+    private String secretKey;
 
     @Override
     @Transactional
@@ -103,15 +112,25 @@ public class BookingServiceImpl implements BookingService {
 
         booking.setStatus(BookingEntity.Status.Confirmed);
         bookingRepository.save(booking);
+        log.info("Entrando al service QR");
 
+        String qrUrl = qrCodeService.generateQRCodeUrl(booking.getId(), tokenEmail, secretKey);
+        System.out.println("QR URL Generada: " + qrUrl);
+        log.info("QR URL Generada: " + qrUrl);
+        // Guardar el QR en la base de datos
+        QREntity qrEntity = new QREntity();
+        qrEntity.setBookingId(booking.getId());
+        qrEntity.setUrl(qrUrl);
+        qrEntity.setStatus(QREntity.Status.Generated);
+        qrCodeRepository.save(qrEntity);
         // Nueva lógica para enviar OTP cuando la reserva está confirmada
         String shift = request.getShift();
         String translatedShift;
         
         if ("Dinner".equals(shift)) {
-            translatedShift = "noche";
+            translatedShift = "cena";
         } else if ("Lunch".equals(shift)) {
-            translatedShift = "día";
+            translatedShift = "comida";
         } else {
             translatedShift = shift;
         }

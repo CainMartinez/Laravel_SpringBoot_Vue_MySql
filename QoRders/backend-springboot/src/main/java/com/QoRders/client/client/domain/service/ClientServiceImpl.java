@@ -34,12 +34,23 @@ public class ClientServiceImpl implements ClientService {
         // Generar la clave de Redis
         String redisKey = "springboot_logged_client_" + email;
 
-        // Obtener los datos de Redis
+        // Intentar obtener los datos de Redis
         @SuppressWarnings("unchecked")
         Map<String, Object> redisData = (Map<String, Object>) redisService.get(redisKey);
 
         if (redisData == null) {
-            throw new ClientNotFoundException("Client data not found in Redis for email: " + email);
+            // Si no hay datos en Redis, buscar en la base de datos
+            ClientEntity client = clientRepository.findByEmail(email)
+                    .orElseThrow(() -> new ClientNotFoundException("Client not found for email: " + email));
+
+            // Convertir los datos del cliente en un mapa para devolverlo en el mismo formato
+            redisData = new HashMap<>();
+            redisData.put("client", client);
+            redisData.put("token", token);
+
+            // Guardar los datos en Redis para futuras consultas
+            long ttl = jwtProvider.getAccessTokenExpirationInSeconds();
+            redisService.save(redisKey, redisData, ttl);
         }
 
         // Retornar los datos sin @class
