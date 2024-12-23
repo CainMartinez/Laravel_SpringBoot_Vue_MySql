@@ -16,7 +16,8 @@ app.post('/api/payment', async (req, res) => {
         // Crear un Intent de Pago en Stripe
         const paymentIntent = await stripe.paymentIntents.create({
             amount: Math.round(totalAmount * 100), // Convertir a centavos
-            currency: 'usd',
+            currency: 'eur', // Cambiado a euros
+            payment_method_types: ['card'], // Admitimos pagos con tarjeta
             metadata: { orderId },
         });
 
