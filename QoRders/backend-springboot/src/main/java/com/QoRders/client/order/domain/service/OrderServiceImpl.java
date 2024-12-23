@@ -13,9 +13,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -29,51 +31,45 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public OrderEntity createOrder(Integer bookingId, String notes) {
-        // Verificar que la reserva existe
         BookingEntity booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Booking not found"));
 
-        // Crear nueva orden
         OrderEntity order = new OrderEntity();
         order.setBooking(booking);
         order.setOrderStatus(OrderEntity.OrderStatus.Waiting);
         order.setPaymentStatus(OrderEntity.PaymentStatus.Unpaid);
         order.setTotalAmount(BigDecimal.ZERO);
         order.setNotes(notes != null ? notes : "");
+        order.setIsActive(true);
 
-        // Guardar en la base de datos
+
         return orderRepository.save(order);
     }
 
     @Override
     @Transactional
     public OrderEntity addProductToOrder(Integer orderId, OrderProductsEntity productRequest, Integer productId, String email) {
-        // Validar que el usuario tiene acceso al pedido
         OrderEntity order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found"));
-    
+
         if (!order.getBooking().getClient().getEmail().equals(email)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Access denied to this order");
         }
-    
-        // Buscar el producto por ID
+
         ProductEntity product = productRepository.findById(productId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found"));
-    
-        // Crear el objeto de OrderProductsEntity
+
         OrderProductsEntity orderProduct = new OrderProductsEntity();
         orderProduct.setOrder(order);
         orderProduct.setProduct(product);
         orderProduct.setQuantity(productRequest.getQuantity());
-    
-        // Guardar el producto en la base de datos
+
         orderProductsRepository.save(orderProduct);
-    
-        // Actualizar el total de la orden
+
         BigDecimal totalAmount = orderProductsRepository.findByOrder(order).stream()
                 .map(p -> BigDecimal.valueOf(p.getQuantity()).multiply(p.getProduct().getUnitPrice()))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
-    
+
         order.setTotalAmount(totalAmount);
         return orderRepository.save(order);
     }
@@ -83,5 +79,54 @@ public class OrderServiceImpl implements OrderService {
     public OrderEntity getOrderById(Integer orderId) {
         return orderRepository.findById(orderId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found"));
+    }
+
+    @Override
+    @Transactional
+    public OrderEntity updateOrder(OrderEntity order) {
+        return orderRepository.save(order);
+    }
+
+    @Override
+    @Transactional
+    public String finalizeOrder(Integer orderId, String paymentMethod) {
+        OrderEntity order = getOrderById(orderId);
+    
+        if (order.getPaymentStatus() == OrderEntity.PaymentStatus.Paid) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The order is already paid");
+        }
+    
+        String clientSecret = null;
+    
+        if ("card".equalsIgnoreCase(paymentMethod)) {
+            String stripeUrl = "http://host.docker.internal:3002/api/payment";
+            WebClient webClient = WebClient.create();
+    
+            Map<String, Object> request = Map.of(
+                    "orderId", orderId,
+                    "totalAmount", order.getTotalAmount()
+            );
+    
+            @SuppressWarnings("unchecked")
+            Map<String, String> stripeResponse = webClient.post()
+                    .uri(stripeUrl)
+                    .header("Content-Type", "application/json")
+                    .bodyValue(request)
+                    .retrieve()
+                    .bodyToMono(Map.class)
+                    .block();
+    
+            if (stripeResponse == null || !"Success".equalsIgnoreCase((String) stripeResponse.get("status"))) {
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Payment failed");
+            }
+    
+            clientSecret = stripeResponse.get("clientSecret");
+            order.setPaymentStatus(OrderEntity.PaymentStatus.Paid);
+        }
+    
+        order.setIsActive(false);
+        orderRepository.save(order);
+    
+        return clientSecret; // Devuelve el clientSecret si aplica
     }
 }

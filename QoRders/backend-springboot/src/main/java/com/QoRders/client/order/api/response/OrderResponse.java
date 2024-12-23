@@ -12,8 +12,6 @@ public class OrderResponse {
 
     private Integer orderId;
     private String orderUuid;
-    private Integer bookingId;
-    private Integer waiterId;
     private String orderStatus;
     private String paymentStatus;
     private BigDecimal totalAmount;

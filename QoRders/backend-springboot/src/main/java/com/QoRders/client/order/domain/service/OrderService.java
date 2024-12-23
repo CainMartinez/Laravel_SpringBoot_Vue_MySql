@@ -7,4 +7,6 @@ public interface OrderService {
     OrderEntity createOrder(Integer bookingId, String notes);
     OrderEntity addProductToOrder(Integer orderId, OrderProductsEntity productRequest, Integer productId, String email);
     OrderEntity getOrderById(Integer orderId);
+    OrderEntity updateOrder(OrderEntity order);
+    String finalizeOrder(Integer orderId, String paymentMethod);
 }

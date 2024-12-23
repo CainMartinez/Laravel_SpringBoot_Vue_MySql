@@ -4,6 +4,7 @@ import com.QoRders.client.auth.api.security.jwt.JwtProvider;
 import com.QoRders.client.order.api.assembler.OrderAssembler;
 import com.QoRders.client.order.api.request.OrderProductRequest;
 import com.QoRders.client.order.api.request.OrderRequest;
+import com.QoRders.client.order.api.request.PaymentRequest;
 import com.QoRders.client.order.api.response.OrderResponse;
 import com.QoRders.client.order.domain.entity.OrderEntity;
 import com.QoRders.client.order.domain.entity.OrderProductsEntity;
@@ -11,10 +12,13 @@ import com.QoRders.client.order.domain.service.OrderService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -76,6 +80,32 @@ public class OrderController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
                 Map.of("message", "Error al realizar la comanda.")
             );
+        }
+    }
+
+    @PostMapping("/{orderId}/pay")
+    public ResponseEntity<Map<String, String>> payOrder(
+            @PathVariable Integer orderId,
+            @RequestBody @Valid PaymentRequest paymentRequest) {
+        try {
+            // Finalizar el pedido usando el servicio
+            String clientSecret = orderService.finalizeOrder(orderId, paymentRequest.getPaymentMethod());
+
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Order payment processed successfully");
+
+            // Incluir el clientSecret en la respuesta solo si existe
+            if (clientSecret != null) {
+                response.put("clientSecret", clientSecret);
+            }
+
+            return ResponseEntity.ok(response);
+        } catch (ResponseStatusException e) {
+            return ResponseEntity.status(e.getStatusCode())
+                    .body(Map.of("message", e.getReason()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("message", "Error processing payment: " + e.getMessage()));
         }
     }
 }
