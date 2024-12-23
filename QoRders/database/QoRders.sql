@@ -417,7 +417,7 @@ CREATE TABLE `Orders` (
     `order_id` int NOT NULL,
     `order_uuid` char(36) NOT NULL,
     `booking_id` int NOT NULL,
-    `waiter_id` int NOT NULL,
+    is_active` tinyint(1) DEFAULT '1',
     `order_status` enum(
         'Waiting',
         'Assigned',
