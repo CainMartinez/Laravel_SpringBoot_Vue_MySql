@@ -6,6 +6,7 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Table(name = "Shift")
@@ -34,6 +35,9 @@ public class ShiftEntity {
     @Column(name = "is_active", nullable = false)
     private Boolean isActive;
 
+    @OneToMany(mappedBy = "shift", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<RoomShiftEntity> roomShifts;
+    
     public enum ShiftType {
         Lunch,
         Dinner
