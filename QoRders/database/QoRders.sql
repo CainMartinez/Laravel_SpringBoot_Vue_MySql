@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: mysql_container
--- Tiempo de generación: 24-12-2024 a las 03:01:33
+-- Tiempo de generación: 24-12-2024 a las 04:15:52
 -- Versión del servidor: 8.0.40
 -- Versión de PHP: 8.2.8
 
@@ -146,7 +146,8 @@ INSERT INTO `Customer` (`customer_id`, `customer_uuid`, `first_name`, `last_name
 (27, 'dcb2cebc-a6b1-4c67-a09c-5270f2947be4', 'Paloma', 'Ali', NULL, NULL, 'ali@gmail.com', NULL, '$argon2id$v=19$m=4096,t=3,p=1$ZzsyTAzkdW4mH6SV+Thzvg$Gw2erf/wiB+JJKWJCJjJlsYDGDEk6xT2UwcEPWlP3aM', 'https://i.pravatar.cc/150?u=Salomón', NULL, 0, 0, 1, 0, NULL, '2024-12-24 01:10:14', '2024-12-24 01:10:14'),
 (28, 'dcb2cebc-a6b1-4c67-a09c-5270f2947be5', 'Raquel', 'Yamal', NULL, NULL, 'yamal@gmail.com', NULL, '$argon2id$v=19$m=4096,t=3,p=1$ZzsyTAzkdW4mH6SV+Thzvg$Gw2erf/wiB+JJKWJCJjJlsYDGDEk6xT2UwcEPWlP3aM', 'https://i.pravatar.cc/150?u=Salomón', NULL, 0, 0, 1, 0, NULL, '2024-12-24 01:10:14', '2024-12-24 01:10:14'),
 (29, 'dcb2cebc-a6b1-4c67-a09c-5270f2947be6', 'Rosa', 'Omar', NULL, NULL, 'omar@gmail.com', NULL, '$argon2id$v=19$m=4096,t=3,p=1$ZzsyTAzkdW4mH6SV+Thzvg$Gw2erf/wiB+JJKWJCJjJlsYDGDEk6xT2UwcEPWlP3aM', 'https://i.pravatar.cc/150?u=Salomón', NULL, 0, 0, 1, 0, NULL, '2024-12-24 01:10:14', '2024-12-24 01:10:14'),
-(30, 'dcb2cebc-a6b1-4c67-a09c-5270f2947be7', 'Carmen', 'Drills', NULL, NULL, 'drills@gmail.com', NULL, '$argon2id$v=19$m=4096,t=3,p=1$ZzsyTAzkdW4mH6SV+Thzvg$Gw2erf/wiB+JJKWJCJjJlsYDGDEk6xT2UwcEPWlP3aM', 'https://i.pravatar.cc/150?u=Salomón', NULL, 0, 0, 1, 0, NULL, '2024-12-24 01:10:14', '2024-12-24 01:19:52');
+(30, 'dcb2cebc-a6b1-4c67-a09c-5270f2947be7', 'Carmen', 'Drills', NULL, NULL, 'drills@gmail.com', NULL, '$argon2id$v=19$m=4096,t=3,p=1$ZzsyTAzkdW4mH6SV+Thzvg$Gw2erf/wiB+JJKWJCJjJlsYDGDEk6xT2UwcEPWlP3aM', 'https://i.pravatar.cc/150?u=Salomón', NULL, 0, 0, 1, 0, NULL, '2024-12-24 01:10:14', '2024-12-24 01:19:52'),
+(31, 'eb8d2d34-02dd-490c-b3e5-2c758a20493e', 'John', 'Doe', NULL, NULL, 'john.doe@restaurants.com', NULL, '$argon2id$v=19$m=4096,t=3,p=1$7sAcVYiYMGoPhgo1dlxsYw$ZDYBqlfoAS/x9CKuaPePPHA5hfdYxHASRS/chRUVbYg', 'https://i.pravatar.cc/150?u=John', NULL, 0, 0, 1, 0, NULL, '2024-12-24 04:15:06', '2024-12-24 04:15:06');
 
 -- --------------------------------------------------------
 
@@ -1522,10 +1523,10 @@ CREATE TABLE `Tickets` (
 
 INSERT INTO `Tickets` (`ticket_id`, `ticket_uuid`, `booking_id`, `total_amount`, `amount_to_pay`, `donated_amount`, `payment_status`, `created_at`, `updated_at`) VALUES
 (1, '84e9a868-c908-4126-b404-7221e819298d', 1, 47.00, 0.00, 2.35, 'Paid', '2024-12-24 02:24:37', '2024-12-24 01:27:15'),
-(2, 'f3b1b1b4-0b3b-4b1b-8b1b-4b1b1b1b1b1b', 2, 50.00, 0.00, 2.50, 'Paid', '2024-12-24 02:24:37', '2024-12-24 01:27:15'),
-(3, 'f3b1b1b4-0b3b-4b1b-8b1b-4b1b1b1b1b1b', 3, 20.00, 0.00, 1.00, 'Paid', '2024-12-24 02:24:37', '2024-12-24 01:27:15'),
-(4, 'f3b1b1b4-0b3b-4b1b-8b1b-4b1b1b1b1b1b', 4, 210.00, 0.00, 10.50, 'Paid', '2024-12-24 02:24:37', '2024-12-24 01:27:15'),
-(5, 'f3b1b1b4-0b3b-4b1b-8b1b-4b1b1b1b1b1b', 5, 100.00, 0.00, 5.00, 'Pending', '2024-12-24 02:24:37', '2024-12-24 01:27:15'),
+(2, 'f3b141b4-0b3b-4b1b-8b1b-4b1b1b1b1b1b', 2, 50.00, 0.00, 2.50, 'Paid', '2024-12-24 02:24:37', '2024-12-24 01:27:15'),
+(3, 'f341b1b4-0b3b-4b1b-8b1b-4b1b1b1b1b1b', 3, 20.00, 0.00, 1.00, 'Paid', '2024-12-24 02:24:37', '2024-12-24 01:27:15'),
+(4, 'f7b1b1b4-0b3b-4b1b-8b1b-4b1b1b1b1b1b', 4, 210.00, 0.00, 10.50, 'Paid', '2024-12-24 02:24:37', '2024-12-24 01:27:15'),
+(5, 'f3b131b4-0b3b-4b1b-8b1b-4b1b1b1b1b1b', 5, 100.00, 0.00, 5.00, 'Pending', '2024-12-24 02:24:37', '2024-12-24 01:27:15'),
 (6, 'f3b1b1b4-0b3b-4b1b-8b1b-4b1b1b1b1b1b', 6, 150.00, 0.00, 7.50, 'Pending', '2024-12-24 02:24:37', '2024-12-24 01:27:15');
 
 -- --------------------------------------------------------
@@ -1576,7 +1577,8 @@ INSERT INTO `Waiter` (`waiter_id`, `waiter_uuid`, `room_id`, `firstName`, `lastN
 (46, '66d3e211-598f-473b-8cb7-decea50c8ab8', 5, 'Leo', 'Lopez', 'leo.lopez2@example.com', '$argon2i$v=19$m=65536,t=4,p=2$dERVRjIxcFc1aTV5RlBydw$fJRWVkrsHeuC9M/AKgx83LQe6O3wK6AL87Z65NUxGGE', NULL, '2024-12-24', 0.00, 1000.00, 'Flexible', 1, 'https://i.pravatar.cc/300?u=7c90caeb7fe5e927c4263a2f7f3fe53f', NULL, '2024-12-24 01:03:01', '2024-12-24 01:06:58'),
 (47, 'ac890dd0-2f1d-4561-b838-aa7caf4428fe', 6, 'Mia', 'Gonzalez', 'mia.gonzalez2@example.com', '$argon2i$v=19$m=65536,t=4,p=2$RmFQaGJ1dUJmTDBVVVRGNw$Zq5kyn8oq/NjWqSS72yvjyEMO8H2HW/+QZUu4TS0Niw', NULL, '2024-12-24', 0.00, 1000.00, 'Flexible', 1, 'https://i.pravatar.cc/300?u=294de2b2e0291b675164c636458da98c', NULL, '2024-12-24 01:03:07', '2024-12-24 01:03:07'),
 (48, '9b041428-6f34-4ecb-9d21-c83ac9b64c97', 6, 'Nina', 'Perez', 'nina.perez2@example.com', '$argon2i$v=19$m=65536,t=4,p=2$Q2V1VEJ2cjJhcFMxSGwuQQ$axBgXpaeVsQ9H29Fwelo5yQowNySo1E0NOZQlg72AmU', NULL, '2024-12-24', 0.00, 1000.00, 'Flexible', 1, 'https://i.pravatar.cc/300?u=8ede275b574b0fa7665ff7cb4804fd81', NULL, '2024-12-24 01:03:15', '2024-12-24 01:06:58'),
-(49, 'e6937fb2-1b40-49e9-8f4c-94925fbfb228', 6, 'Pepe', 'Botika', 'pepe@gmail.com', '$argon2i$v=19$m=65536,t=4,p=2$UkptcVoyNmJtVm9OY2N1cA$Qwu29/CQxOZPvA+uKCaJ+hI6ScZOa4vwZoQ7iIUeRSw', NULL, '2024-12-24', 0.00, 1000.00, 'Flexible', 1, 'https://i.pravatar.cc/300?u=7ae4cdbadce369dee2f6f440210e4f75', NULL, '2024-12-24 01:03:59', '2024-12-24 01:06:58');
+(49, 'e6937fb2-1b40-49e9-8f4c-94925fbfb228', 6, 'Pepe', 'Botika', 'pepe@gmail.com', '$argon2i$v=19$m=65536,t=4,p=2$UkptcVoyNmJtVm9OY2N1cA$Qwu29/CQxOZPvA+uKCaJ+hI6ScZOa4vwZoQ7iIUeRSw', NULL, '2024-12-24', 0.00, 1000.00, 'Flexible', 1, 'https://i.pravatar.cc/300?u=7ae4cdbadce369dee2f6f440210e4f75', NULL, '2024-12-24 01:03:59', '2024-12-24 01:06:58'),
+(50, '91b7c1be-23ed-4808-a55b-083f5f79687e', 2, 'Nina', 'Perez', 'nina.fperez2@exafmpsle.com', '$argon2i$v=19$m=65536,t=4,p=2$bVJpVzk3UWlzM2IycFBkdw$hx9YzdPHiRo23DVEa859JAGHHGortqE5FvUB7ZUvPiA', NULL, '2024-12-24', 0.00, 1000.00, 'Flexible', 1, 'https://i.pravatar.cc/300?u=9c18bb202f6b8216c60829c5777562a2', NULL, '2024-12-24 04:15:08', '2024-12-24 04:15:08');
 
 --
 -- Índices para tablas volcadas
@@ -1686,6 +1688,127 @@ ALTER TABLE `Room_Shift`
 ALTER TABLE `Shift`
   ADD PRIMARY KEY (`shift_id`),
   ADD UNIQUE KEY `shift_uuid` (`shift_uuid`);
+
+--
+-- Indices de la tabla `Tickets`
+--
+ALTER TABLE `Tickets`
+  ADD PRIMARY KEY (`ticket_id`),
+  ADD UNIQUE KEY `ticket_uuid` (`ticket_uuid`);
+
+--
+-- Indices de la tabla `Waiter`
+--
+ALTER TABLE `Waiter`
+  ADD PRIMARY KEY (`waiter_id`),
+  ADD UNIQUE KEY `waiter_uuid` (`waiter_uuid`),
+  ADD UNIQUE KEY `email` (`email`);
+
+--
+-- AUTO_INCREMENT de las tablas volcadas
+--
+
+--
+-- AUTO_INCREMENT de la tabla `Blacklist`
+--
+ALTER TABLE `Blacklist`
+  MODIFY `id` bigint NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT de la tabla `Booking`
+--
+ALTER TABLE `Booking`
+  MODIFY `booking_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+
+--
+-- AUTO_INCREMENT de la tabla `Booking_Waiter`
+--
+ALTER TABLE `Booking_Waiter`
+  MODIFY `booking_waiter_id` int NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `Customer`
+--
+ALTER TABLE `Customer`
+  MODIFY `customer_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
+
+--
+-- AUTO_INCREMENT de la tabla `Donations`
+--
+ALTER TABLE `Donations`
+  MODIFY `donation_id` int NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `Feedback`
+--
+ALTER TABLE `Feedback`
+  MODIFY `feedback_id` int NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `Manager`
+--
+ALTER TABLE `Manager`
+  MODIFY `manager_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT de la tabla `NGO`
+--
+ALTER TABLE `NGO`
+  MODIFY `ngo_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
+-- AUTO_INCREMENT de la tabla `Orders`
+--
+ALTER TABLE `Orders`
+  MODIFY `order_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+
+--
+-- AUTO_INCREMENT de la tabla `Orders_Products`
+--
+ALTER TABLE `Orders_Products`
+  MODIFY `order_product_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+
+--
+-- AUTO_INCREMENT de la tabla `Products`
+--
+ALTER TABLE `Products`
+  MODIFY `product_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=161;
+
+--
+-- AUTO_INCREMENT de la tabla `QR`
+--
+ALTER TABLE `QR`
+  MODIFY `id` bigint NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT de la tabla `Room`
+--
+ALTER TABLE `Room`
+  MODIFY `room_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
+-- AUTO_INCREMENT de la tabla `Room_Shift`
+--
+ALTER TABLE `Room_Shift`
+  MODIFY `room_shift_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=745;
+
+--
+-- AUTO_INCREMENT de la tabla `Shift`
+--
+ALTER TABLE `Shift`
+  MODIFY `shift_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=125;
+
+--
+-- AUTO_INCREMENT de la tabla `Tickets`
+--
+ALTER TABLE `Tickets`
+  MODIFY `ticket_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
+-- AUTO_INCREMENT de la tabla `Waiter`
+--
+ALTER TABLE `Waiter`
+  MODIFY `waiter_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
