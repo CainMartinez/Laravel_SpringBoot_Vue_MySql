@@ -38,6 +38,7 @@ class AuthController extends Controller
                // Generar el avatar_url utilizando el rol y el email
                $avatarUrl = $this->generateAvatarUrl($request->role, $request->email);
 
+               $roomId = rand(1, 6);
                // Crear el usuario según el role
                $user = $request->role === 'waiter'
                     ? Waiter::create([
@@ -48,6 +49,7 @@ class AuthController extends Controller
                          'waiter_uuid' => \Illuminate\Support\Str::uuid(),
                          'hire_date' => now()->toDateString(),
                          'avatar_url' => $avatarUrl,
+                         'room_id' => $roomId,
                     ])
                     : Manager::create([
                          'firstName' => $request->firstName,

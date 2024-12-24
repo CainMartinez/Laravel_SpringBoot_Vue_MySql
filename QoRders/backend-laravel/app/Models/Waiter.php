@@ -40,6 +40,7 @@ class Waiter extends Authenticatable implements JWTSubject
           'is_active',
           'avatar_url',
           'bio',
+          'room_id'
      ];
 
      // Métodos requeridos por la interfaz JWTSubject
