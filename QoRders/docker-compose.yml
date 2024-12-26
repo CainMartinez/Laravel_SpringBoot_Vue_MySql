@@ -154,7 +154,7 @@ services:
     platform: linux/amd64
     restart: always
     ports:
-      - "8080:80"
+      - "8087:80"
     environment:
       PMA_HOST: mysql_container
       MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
