@@ -53,6 +53,9 @@ public class BookingEntity {
     @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<BookingWaiterEntity> bookingWaiters = new ArrayList<>();
 
+    @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<TicketEntity> tickets = new ArrayList<>();
+
     public enum Status {
         Pending,
         Confirmed,

@@ -1,6 +1,8 @@
 package com.QoRders.client.client.api.controller;
 
 import com.QoRders.client.auth.api.security.authorization.CheckSecurity;
+import com.QoRders.client.auth.api.security.jwt.JwtProvider;
+import com.QoRders.client.booking.api.response.BookingWithTicketsResponse;
 import com.QoRders.client.client.api.assembler.ClientAssembler;
 import com.QoRders.client.client.api.request.ClientUpdateRequest;
 import com.QoRders.client.client.domain.entity.ClientEntity;
@@ -9,6 +11,7 @@ import com.QoRders.client.client.domain.service.ClientService;
 import lombok.RequiredArgsConstructor;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.http.HttpStatus;
@@ -24,6 +27,7 @@ public class ClientController {
 
     private final ClientService clientService;
     private final ClientAssembler clientAssembler;
+    protected final JwtProvider jwtProvider;
 
     /**
      * Get the currently authenticated client's profile.
@@ -37,6 +41,16 @@ public class ClientController {
         String token = authorization.replace("Bearer ", "");
         Map<String, Object> redisData = clientService.getProfile(token);
         return ResponseEntity.ok(clientAssembler.toResponse(redisData));
+    }
+
+    @GetMapping("/bookings")
+    @CheckSecurity.Protected.canManage
+    public ResponseEntity<List<BookingWithTicketsResponse>> getBookingsWithTickets(
+        @RequestHeader("Authorization") String authorization
+    ) {
+        String clientEmail = jwtProvider.parseAccessToken(authorization.replace("Bearer ", ""));
+        List<BookingWithTicketsResponse> response = clientService.getBookingsWithTickets(clientEmail);
+        return ResponseEntity.ok(response);
     }
 
     /**

@@ -1,6 +1,10 @@
 package com.QoRders.client.client.domain.service;
 
 import com.QoRders.client.auth.api.security.utils.AuthUtils;
+import com.QoRders.client.booking.api.request.TicketDto;
+import com.QoRders.client.booking.api.response.BookingWithTicketsResponse;
+import com.QoRders.client.booking.domain.entity.BookingEntity;
+import com.QoRders.client.booking.domain.repository.BookingRepository;
 import com.QoRders.client.client.domain.entity.ClientEntity;
 import com.QoRders.client.client.domain.exceptions.ClientNotAuthenticatedException;
 import com.QoRders.client.client.domain.exceptions.ClientNotFoundException;
@@ -13,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -25,6 +30,7 @@ public class ClientServiceImpl implements ClientService {
     private final AuthUtils authUtils;
     private final RedisService redisService;
     private final JwtProvider jwtProvider;
+    private final BookingRepository bookingRepository;
 
     @Override
     public Map<String, Object> getProfile(String token) {
@@ -144,5 +150,33 @@ public class ClientServiceImpl implements ClientService {
 
         return clientRepository.findByEmail(email)
                 .orElseThrow(() -> new ClientNotFoundException("Client not found with email: " + email));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<BookingWithTicketsResponse> getBookingsWithTickets(String clientEmail) {
+        List<BookingEntity> bookings = bookingRepository.findByClientEmail(clientEmail);
+
+        return bookings.stream().map(booking -> {
+            List<TicketDto> tickets = booking.getTickets().stream()
+                .map(ticket -> new TicketDto(
+                    ticket.getTicketId(),
+                    ticket.getTotalAmount(),
+                    ticket.getAmountToPay(),
+                    ticket.getPaymentStatus().toString(),
+                    ticket.getCreatedAt()
+                ))
+                .toList();
+
+            return new BookingWithTicketsResponse(
+                booking.getId(),
+                booking.getRoomShift().getRoom().getRoomName(),
+                booking.getGuestCount(),
+                booking.getStatus().toString(),
+                booking.getNotes(),
+                booking.getCreatedAt(),
+                tickets
+            );
+        }).toList();
     }
 }

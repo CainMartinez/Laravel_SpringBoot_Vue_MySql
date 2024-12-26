@@ -1,4 +1,4 @@
-package com.QoRders.client.order.domain.entity;
+package com.QoRders.client.booking.domain.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -44,6 +44,10 @@ public class TicketEntity {
     @Column(name = "updated_at", nullable = false)
     @org.hibernate.annotations.UpdateTimestamp
     private LocalDateTime updatedAt;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "booking_id", insertable = false, updatable = false)
+    private BookingEntity booking;
 
     public enum PaymentStatus {
         Paid,

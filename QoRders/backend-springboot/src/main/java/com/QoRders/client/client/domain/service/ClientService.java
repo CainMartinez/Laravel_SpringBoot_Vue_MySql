@@ -1,7 +1,9 @@
 package com.QoRders.client.client.domain.service;
 
+import com.QoRders.client.booking.api.response.BookingWithTicketsResponse;
 import com.QoRders.client.client.domain.entity.ClientEntity;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -13,4 +15,5 @@ public interface ClientService {
     boolean validatePassword(String rawPassword, String hashedPassword);
     void deleteClientById(Integer id);
     ClientEntity getCurrentClient();
+    List<BookingWithTicketsResponse> getBookingsWithTickets(String clientEmail);
 }
