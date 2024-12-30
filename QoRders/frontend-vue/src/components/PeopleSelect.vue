@@ -1,23 +1,19 @@
 <template>
     <div class="people-select">
         <label for="people">¿Cuántos sois?</label>
-        <input type="number" v-model="guestCount" min="2" max="10" id="people" />
+        <input type="number" :value="people" @change="updatePeople($event)" min="2" max="10" id="people" />
     </div>
 </template>
 
 <script setup>
-import { ref, watch } from 'vue';
+import { ref } from 'vue';
 
-const props = defineProps({
-    modelValue: Number
-});
+const people = ref(2);
 
-const emit = defineEmits(['update:modelValue']);
-const guestCount = ref(props.modelValue);
-
-watch(guestCount, (newValue) => {
-    emit('update:modelValue', newValue);
-});
+const emit = defineEmits(['update:selectedPeople']);
+const updatePeople = (event) => {
+    emit('update:selectedPeople', event.target.value);
+};
 </script>
 
 <style scoped>

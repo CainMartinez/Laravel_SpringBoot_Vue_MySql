@@ -6,7 +6,7 @@
         <RoomSelect :rooms="rooms" @update:selectedRoom="changeSelectedRoom($event)" />
 
         <!-- Selección de Número de Personas -->
-        <PeopleSelect v-model="guestCount" />
+        <PeopleSelect @update:selectedPeople="changeSelectedPeople($event)" />
 
         <!-- Selección de Turno -->
         <ShiftSelect @update:selectedShift="changeSelectedShift($event)" />
@@ -36,7 +36,7 @@ const store = useStore();
 const rooms = computed(() => store.getters['storeRooms/getRooms']);
 const selectedRoom = ref('');
 const selectedShift = ref('');
-const guestCount = ref(2);
+const selectedPeople = ref(2);
 const errorMessage = ref('');
 const selectedDay = ref(null);
 
@@ -48,6 +48,11 @@ const changeSelectedShift = (shift) => {
 const changeSelectedRoom = (room) => {
     console.log("Se ha cambiado la habitacion a: " + room);
     selectedRoom.value = room;
+};
+
+const changeSelectedPeople = (people) => {
+    console.log("Se ha cambiado el numero de personas a: " + people);
+    selectedPeople.value = people;
 };
 
 </script>
