@@ -18,6 +18,7 @@ const actions = {
     async fetchShifts({ commit }, { yearMonth }) {
         try {
             const shifts = await ReservationService.fetchShifts(yearMonth);
+            console.log("Turnos cargados desde el fectch de la store:", shifts);
             commit('setShifts', shifts);
         } catch (error) {
             console.error('Error al cargar los turnos:', error);

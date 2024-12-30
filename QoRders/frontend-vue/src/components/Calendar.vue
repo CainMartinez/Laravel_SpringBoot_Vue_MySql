@@ -1,52 +1,120 @@
 <template>
     <div>
-        <DatePicker v-model="selectedDate" :show-week="true" :dateFormat="'dd-mm-yy'" :disabledDates="disabledDates"
-            :eventClass="getEventClass" :inline="true"></DatePicker>
+        <DatePicker v-model="selectedDate" :dateFormat="'dd-mm-yy'" :inline="true">
+            <template #date="slotProps">
+                <div v-if="checkGreenDay(slotProps.date)" class="availableDay" @click="selectedDay(slotProps.date)">{{
+                    slotProps.date.day }}</div>
+                <div v-tooltip.top="'Hay disponibilidad en otras salas'" v-else-if="checkYellowDay(slotProps.date)"
+                    class="otherRoom">
+                    {{ slotProps.date.day }}</div>
+                <div v-else-if="checkRedDay(slotProps.date)" class="unavailable">{{ slotProps.date.day }}</div>
+                <div v-else>{{ slotProps.date.day }}</div>
+            </template>
+        </DatePicker>
     </div>
 </template>
 
 <script setup>
 import { ref, computed, onMounted } from 'vue';
-import useReservation from '../composables/useReservation';
+import { useStore } from 'vuex';
 import DatePicker from 'primevue/datepicker';
 
-const { availableDays, loadShifts, selectedRoom } = useReservation();
+const props = defineProps({
+    roomCapacity: Number,
+    selectedRoom: String,
+    selectedShift: String,
+    selectedPeople: Number
+});
+
 const selectedDate = ref(null);
+const store = useStore();
+const shifts = computed(() => store.getters['storeReservation/getShifts'].data);
 
-// Realizamos el filtro al cargar la página
-onMounted(() => {
-    loadShifts('2025-01');
-});
-
-// Obtener las clases de los días
-const getEventClass = (date) => {
-    const day = availableDays.value.find(day => day.date === formatDate(date));
-    if (day) {
-        return day.availability;
-    }
-    return '';
+const checkGreenDay = (date) => {
+    let dayShifts = shifts.value.filter(s => s.shiftDate === translateDate(date));
+    if (dayShifts.length === 0) return false;
+    let shiftSelected = dayShifts.find(s => s.shiftType === props.selectedShift);
+    let roomAvailability = props.roomCapacity - shiftSelected.roomShifts.find(r => r.roomName === props.selectedRoom).reservedCapacity;
+    if (roomAvailability >= props.selectedPeople) return true;
+    return false;
 };
 
-// Crear la lista de fechas deshabilitadas (rojas)
-const disabledDates = computed(() => {
-    return availableDays.value.filter(day => day.availability === 'red').map(day => day.date);
-});
+const checkYellowDay = (date) => {
+    let dayShifts = shifts.value.filter(s => s.shiftDate === translateDate(date));
+    if (dayShifts.length === 0) return false;
+    let shiftSelected = dayShifts.find(s => s.shiftType === props.selectedShift);
 
-const formatDate = (date) => {
-    return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+    return shiftSelected.roomShifts.some(r => {
+        let roomAvailability = props.roomCapacity - r.reservedCapacity;
+        if (roomAvailability >= props.selectedPeople) {
+            console.log("vamos a devolver amarillo para la fecha " + translateDate(date));
+            return true;
+        }
+        return false;
+    });
 };
+
+const checkRedDay = (date) => {
+    let dayShifts = shifts.value.filter(s => s.shiftDate === translateDate(date));
+    if (dayShifts.length === 0) return false;
+    let shiftSelected = dayShifts.find(s => s.shiftType === props.selectedShift);
+    return shiftSelected.roomShifts.some(r => {
+        let roomAvailability = props.roomCapacity - r.reservedCapacity;
+        if (roomAvailability >= props.selectedPeople) {
+            console.log("vamos a devolver amarillo para la fecha " + translateDate(date));
+            return false;
+        }
+
+        return true;
+    });
+};
+
+const translateDate = (date) => {
+    const padZero = (num) => (num < 10 ? '0' + num : num);
+
+    const year = date.year;
+    const month = padZero(date.month + 1);
+    const day = padZero(date.day);
+
+    return `${year}-${month}-${day}`;
+};
+
+const selectedDay = (date) => {
+    console.log("Se ha seleccionado la fecha: " + date);
+    diaReserva.value = date;
+};
+
+
 </script>
 
 <style scoped>
-.green {
-    background-color: green;
+.availableDay {
+    background-color: #80cc80;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.yellow {
-    background-color: yellow;
+.otherRoom {
+    background-color: #ecec60;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.red {
-    background-color: red;
+.unavailable {
+    background-color: #e48383;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 </style>

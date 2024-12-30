@@ -15,6 +15,9 @@ import Carousel from 'primevue/carousel';
 import Paginator from 'primevue/paginator';
 import ScrollTop from 'primevue/scrolltop';
 
+import Tooltip from 'primevue/tooltip';
+
+
 //Prime React Components
 import 'primereact/resources/themes/lara-light-blue/theme.css';
 import 'primereact/resources/primereact.min.css';
@@ -36,5 +39,7 @@ app.component('Button', Button);
 app.component('Carousel', Carousel);
 app.component('Paginator', Paginator);
 app.component('ScrollTop', ScrollTop);
+
+app.directive('tooltip', Tooltip);
 
 app.mount('#app');

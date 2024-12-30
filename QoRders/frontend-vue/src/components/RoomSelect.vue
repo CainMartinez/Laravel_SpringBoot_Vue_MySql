@@ -3,7 +3,7 @@
         <label for="room">Selecciona tu sala:</label>
         <select :value="selectedRoom" id="room" @change="changeRoom($event)">
             <option disabled value="">Selecciona una sala</option>
-            <option v-for="room in rooms" :key="room.slug" :value="room.slug">{{ room.name }}</option>
+            <option v-for="room in rooms" :key="room.slug" :value="room.name">{{ room.name }}</option>
         </select>
     </div>
 </template>

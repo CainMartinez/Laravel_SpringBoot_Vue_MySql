@@ -12,10 +12,11 @@
         <ShiftSelect @update:selectedShift="changeSelectedShift($event)" />
 
         <!-- Calendario -->
-        <Calendar v-if="selectedRoom && selectedShift" />
+        <Calendar v-if="selectedRoom && selectedShift" :selectedRoom="selectedRoom" :selectedPeople="selectedPeople"
+            :selectedShift="selectedShift" :roomCapacity="roomCapacity" />
 
         <!-- Botón de Reserva -->
-        <button @click="handleReservation">Hacer Reserva</button>
+        <button @click="handleReservation" :disabled="!diaReserva">Hacer Reserva</button>
 
         <!-- Modal de Error -->
         <Modal v-if="errorMessage" :message="errorMessage" />
@@ -34,7 +35,8 @@ import Modal from '../components/Modal.vue';
 const store = useStore();
 
 const rooms = computed(() => store.getters['storeRooms/getRooms']);
-const selectedRoom = ref('');
+const selectedRoom = ref(null);
+const roomCapacity = ref(0);
 const selectedShift = ref('');
 const selectedPeople = ref(2);
 const errorMessage = ref('');
@@ -46,14 +48,16 @@ const changeSelectedShift = (shift) => {
 };
 
 const changeSelectedRoom = (room) => {
-    console.log("Se ha cambiado la habitacion a: " + room);
     selectedRoom.value = room;
+    roomCapacity.value = rooms.value.find(r => r.name === room).maxCapacity;
 };
 
 const changeSelectedPeople = (people) => {
     console.log("Se ha cambiado el numero de personas a: " + people);
     selectedPeople.value = people;
 };
+
+const diaReserva = ref(null);
 
 </script>
 
