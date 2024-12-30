@@ -3,16 +3,16 @@
         <h1>¿Dónde vas a viajar hoy?</h1>
 
         <!-- Selección de Sala -->
-        <RoomSelect :rooms="rooms" v-model="selectedRoom" />
+        <RoomSelect :rooms="rooms" @update:selectedRoom="changeSelectedRoom($event)" />
 
         <!-- Selección de Número de Personas -->
         <PeopleSelect v-model="guestCount" />
 
         <!-- Selección de Turno -->
-        <ShiftSelect :selectedShift="selectedShift" @update:selectedShift="filterAvailableDays" />
+        <ShiftSelect @update:selectedShift="changeSelectedShift($event)" />
 
         <!-- Calendario -->
-        <Calendar :availableDays="availableDays" @selectDay="handleSelectDay" />
+        <Calendar v-if="selectedRoom && selectedShift" />
 
         <!-- Botón de Reserva -->
         <button @click="handleReservation">Hacer Reserva</button>
@@ -23,9 +23,8 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useStore } from 'vuex';
-import useReservation from '../composables/useReservation';
 import RoomSelect from '../components/RoomSelect.vue';
 import PeopleSelect from '../components/PeopleSelect.vue';
 import ShiftSelect from '../components/ShiftSelect.vue';
@@ -33,43 +32,24 @@ import Calendar from '../components/Calendar.vue';
 import Modal from '../components/Modal.vue';
 
 const store = useStore();
-const { loadShifts, makeReservation, filterAvailableDays, shifts, availableDays, selectedShift } = useReservation();
 
-const rooms = ref([]);
+const rooms = computed(() => store.getters['storeRooms/getRooms']);
 const selectedRoom = ref('');
+const selectedShift = ref('');
 const guestCount = ref(2);
 const errorMessage = ref('');
 const selectedDay = ref(null);
 
-onMounted(async () => {
-    loadShifts('2025-01');
-    await store.dispatch('storeRooms/fetchRooms');
-    rooms.value = store.getters['storeRooms/getRooms'];
-});
-
-const handleReservation = async () => {
-    try {
-        // Datos de la reserva
-        const reservationData = {
-            date: selectedDay.value,
-            room_slug: selectedRoom.value,
-            firstName: 'Yolanda',
-            shift: selectedShift.value,
-            guest_count: guestCount.value,
-            email: 'yomogan@gmail.com',
-            phoneNumber: '622095840',
-            notes: 'Silla para niño pequeño.'
-        };
-
-        await makeReservation(reservationData);
-    } catch (error) {
-        errorMessage.value = 'Hubo un error al realizar la reserva. Inténtalo de nuevo.';
-    }
+const changeSelectedShift = (shift) => {
+    console.log("Se ha cambiado el turno a: " + shift);
+    selectedShift.value = shift;
 };
 
-const handleSelectDay = (day) => {
-    selectedDay.value = day.date;
+const changeSelectedRoom = (room) => {
+    console.log("Se ha cambiado la habitacion a: " + room);
+    selectedRoom.value = room;
 };
+
 </script>
 
 <style scoped>

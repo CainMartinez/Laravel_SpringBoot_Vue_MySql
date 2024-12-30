@@ -2,29 +2,21 @@
     <div class="shift-select">
         <label for="shift">¿En qué turno?</label>
         <select :value="shift" @change="updateShift($event)" id="shift">
+            <option disabled value="">Selecciona un turno</option>
             <option value="Lunch">Comida</option>
             <option value="Dinner">Cena</option>
-            <option value="Both">Ver todo</option>
         </select>
     </div>
 </template>
 
 <script setup>
-import { ref, watch } from 'vue';
+import { ref } from 'vue';
 
-const props = defineProps({
-    selectedShift: String
-});
+const shift = ref(null);
 
 const emit = defineEmits(['update:selectedShift']);
-const shift = ref(props.selectedShift);
-
-watch(shift, (newValue) => {
-    emit('update:selectedShift', newValue);
-});
-
 const updateShift = (event) => {
-    shift.value = event.target.value;
+    emit('update:selectedShift', event.target.value);
 };
 </script>
 

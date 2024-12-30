@@ -12,7 +12,7 @@ export default function useReservation() {
     const loadShifts = async (yearMonth) => {
         try {
             const response = await store.dispatch('storeReservation/fetchShifts', { yearMonth });
-            const data = response; // Assuming response is already parsed
+            const data = response;
             shifts.value = data;
             filterAvailableDays();
         } catch (error) {

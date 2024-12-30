@@ -1,7 +1,7 @@
 <template>
     <div class="room-select">
         <label for="room">Selecciona tu sala:</label>
-        <select v-model="selectedRoom" id="room">
+        <select :value="selectedRoom" id="room" @change="changeRoom($event)">
             <option disabled value="">Selecciona una sala</option>
             <option v-for="room in rooms" :key="room.slug" :value="room.slug">{{ room.name }}</option>
         </select>
@@ -9,18 +9,20 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue';
+import { ref } from 'vue';
 
 const props = defineProps({
     rooms: Array
 });
 
-const emit = defineEmits(['update:modelValue']);
-const selectedRoom = ref('');
+const selectedRoom = ref(null);
 
-watch(selectedRoom, (newValue) => {
-    emit('update:modelValue', newValue);
-});
+const emit = defineEmits(['update:selectedRoom']);
+const changeRoom = (event) => {
+    emit('update:selectedRoom', event.target.value);
+};
+
+
 </script>
 
 <style scoped>
