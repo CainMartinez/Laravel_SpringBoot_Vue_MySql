@@ -27,6 +27,19 @@ const loadRoomData = async (to, from, next) => {
     }
 };
 
+const reservationGuard = (userType) => async (to, from, next) => {
+    const store = useStore();
+    const isAuthenticated = store.getters['storeAuth/getIsAuthenticated'];
+    const currentUserType = store.getters['storeAuth/getUserType'];
+    if (isAuthenticated && currentUserType === userType) {
+        await store.dispatch('storeRooms/fetchRooms');
+        await store.dispatch('storeReservation/fetchShifts', { yearMonth: '2025-01' });
+        next();
+    } else {
+        next('/');
+    }
+};
+
 // Definición de rutas
 const routes = [
     {
@@ -58,7 +71,7 @@ const routes = [
         path: '/reservation',
         name: 'Reserva',
         component: () => import('../pages/ReservationPage.vue'),
-        beforeEnter: requireAuth('client'), loadRoomData,
+        beforeEnter: reservationGuard('client'),
     },
     {
         path: '/login',
