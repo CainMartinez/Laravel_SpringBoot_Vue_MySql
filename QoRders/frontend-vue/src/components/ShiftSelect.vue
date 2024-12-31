@@ -23,12 +23,17 @@ const updateShift = (event) => {
 <style scoped>
 .shift-select {
     margin: 20px 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 10px;
+    font-size: 18px;
 }
 
 select {
     padding: 8px;
     font-size: 16px;
     width: 100%;
-    max-width: 200px;
+    max-width: 400px;
 }
 </style>

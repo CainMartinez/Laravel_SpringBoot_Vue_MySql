@@ -19,12 +19,17 @@ const updatePeople = (event) => {
 <style scoped>
 .people-select {
     margin: 20px 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 10px;
+    font-size: 18px;
 }
 
 input {
     padding: 8px;
     font-size: 16px;
     width: 100%;
-    max-width: 150px;
+    max-width: 400px;
 }
 </style>

@@ -2,12 +2,14 @@
     <div>
         <DatePicker v-model="selectedDate" :dateFormat="'dd-mm-yy'" :inline="true">
             <template #date="slotProps">
-                <div v-if="checkGreenDay(slotProps.date)" class="availableDay" @click="selectedDay(slotProps.date)">{{
-                    slotProps.date.day }}</div>
-                <div v-tooltip.top="'Hay disponibilidad en otras salas'" v-else-if="checkYellowDay(slotProps.date)"
-                    class="otherRoom">
+                <div v-if="checkGreenDay(slotProps.date)" class="availableDay"
+                    @click="selectDay(slotProps.date, false)">
                     {{ slotProps.date.day }}</div>
-                <div v-else-if="checkRedDay(slotProps.date)" class="unavailable">{{ slotProps.date.day }}</div>
+                <div v-tooltip.top="'Hay disponibilidad en otras salas'" v-else-if="checkYellowDay(slotProps.date)"
+                    class="otherRoom" @click="selectDay('', true)">
+                    {{ slotProps.date.day }}</div>
+                <div v-else-if="checkRedDay(slotProps.date)" class="unavailable" @click="selectDay('', true)">{{
+                    slotProps.date.day }}</div>
                 <div v-else>{{ slotProps.date.day }}</div>
             </template>
         </DatePicker>
@@ -15,7 +17,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed } from 'vue';
 import { useStore } from 'vuex';
 import DatePicker from 'primevue/datepicker';
 
@@ -26,6 +28,7 @@ const props = defineProps({
     selectedPeople: Number
 });
 
+const emit = defineEmits(['update:selectedDay']);
 const selectedDate = ref(null);
 const store = useStore();
 const shifts = computed(() => store.getters['storeReservation/getShifts'].data);
@@ -47,7 +50,6 @@ const checkYellowDay = (date) => {
     return shiftSelected.roomShifts.some(r => {
         let roomAvailability = props.roomCapacity - r.reservedCapacity;
         if (roomAvailability >= props.selectedPeople) {
-            console.log("vamos a devolver amarillo para la fecha " + translateDate(date));
             return true;
         }
         return false;
@@ -61,7 +63,6 @@ const checkRedDay = (date) => {
     return shiftSelected.roomShifts.some(r => {
         let roomAvailability = props.roomCapacity - r.reservedCapacity;
         if (roomAvailability >= props.selectedPeople) {
-            console.log("vamos a devolver amarillo para la fecha " + translateDate(date));
             return false;
         }
 
@@ -79,11 +80,14 @@ const translateDate = (date) => {
     return `${year}-${month}-${day}`;
 };
 
-const selectedDay = (date) => {
-    console.log("Se ha seleccionado la fecha: " + date);
-    diaReserva.value = date;
+const selectDay = (date, isDisabled) => {
+    const translatedDate = translateDate(date);
+    const dayInfo = {
+        day: translatedDate,
+        isDisabled: isDisabled
+    };
+    emit('update:selectedDay', dayInfo);
 };
-
 
 </script>
 
@@ -106,6 +110,7 @@ const selectedDay = (date) => {
     display: flex;
     align-items: center;
     justify-content: center;
+    cursor: not-allowed;
 }
 
 .unavailable {
@@ -116,5 +121,6 @@ const selectedDay = (date) => {
     display: flex;
     align-items: center;
     justify-content: center;
+    cursor: not-allowed;
 }
 </style>
