@@ -1,27 +1,28 @@
 <template>
-    <div class="shift-select">
-        <label for="shift">¿En qué turno?</label>
-        <select :value="shift" @change="updateShift($event)" id="shift">
-            <option disabled value="">Selecciona un turno</option>
-            <option value="Lunch">Comida</option>
-            <option value="Dinner">Cena</option>
-        </select>
+    <div class="card flex justify-center">
+        <Select v-model="selectedShift" :options="shifts" optionLabel="name" placeholder="Selecciona un turno"
+            class="w-full md:w-56" @change="updateShift" />
     </div>
 </template>
 
 <script setup>
 import { ref } from 'vue';
+import Select from 'primevue/select';
 
-const shift = ref(null);
+const selectedShift = ref(null);
+const shifts = ref([
+    { name: 'Comida', code: 'Lunch' },
+    { name: 'Cena', code: 'Dinner' }
+]);
 
 const emit = defineEmits(['update:selectedShift']);
 const updateShift = (event) => {
-    emit('update:selectedShift', event.target.value);
+    emit('update:selectedShift', event.value);
 };
 </script>
 
 <style scoped>
-.shift-select {
+.card {
     margin: 20px 0;
     display: flex;
     flex-direction: column;

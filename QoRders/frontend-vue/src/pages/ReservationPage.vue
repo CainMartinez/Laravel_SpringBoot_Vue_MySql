@@ -27,7 +27,8 @@
         <button @click="handleReservation" :disabled="isDisabled">Hacer Reserva</button>
 
         <!-- Modal de Error -->
-        <Modal v-if="errorMessage" :message="errorMessage" />
+        <Modal :visible="modalVisible" :message="modalMessage" title="Reserva"
+            @update:visible="modalVisible = $event" />
     </div>
 </template>
 
@@ -39,7 +40,9 @@ import PeopleSelect from '../components/PeopleSelect.vue';
 import ShiftSelect from '../components/ShiftSelect.vue';
 import Calendar from '../components/Calendar.vue';
 import Modal from '../components/Modal.vue';
+// import { useReservation } from '../composables/useReservation';
 
+// const { makeReservation } = useReservation();
 const store = useStore();
 
 const rooms = computed(() => store.getters['storeRooms/getRooms']);
@@ -47,12 +50,12 @@ const selectedRoom = ref(null);
 const roomCapacity = ref(0);
 const selectedShift = ref('');
 const selectedPeople = ref(2);
-const errorMessage = ref('');
+const modalMessage = ref('');
 const selectedDay = ref('');
-const isDisabled = ref(true)
+const isDisabled = ref(true);
+const modalVisible = ref(false);
 
 const changeSelectedShift = (shift) => {
-    console.log("Se ha cambiado el turno a: " + shift);
     selectedShift.value = shift;
 };
 
@@ -62,23 +65,24 @@ const changeSelectedRoom = (room) => {
 };
 
 const changeSelectedPeople = (people) => {
-    console.log("Se ha cambiado el numero de personas a: " + people);
     selectedPeople.value = people;
 };
 
 const changeSelectedDay = (dayInfo) => {
-    console.log("Se ha seleccionado el día: " + dayInfo.day);
-    console.log("¿Está deshabilitado? " + dayInfo.isDisabled);
     selectedDay.value = dayInfo.day;
     isDisabled.value = dayInfo.isDisabled;
 };
 
 const handleReservation = () => {
-    if (selectedDay && selectedDay.value) {
-        console.log("Reservando para el día: " + selectedDay.value);
+    const reserva = { selectedDay, selectedRoom, selectedShift, selectedPeople };
+    if (selectedDay.value && selectedRoom.value && selectedShift.value && selectedPeople.value) {
+        console.log(reserva);
+        modalMessage.value = `Reserva realizada para el día ${selectedDay.value} en la sala ${selectedRoom.value} para ${selectedPeople.value} personas en el turno ${selectedShift.value}.`;
+        // makeReservation(reserva);
     } else {
-        errorMessage.value = "Por favor, seleccione un día.";
+        modalMessage.value = "Por favor, completa todos los datos.";
     }
+    modalVisible.value = true;
 };
 </script>
 

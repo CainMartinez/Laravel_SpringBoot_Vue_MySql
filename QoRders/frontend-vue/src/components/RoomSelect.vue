@@ -1,15 +1,17 @@
 <template>
     <div class="room-select">
         <label for="room">Selecciona tu sala:</label>
-        <select :value="selectedRoom" id="room" @change="changeRoom($event)">
+        <Select v-model="selectedRoom" :options="rooms" optionLabel="name" placeholder="Selecciona una sala"
+            class="w-full md:w-56" @change="changeRoom($event)">
             <option disabled value="">Selecciona una sala</option>
             <option v-for="room in rooms" :key="room.slug" :value="room.name">{{ room.name }}</option>
-        </select>
+        </Select>
     </div>
 </template>
 
 <script setup>
 import { ref } from 'vue';
+import Select from 'primevue/select';
 
 const props = defineProps({
     rooms: Array

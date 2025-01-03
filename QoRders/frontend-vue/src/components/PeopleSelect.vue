@@ -1,18 +1,27 @@
 <template>
     <div class="people-select">
         <label for="people">¿Cuántos sois?</label>
-        <input type="number" :value="people" @change="updatePeople($event)" min="2" max="10" id="people" />
+        <InputNumber v-model="people" inputId="horizontal-buttons" showButtons buttonLayout="horizontal" :step="1" fluid
+            @change="updatePeople">
+            <template #incrementbuttonicon>
+                <span class="pi pi-plus" />
+            </template>
+            <template #decrementbuttonicon>
+                <span class="pi pi-minus" />
+            </template>
+        </InputNumber>
     </div>
 </template>
 
 <script setup>
 import { ref } from 'vue';
+import InputNumber from 'primevue/inputnumber';
 
 const people = ref(2);
 
 const emit = defineEmits(['update:selectedPeople']);
 const updatePeople = (event) => {
-    emit('update:selectedPeople', event.target.value);
+    emit('update:selectedPeople', event.value);
 };
 </script>
 
