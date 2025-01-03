@@ -1,5 +1,6 @@
 <template>
     <div class="card flex justify-center">
+        <label for="room">Selecciona un turno:</label>
         <Select v-model="selectedShift" :options="shifts" optionLabel="name" placeholder="Selecciona un turno"
             class="w-full md:w-56" @change="updateShift" />
     </div>
@@ -17,7 +18,6 @@ const shifts = ref([
 
 const emit = defineEmits(['update:selectedShift']);
 const updateShift = (event) => {
-    console.log(event.value);
     emit('update:selectedShift', event.value);
 };
 </script>

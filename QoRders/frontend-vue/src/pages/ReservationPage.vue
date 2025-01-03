@@ -22,6 +22,18 @@
         </div>
         <!-- Observaciones -->
         <p>*Si desea trona o viene con carrito, debe incluirlo como 1 persona más.</p>
+        <div v-if="selectedDay">
+            <div class="user-info">
+                <label for="name">Nombre:</label>
+                <InputText id="name" v-model="userFirstName" placeholder="Introduce tu nombre" disabled />
+
+                <label for="email">Email:</label>
+                <InputText id="email" v-model="userEmail" placeholder="Introduce tu email" disabled />
+
+                <label for="phone">Teléfono:</label>
+                <InputText id="phone" v-model="userPhone" placeholder="Introduce tu teléfono" />
+            </div>
+        </div>
 
         <!-- Botón de Reserva -->
         <button @click="handleReservation" :disabled="isDisabled">Hacer Reserva</button>
@@ -40,11 +52,14 @@ import PeopleSelect from '../components/PeopleSelect.vue';
 import ShiftSelect from '../components/ShiftSelect.vue';
 import Calendar from '../components/Calendar.vue';
 import Modal from '../components/Modal.vue';
+import InputText from 'primevue/inputtext';
+import makeReservation from '../composables/useReservation';
 
 const store = useStore();
 
 const rooms = computed(() => store.getters['storeRooms/getRooms']);
 const selectedRoom = ref(null);
+const selectedRoomSlug = ref('');
 const roomCapacity = ref(0);
 const selectedShift = ref('');
 const selectedShiftSpanish = ref('');
@@ -53,6 +68,9 @@ const modalMessage = ref('');
 const selectedDay = ref('');
 const isDisabled = ref(true);
 const modalVisible = ref(false);
+const userFirstName = computed(() => store.getters['storeAuth/getUserData'].client.firstName);
+const userEmail = computed(() => store.getters['storeAuth/getUserData'].client.email);
+const userPhone = ref('');
 
 const changeSelectedShift = (shift) => {
     selectedShift.value = shift.code;
@@ -62,6 +80,7 @@ const changeSelectedShift = (shift) => {
 const changeSelectedRoom = (room) => {
     selectedRoom.value = room;
     roomCapacity.value = rooms.value.find(r => r.name === room).maxCapacity;
+    selectedRoomSlug.value = rooms.value.find(r => r.name === room).slug;
 };
 
 const changeSelectedPeople = (people) => {
@@ -74,11 +93,19 @@ const changeSelectedDay = (dayInfo) => {
 };
 
 const handleReservation = () => {
-    const reserva = { selectedDay, selectedRoom, selectedShift, selectedPeople };
-    if (selectedDay.value && selectedRoom.value && selectedShift.value && selectedPeople.value) {
-        console.log(reserva);
-        modalMessage.value = `Reserva realizada para el día ${selectedDay.value} en la sala ${selectedRoom.value} para ${selectedPeople.value} personas en el turno ${selectedShiftSpanish.value}.`;
-        // makeReservation(reserva);
+    const reservationData = {
+        date: selectedDay.value,
+        room_slug: selectedRoomSlug.value,
+        firstName: userFirstName.value,
+        shift: selectedShift.value,
+        guest_count: selectedPeople.value,
+        email: userEmail.value,
+        phoneNumber: userPhone.value
+    };
+    if (selectedDay.value && selectedRoomSlug.value && selectedShift.value && selectedPeople.value && userPhone.value) {
+        console.log(reservationData);
+        makeReservation(reservationData);
+        modalMessage.value = `Reserva realizada para el día ${selectedDay.value} en la sala ${selectedRoom.value} para ${selectedPeople.value} personas en el turno ${selectedShiftSpanish.value}. Te hemos enviado un mensaje con los detalles de la reserva.`;
     } else {
         modalMessage.value = "Por favor, completa todos los datos.";
     }
@@ -127,6 +154,17 @@ h1 {
     display: flex;
     justify-content: center;
     margin-bottom: 20px;
+}
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 400px;
+    margin-bottom: 20px;
+    gap: 10px;
 }
 
 button {

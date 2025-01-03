@@ -19,7 +19,6 @@ const selectedRoom = ref(null);
 
 const emit = defineEmits(['update:selectedRoom']);
 const changeRoom = (value) => {
-    console.log(value.name);
     emit('update:selectedRoom', value.name);
 };
 

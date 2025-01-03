@@ -14,8 +14,9 @@ const ReservationService = {
 
     async makeReservation(reservationData) {
         try {
-            const response = await api_spring.post('/booking', { reservationData });
-            return response.data;
+            // const response = await api_spring.post('/booking', { reservationData });
+            console.log("Datos de la reserva:", reservationData);
+            // return response.data;
         } catch (error) {
             console.error("Error al hacer la reserva:", error);
             throw error;
