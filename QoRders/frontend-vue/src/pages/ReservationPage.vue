@@ -2,6 +2,9 @@
     <div class="reservation-page">
         <h1>¿Dónde vas a viajar hoy?</h1>
 
+        <Modal v-if="!isAuthenticated" :visible="authModalVisible" :message="authModalMessage" title="Iniciar sesión"
+            @update:visible="authModalVisible = $event" @closeModalWithRedirect="redirectToLogin" />
+
         <div class="reservation-container">
             <div class="form-container">
                 <!-- Selección de Sala -->
@@ -38,9 +41,9 @@
         <!-- Botón de Reserva -->
         <button @click="handleReservation" :disabled="isDisabled">Hacer Reserva</button>
 
-        <!-- Modal de Error -->
-        <Modal :visible="modalVisible" :message="modalMessage" title="Reserva"
-            @update:visible="modalVisible = $event" />
+        <!-- Modal de Reserva -->
+        <Modal :visible="reservationModalVisible" :message="reservationModalMessage" title="Reserva"
+            @update:visible="reservationModalVisible = $event" @closeModalWithRedirect="redirectToProfile" />
     </div>
 </template>
 
@@ -52,26 +55,46 @@ import PeopleSelect from '../components/PeopleSelect.vue';
 import ShiftSelect from '../components/ShiftSelect.vue';
 import Calendar from '../components/Calendar.vue';
 import Modal from '../components/Modal.vue';
-import InputText from 'primevue/inputtext';
-import makeReservation from '../composables/useReservation';
+import useReservation from '../composables/useReservation';
 
 const store = useStore();
+const { makeReservation } = useReservation(store);
 
 const rooms = computed(() => store.getters['storeRooms/getRooms']);
+const isAuthenticated = computed(() => store.getters['storeAuth/getIsAuthenticated']);
+const authModalMessage = ref('');
+const authModalVisible = ref(false);
+const reservationModalMessage = ref('');
+const reservationModalVisible = ref(false);
 const selectedRoom = ref(null);
 const selectedRoomSlug = ref('');
 const roomCapacity = ref(0);
 const selectedShift = ref('');
 const selectedShiftSpanish = ref('');
 const selectedPeople = ref(2);
-const modalMessage = ref('');
 const selectedDay = ref('');
 const isDisabled = ref(true);
-const modalVisible = ref(false);
 const userFirstName = computed(() => store.getters['storeAuth/getUserData'].client.firstName);
 const userEmail = computed(() => store.getters['storeAuth/getUserData'].client.email);
 const userPhone = ref('');
 
+// Verificación de la autenticación
+if (!isAuthenticated.value) {
+    authModalMessage.value = "Debes iniciar sesión para realizar una reserva.";
+    authModalVisible.value = true;
+}
+
+// Redirigir al login cuando se cierre el modal
+const redirectToLogin = () => {
+    console.log('Redirecting to login');
+    window.location.href = '/login';
+};
+const redirectToProfile = () => {
+    console.log('Redirecting to profile');
+    window.location.href = '/profile';
+};
+
+// Cambiar sala, turno, personas
 const changeSelectedShift = (shift) => {
     selectedShift.value = shift.code;
     selectedShiftSpanish.value = shift.name;
@@ -92,24 +115,29 @@ const changeSelectedDay = (dayInfo) => {
     isDisabled.value = dayInfo.isDisabled;
 };
 
+// Realizar la reserva
 const handleReservation = () => {
     const reservationData = {
-        date: selectedDay.value,
-        room_slug: selectedRoomSlug.value,
-        firstName: userFirstName.value,
-        shift: selectedShift.value,
-        guest_count: selectedPeople.value,
-        email: userEmail.value,
-        phoneNumber: userPhone.value
+        "date": selectedDay.value,
+        "room_slug": selectedRoomSlug.value,
+        "firstName": userFirstName.value,
+        "shift": selectedShift.value,
+        "guest_count": selectedPeople.value,
+        "email": userEmail.value,
+        "phoneNumber": userPhone.value
     };
     if (selectedDay.value && selectedRoomSlug.value && selectedShift.value && selectedPeople.value && userPhone.value) {
-        console.log(reservationData);
-        makeReservation(reservationData);
-        modalMessage.value = `Reserva realizada para el día ${selectedDay.value} en la sala ${selectedRoom.value} para ${selectedPeople.value} personas en el turno ${selectedShiftSpanish.value}. Te hemos enviado un mensaje con los detalles de la reserva.`;
+        makeReservation(reservationData)
+            .then(() => {
+                reservationModalMessage.value = `Reserva realizada para el día ${selectedDay.value} en la sala ${selectedRoom.value} para ${selectedPeople.value} personas en el turno ${selectedShiftSpanish.value}. Revisa los datos de la reserva en tu perfil.`;
+            })
+            .catch((error) => {
+                reservationModalMessage.value = `Error al realizar la reserva: ${error.message}`;
+            });
     } else {
-        modalMessage.value = "Por favor, completa todos los datos.";
+        reservationModalMessage.value = "Por favor, completa todos los datos.";
     }
-    modalVisible.value = true;
+    reservationModalVisible.value = true;
 };
 </script>
 

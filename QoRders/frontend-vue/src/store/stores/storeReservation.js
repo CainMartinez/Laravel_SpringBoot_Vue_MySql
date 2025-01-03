@@ -26,9 +26,9 @@ const actions = {
         }
     },
 
-    async makeReservation({ commit }, reservationData) {
+    async makeReservation({ commit }, { token, reservationData }) {
         try {
-            const reservation = await ReservationService.makeReservation(reservationData);
+            const reservation = await ReservationService.makeReservation(token, reservationData);
             commit('setReservation', reservation);
             return reservation;
         } catch (error) {

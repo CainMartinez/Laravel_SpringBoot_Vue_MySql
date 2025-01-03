@@ -28,8 +28,6 @@ import { useStore } from 'vuex';
 import { useRoute } from 'vue-router';
 import Filters from '../components/Filters.vue';
 import ProductCard from '../components/ProductCard.vue';
-import Paginator from 'primevue/paginator';
-import ScrollTop from 'primevue/scrolltop';
 import useFilters from '../composables/useFilters';
 import usePagination from '../composables/usePagination';
 

@@ -1,9 +1,6 @@
 import { ref } from 'vue';
-import { useStore } from 'vuex';
 
-export default function useReservation() {
-    const store = useStore();
-
+export default function useReservation(store) {
     const shifts = ref([]);
 
     const loadShifts = async (yearMonth) => {
@@ -19,7 +16,9 @@ export default function useReservation() {
 
     const makeReservation = async (reservationData) => {
         try {
-            const response = await store.dispatch('storeReservation/makeReservation', reservationData);
+            const token = store.getters['storeAuth/getToken'];
+            console.log('Token:', token);
+            const response = await store.dispatch('storeReservation/makeReservation', { token, reservationData });
             return response;
         } catch (error) {
             console.error('Error al realizar la reserva:', error);

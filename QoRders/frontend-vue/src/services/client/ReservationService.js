@@ -12,11 +12,17 @@ const ReservationService = {
         }
     },
 
-    async makeReservation(reservationData) {
+    async makeReservation(token, reservationData) {
         try {
-            // const response = await api_spring.post('/booking', { reservationData });
             console.log("Datos de la reserva:", reservationData);
-            // return response.data;
+            const response = await api_spring.post('/booking', reservationData, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+            console.log("Reserva realizada:", response.data);
+            return response;
         } catch (error) {
             console.error("Error al hacer la reserva:", error);
             throw error;

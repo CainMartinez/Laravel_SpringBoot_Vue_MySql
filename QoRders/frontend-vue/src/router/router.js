@@ -29,15 +29,9 @@ const loadRoomData = async (to, from, next) => {
 
 const reservationGuard = (userType) => async (to, from, next) => {
     const store = useStore();
-    const isAuthenticated = store.getters['storeAuth/getIsAuthenticated'];
-    const currentUserType = store.getters['storeAuth/getUserType'];
-    if (isAuthenticated && currentUserType === userType) {
-        await store.dispatch('storeRooms/fetchRooms');
-        await store.dispatch('storeReservation/fetchShifts', { yearMonth: '2025-01' });
-        next();
-    } else {
-        next('/');
-    }
+    await store.dispatch('storeRooms/fetchRooms');
+    await store.dispatch('storeReservation/fetchShifts', { yearMonth: '2025-01' });
+    next();
 };
 
 // Definición de rutas
