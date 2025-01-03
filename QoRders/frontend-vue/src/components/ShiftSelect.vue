@@ -8,7 +8,6 @@
 
 <script setup>
 import { ref } from 'vue';
-import Select from 'primevue/select';
 
 const selectedShift = ref(null);
 const shifts = ref([

@@ -9,7 +9,6 @@
 
 <script setup>
 import { ref } from 'vue';
-import Select from 'primevue/select';
 
 const props = defineProps({
     rooms: Array

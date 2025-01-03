@@ -15,7 +15,6 @@
 
 <script setup>
 import { ref } from 'vue';
-import InputNumber from 'primevue/inputnumber';
 
 const people = ref(2);
 

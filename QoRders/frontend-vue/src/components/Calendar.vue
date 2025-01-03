@@ -19,7 +19,6 @@
 <script setup>
 import { ref, computed } from 'vue';
 import { useStore } from 'vuex';
-import DatePicker from 'primevue/datepicker';
 
 const props = defineProps({
     roomCapacity: Number,
