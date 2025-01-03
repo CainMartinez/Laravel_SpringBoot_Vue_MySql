@@ -17,6 +17,7 @@ const shifts = ref([
 
 const emit = defineEmits(['update:selectedShift']);
 const updateShift = (event) => {
+    console.log(event.value);
     emit('update:selectedShift', event.value);
 };
 </script>

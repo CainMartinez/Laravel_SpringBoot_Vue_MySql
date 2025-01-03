@@ -2,9 +2,7 @@
     <div class="room-select">
         <label for="room">Selecciona tu sala:</label>
         <Select v-model="selectedRoom" :options="rooms" optionLabel="name" placeholder="Selecciona una sala"
-            class="w-full md:w-56" @change="changeRoom($event)">
-            <option disabled value="">Selecciona una sala</option>
-            <option v-for="room in rooms" :key="room.slug" :value="room.name">{{ room.name }}</option>
+            class="w-full md:w-56" @update:modelValue="changeRoom">
         </Select>
     </div>
 </template>
@@ -20,10 +18,10 @@ const props = defineProps({
 const selectedRoom = ref(null);
 
 const emit = defineEmits(['update:selectedRoom']);
-const changeRoom = (event) => {
-    emit('update:selectedRoom', event.target.value);
+const changeRoom = (value) => {
+    console.log(value.name);
+    emit('update:selectedRoom', value.name);
 };
-
 
 </script>
 

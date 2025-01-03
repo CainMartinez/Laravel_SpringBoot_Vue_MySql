@@ -40,15 +40,14 @@ import PeopleSelect from '../components/PeopleSelect.vue';
 import ShiftSelect from '../components/ShiftSelect.vue';
 import Calendar from '../components/Calendar.vue';
 import Modal from '../components/Modal.vue';
-// import { useReservation } from '../composables/useReservation';
 
-// const { makeReservation } = useReservation();
 const store = useStore();
 
 const rooms = computed(() => store.getters['storeRooms/getRooms']);
 const selectedRoom = ref(null);
 const roomCapacity = ref(0);
 const selectedShift = ref('');
+const selectedShiftSpanish = ref('');
 const selectedPeople = ref(2);
 const modalMessage = ref('');
 const selectedDay = ref('');
@@ -56,7 +55,8 @@ const isDisabled = ref(true);
 const modalVisible = ref(false);
 
 const changeSelectedShift = (shift) => {
-    selectedShift.value = shift;
+    selectedShift.value = shift.code;
+    selectedShiftSpanish.value = shift.name;
 };
 
 const changeSelectedRoom = (room) => {
@@ -77,7 +77,7 @@ const handleReservation = () => {
     const reserva = { selectedDay, selectedRoom, selectedShift, selectedPeople };
     if (selectedDay.value && selectedRoom.value && selectedShift.value && selectedPeople.value) {
         console.log(reserva);
-        modalMessage.value = `Reserva realizada para el día ${selectedDay.value} en la sala ${selectedRoom.value} para ${selectedPeople.value} personas en el turno ${selectedShift.value}.`;
+        modalMessage.value = `Reserva realizada para el día ${selectedDay.value} en la sala ${selectedRoom.value} para ${selectedPeople.value} personas en el turno ${selectedShiftSpanish.value}.`;
         // makeReservation(reserva);
     } else {
         modalMessage.value = "Por favor, completa todos los datos.";
