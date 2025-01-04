@@ -17,13 +17,13 @@ class Manager extends Authenticatable implements JWTSubject
      protected $primaryKey = 'manager_id';
 
      // Indicar si la clave primaria es autoincremental
-     public $incrementing = false;
+     public $incrementing = true;
 
      // Tipo de la clave primaria
      protected $keyType = 'int';
 
      // Timestamps automáticos
-     public $timestamps = true;
+     public $timestamps = false;
 
      // Columnas que pueden ser llenadas masivamente
      protected $fillable = [
@@ -50,4 +50,5 @@ class Manager extends Authenticatable implements JWTSubject
      {
           return ['role' => 'manager']; // Reclamo personalizado para indicar el rol
      }
+
 }

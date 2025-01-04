@@ -17,7 +17,7 @@ class Waiter extends Authenticatable implements JWTSubject
      protected $primaryKey = 'waiter_id';
 
      // Indicar si la clave primaria es autoincremental
-     public $incrementing = false;
+     public $incrementing = true;
 
      // Tipo de la clave primaria
      protected $keyType = 'int';
@@ -65,4 +65,11 @@ class Waiter extends Authenticatable implements JWTSubject
      {
           return $query->where('is_active', 0);
      }
+
+     // Scope para filtrar por disponiblidad de turno
+     public function scopeByShift($query, $shift)
+     {
+          return $query->where('shift_disponibility', $shift);
+     }
+
 }

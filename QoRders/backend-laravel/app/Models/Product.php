@@ -17,13 +17,13 @@ class Product extends Model
     protected $primaryKey = 'product_id';
 
     // Indicar si la clave primaria es autoincremental
-    public $incrementing = false;
+    public $incrementing = true;
 
     // Tipo de la clave primaria
     protected $keyType = 'int';
 
     // Desactivar timestamps si Laravel no debe manejarlos automáticamente
-    public $timestamps = true;
+    public $timestamps = false;
 
     // Columnas que se pueden llenar masivamente
     protected $fillable = [
@@ -51,4 +51,17 @@ class Product extends Model
     {
         return $this->belongsTo(NGO::class, 'origin', 'country');
     }
+
+    //Relación con Order_Product (N a N)
+    public function orders()
+    {
+        return $this->belongsToMany(Order::class, 'Orders_Products', 'product_id', 'order_id')
+                    ->withPivot(['quantity', 'is_delivered', 'created_at', 'updated_at']);
+    }
+
+    private static function generateSlug($name)
+    {
+        return Str::slug($name, '_') . '_' . mt_rand(100000, 999999);
+    }
 }
+

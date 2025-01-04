@@ -66,7 +66,6 @@ class RoomController extends Controller
             $validated = $request->validate([
                 'room_name' => 'required|string|max:100',
                 'description' => 'nullable|string',
-                'theme' => 'required|string|max:100',
                 'max_capacity' => 'required|integer|min:1',
                 'ngo_id' => 'required|integer|exists:NGO,ngo_id',
                 'is_active' => 'boolean',
