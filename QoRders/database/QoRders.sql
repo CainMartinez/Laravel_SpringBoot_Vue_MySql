@@ -57,6 +57,7 @@ CREATE TABLE `Booking` (
   `guest_count` int NOT NULL,
   `status` enum('Pending','Confirmed','InProgress','Completed') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'Pending',
   `notes` text,
+  `booking_date` date,
   `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
   `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -65,28 +66,28 @@ CREATE TABLE `Booking` (
 -- Volcado de datos para la tabla `Booking`
 --
 
-INSERT INTO `Booking` (`booking_id`, `booking_uuid`, `email`, `room_shift_id`, `guest_count`, `status`, `notes`, `created_at`, `updated_at`) VALUES
-(1, '84e9a868-c908-4126-b404-7221e819298d', 'yomogan@gmail.com', 3, 3, 'Confirmed', 'Silla para niño pequeño.', '2024-12-24 01:20:56', '2024-12-24 01:20:56'),
-(2, '84e9a868-c908-4126-b404-7221e819298e', 'yomogan@gmail.com', 4, 2, 'Confirmed', 'Mesa cerca de la ventana.', '2024-12-24 01:21:56', '2024-12-24 01:21:56'),
-(3, '84e9a868-c908-4126-b404-7221e819298f', 'juan@gmail.com', 3, 4, 'Confirmed', 'Mesa en la terraza.', '2024-12-24 01:22:56', '2024-12-24 01:22:56'),
-(4, '84e9a868-c908-4126-b404-7221e8192990', 'juan@gmail.com', 5, 3, 'Confirmed', 'Mesa cerca de la entrada.', '2024-12-24 01:23:56', '2024-12-24 01:23:56'),
-(5, '84e9a868-c908-4126-b404-7221e8192991', 'ramon@gmail.com', 2, 2, 'Confirmed', 'Mesa en el patio.', '2024-12-24 01:24:56', '2024-12-24 01:24:56'),
-(6, '84e9a868-c908-4126-b404-7221e8192992', 'ramon@gmail.com', 1, 5, 'Confirmed', 'Mesa en el salón principal.', '2024-12-24 01:25:56', '2024-12-24 01:25:56'),
-(7, '84e9a868-c908-4126-b404-7221e8192993', 'hasan@gmail.com', 3, 3, 'Confirmed', 'Mesa en la esquina.', '2024-12-24 01:26:56', '2024-12-24 01:26:56'),
-(8, '84e9a868-c908-4126-b404-7221e8192994', 'hasan@gmail.com', 4, 2, 'Confirmed', 'Mesa cerca del bar.', '2024-12-24 01:27:56', '2024-12-24 01:27:56'),
-(9, '84e9a868-c908-4126-b404-7221e8192995', 'abdel@gmail.com', 5, 4, 'Confirmed', 'Mesa en el jardín.', '2024-12-24 01:28:56', '2024-12-24 01:28:56'),
-(10, '84e9a868-c908-4126-b404-7221e8192996', 'abdel@gmail.com', 1, 3, 'Confirmed', 'Mesa en el salón VIP.', '2024-12-24 01:29:56', '2024-12-24 01:29:56'),
-(11, '84e9a868-c908-4126-b404-7221e8192997', 'mohamed@gmail.com', 2, 2, 'Confirmed', 'Mesa en la terraza.', '2024-12-24 01:30:56', '2024-12-24 01:30:56'),
-(12, '84e9a868-c908-4126-b404-7221e8192998', 'mohamed@gmail.com', 3, 5, 'Confirmed', 'Mesa en el salón principal.', '2024-12-24 01:31:56', '2024-12-24 01:31:56'),
-(13, '84e9a868-c908-4126-b404-7221e8192999', 'ali@gmail.com', 4, 3, 'Confirmed', 'Mesa en la esquina.', '2024-12-24 01:32:56', '2024-12-24 01:32:56'),
-(14, '84e9a868-c908-4126-b404-7221e8193000', 'ali@gmail.com', 5, 2, 'Confirmed', 'Mesa cerca del bar.', '2024-12-24 01:33:56', '2024-12-24 01:33:56'),
-(15, '84e9a868-c908-4126-b404-7221e8193001', 'yamal@gmail.com', 1, 4, 'Confirmed', 'Mesa en el jardín.', '2024-12-24 01:34:56', '2024-12-24 01:34:56'),
-(16, '84e9a868-c908-4126-b404-7221e8193002', 'yamal@gmail.com', 2, 3, 'Confirmed', 'Mesa en el salón VIP.', '2024-12-24 01:35:56', '2024-12-24 01:35:56'),
-(17, '84e9a868-c908-4126-b404-7221e8193003', 'omar@gmail.com', 3, 2, 'Confirmed', 'Mesa en la terraza.', '2024-12-24 01:36:56', '2024-12-24 01:36:56'),
-(18, '84e9a868-c908-4126-b404-7221e8193004', 'omar@gmail.com', 4, 5, 'Confirmed', 'Mesa en el salón principal.', '2024-12-24 01:37:56', '2024-12-24 01:37:56'),
-(19, '84e9a868-c908-4126-b404-7221e8193005', 'drills@gmail.com', 5, 3, 'Confirmed', 'Mesa en la esquina.', '2024-12-24 01:38:56', '2024-12-24 01:38:56'),
-(20, '84e9a868-c908-4126-b404-7221e8193006', 'drills@gmail.com', 1, 2, 'Confirmed', 'Mesa cerca del bar.', '2024-12-24 01:39:56', '2024-12-24 01:39:56');
 
+INSERT INTO `Booking` (`booking_id`, `booking_uuid`, `email`, `room_shift_id`, `guest_count`, `status`, `notes`, `booking_date`, `created_at`, `updated_at`) VALUES
+(1, '84e9a868-c908-4126-b404-7221e819298d', 'yomogan@gmail.com', 3, 3, 'Confirmed', 'Silla para niño pequeño.', '2024-12-02', '2024-12-24 01:20:56', '2024-12-24 01:20:56'),
+(2, '84e9a868-c908-4126-b404-7221e819298e', 'yomogan@gmail.com', 4, 2, 'Confirmed', 'Mesa cerca de la ventana.', '2024-12-02', '2024-12-24 01:21:56', '2024-12-24 01:21:56'),
+(3, '84e9a868-c908-4126-b404-7221e819298f', 'juan@gmail.com', 3, 4, 'Confirmed', 'Mesa en la terraza.', '2024-12-02', '2024-12-24 01:22:56', '2024-12-24 01:22:56'),
+(4, '84e9a868-c908-4126-b404-7221e8192990', 'juan@gmail.com', 5, 3, 'Confirmed', 'Mesa cerca de la entrada.', '2024-12-03', '2024-12-24 01:23:56', '2024-12-24 01:23:56'),
+(5, '84e9a868-c908-4126-b404-7221e8192991', 'ramon@gmail.com', 2, 2, 'Confirmed', 'Mesa en el patio.', '2024-12-01', '2024-12-24 01:24:56', '2024-12-24 01:24:56'),
+(6, '84e9a868-c908-4126-b404-7221e8192992', 'ramon@gmail.com', 1, 5, 'Confirmed', 'Mesa en el salón principal.', '2024-12-01', '2024-12-24 01:25:56', '2024-12-24 01:25:56'),
+(7, '84e9a868-c908-4126-b404-7221e8192993', 'hasan@gmail.com', 3, 3, 'Confirmed', 'Mesa en la esquina.', '2024-12-02', '2024-12-24 01:26:56', '2024-12-24 01:26:56'),
+(8, '84e9a868-c908-4126-b404-7221e8192994', 'hasan@gmail.com', 4, 2, 'Confirmed', 'Mesa cerca del bar.', '2024-12-02', '2024-12-24 01:27:56', '2024-12-24 01:27:56'),
+(9, '84e9a868-c908-4126-b404-7221e8192995', 'abdel@gmail.com', 5, 4, 'Confirmed', 'Mesa en el jardín.', '2024-12-03', '2024-12-24 01:28:56', '2024-12-24 01:28:56'),
+(10, '84e9a868-c908-4126-b404-7221e8192996', 'abdel@gmail.com', 1, 3, 'Confirmed', 'Mesa en el salón VIP.', '2024-12-01', '2024-12-24 01:29:56', '2024-12-24 01:29:56'),
+(11, '84e9a868-c908-4126-b404-7221e8192997', 'mohamed@gmail.com', 2, 2, 'Confirmed', 'Mesa en la terraza.', '2024-12-01', '2024-12-24 01:30:56', '2024-12-24 01:30:56'),
+(12, '84e9a868-c908-4126-b404-7221e8192998', 'mohamed@gmail.com', 3, 5, 'Confirmed', 'Mesa en el salón principal.', '2024-12-02', '2024-12-24 01:31:56', '2024-12-24 01:31:56'),
+(13, '84e9a868-c908-4126-b404-7221e8192999', 'ali@gmail.com', 4, 3, 'Confirmed', 'Mesa en la esquina.', '2024-12-02', '2024-12-24 01:32:56', '2024-12-24 01:32:56'),
+(14, '84e9a868-c908-4126-b404-7221e8193000', 'ali@gmail.com', 5, 2, 'Confirmed', 'Mesa cerca del bar.', '2024-12-03', '2024-12-24 01:33:56', '2024-12-24 01:33:56'),
+(15, '84e9a868-c908-4126-b404-7221e8193001', 'yamal@gmail.com', 1, 4, 'Confirmed', 'Mesa en el jardín.', '2024-12-01', '2024-12-24 01:34:56', '2024-12-24 01:34:56'),
+(16, '84e9a868-c908-4126-b404-7221e8193002', 'yamal@gmail.com', 2, 3, 'Confirmed', 'Mesa en el salón VIP.', '2024-12-01', '2024-12-24 01:35:56', '2024-12-24 01:35:56'),
+(17, '84e9a868-c908-4126-b404-7221e8193003', 'omar@gmail.com', 3, 2, 'Confirmed', 'Mesa en la terraza.', '2024-12-02', '2024-12-24 01:36:56', '2024-12-24 01:36:56'),
+(18, '84e9a868-c908-4126-b404-7221e8193004', 'omar@gmail.com', 4, 5, 'Confirmed', 'Mesa en el salón principal.', '2024-12-02', '2024-12-24 01:37:56', '2024-12-24 01:37:56'),
+(19, '84e9a868-c908-4126-b404-7221e8193005', 'drills@gmail.com', 5, 3, 'Confirmed', 'Mesa en la esquina.', '2024-12-03', '2024-12-24 01:38:56', '2024-12-24 01:38:56'),
+(20, '84e9a868-c908-4126-b404-7221e8193006', 'drills@gmail.com', 1, 2, 'Confirmed', 'Mesa cerca del bar.', '2024-12-01', '2024-12-24 01:39:56', '2024-12-24 01:39:56');
 -- --------------------------------------------------------
 
 --
