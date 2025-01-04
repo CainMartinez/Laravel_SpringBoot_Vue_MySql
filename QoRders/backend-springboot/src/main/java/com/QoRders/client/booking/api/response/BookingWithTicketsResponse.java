@@ -1,6 +1,6 @@
 package com.QoRders.client.booking.api.response;
 
-import java.time.LocalDateTime;
+import java.sql.Date;
 import java.util.List;
 
 import com.QoRders.client.booking.api.request.TicketDto;
@@ -19,6 +19,6 @@ public class BookingWithTicketsResponse {
     private Integer guestCount;
     private String status;
     private String notes;
-    private LocalDateTime createdAt;
+    private Date bookingDate;
     private List<TicketDto> tickets;
 }

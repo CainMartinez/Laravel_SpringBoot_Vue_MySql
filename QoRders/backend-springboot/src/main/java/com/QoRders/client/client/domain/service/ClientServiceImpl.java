@@ -174,7 +174,7 @@ public class ClientServiceImpl implements ClientService {
                 booking.getGuestCount(),
                 booking.getStatus().toString(),
                 booking.getNotes(),
-                booking.getCreatedAt(),
+                booking.getBookingDate(),
                 tickets
             );
         }).toList();
