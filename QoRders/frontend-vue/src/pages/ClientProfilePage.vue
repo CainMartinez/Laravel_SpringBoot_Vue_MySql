@@ -5,7 +5,8 @@
         </div>
 
         <div class="profile-content">
-            <ClientData v-if="currentView === 'Data'" :reservationsCount="reservations.length" />
+            <ClientData v-if="currentView === 'Data'" :reservationsCount="reservations.length"
+                :reservations="reservations" />
             <ReservationsHistory v-if="currentView === 'ReservationsHistory'" :userType="userType"
                 :reservations="reservations" />
             <OrdersHistory v-if="currentView === 'OrdersHistory'" :userType="userType" />

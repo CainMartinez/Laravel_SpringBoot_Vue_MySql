@@ -19,7 +19,6 @@ export default function useReservation() {
     const makeReservation = async (reservationData) => {
         try {
             const token = store.getters['storeAuth/getToken'];
-            console.log('Token:', token);
             const response = await store.dispatch('storeReservation/makeReservation', { token, reservationData });
             return response;
         } catch (error) {
@@ -31,7 +30,6 @@ export default function useReservation() {
     const loadReservations = async () => {
         try {
             const token = store.getters['storeAuth/getToken'];
-            console.log('Token:', token);
             await store.dispatch('storeReservation/fetchReservations', token);
         } catch (error) {
             console.error('Error al cargar las reservas:', error);

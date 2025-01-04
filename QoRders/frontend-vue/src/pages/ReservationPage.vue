@@ -86,11 +86,9 @@ if (!isAuthenticated.value) {
 
 // Redirigir al login cuando se cierre el modal
 const redirectToLogin = () => {
-    console.log('Redirecting to login');
     window.location.href = '/login';
 };
 const redirectToProfile = () => {
-    console.log('Redirecting to profile');
     window.location.href = '/profile';
 };
 

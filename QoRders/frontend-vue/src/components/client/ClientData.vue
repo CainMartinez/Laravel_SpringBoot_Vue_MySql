@@ -12,8 +12,8 @@
     </div>
     <div class="metrics-data">
         <p><strong>Reservas Realizadas:</strong> {{ reservationsCount }}</p>
-        <p><strong>Dinero Donado:</strong> {{ }}€</p>
-        <p><strong>Feedback:</strong> {{ }}</p>
+        <p><strong>Dinero Donado:</strong> {{ donationsAmount }} €</p>
+        <!-- <p><strong>Feedback:</strong> {{ }}</p> -->
     </div>
 </template>
 
@@ -25,10 +25,24 @@ const store = useStore();
 
 // Datos del usuario
 const userData = computed(() => store.getters['storeAuth/getUserData'].client);
-console.log(userData.value);
 
 const props = defineProps({
-    reservationsCount: Number,
+    reservations: {
+        type: Array,
+        required: true
+    },
+    reservationsCount: {
+        type: Number,
+        required: true
+    }
+});
+
+const donationsAmount = computed(() => {
+    const totalAmount = props.reservations.reduce((total, reservation) => {
+        const ticketsTotal = reservation.tickets.reduce((sum, ticket) => sum + ticket.totalAmount, 0);
+        return total + ticketsTotal;
+    }, 0) * 0.05;
+    return totalAmount.toFixed(2);
 });
 </script>
 
