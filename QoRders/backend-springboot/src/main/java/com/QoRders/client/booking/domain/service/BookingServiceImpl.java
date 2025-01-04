@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.sql.Date;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
@@ -81,7 +82,8 @@ public class BookingServiceImpl implements BookingService {
         booking.setGuestCount(request.getGuest_count());
         booking.setNotes(request.getNotes());
         booking.setStatus(BookingEntity.Status.Pending);
-
+        Date bookingDate = Date.valueOf(LocalDate.parse(request.getDate()));
+        booking.setBookingDate(bookingDate);
         booking = bookingRepository.save(booking);
 
         // -------- Deprecated ------------
