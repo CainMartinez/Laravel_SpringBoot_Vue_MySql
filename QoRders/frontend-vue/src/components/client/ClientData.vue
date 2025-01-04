@@ -11,9 +11,9 @@
         </div>
     </div>
     <div class="metrics-data">
-        <p><strong>Reservas Realizadas:</strong> {{ userMetrics.reservations }}</p>
-        <p><strong>Dinero Donado:</strong> {{ userMetrics.donatedMoney }}€</p>
-        <p><strong>Feedback:</strong> {{ userMetrics.feedbackCount }}</p>
+        <p><strong>Reservas Realizadas:</strong> {{ reservationsCount }}</p>
+        <p><strong>Dinero Donado:</strong> {{ }}€</p>
+        <p><strong>Feedback:</strong> {{ }}</p>
     </div>
 </template>
 
@@ -27,12 +27,9 @@ const store = useStore();
 const userData = computed(() => store.getters['storeAuth/getUserData'].client);
 console.log(userData.value);
 
-// Métricas del cliente
-const userMetrics = computed(() => ({
-    reservations: store.getters['storeMetrics/getReservationsCount'],
-    donatedMoney: store.getters['storeMetrics/getDonatedMoney'],
-    feedbackCount: store.getters['storeMetrics/getFeedbackCount']
-}));
+const props = defineProps({
+    reservationsCount: Number,
+});
 </script>
 
 <style scoped>

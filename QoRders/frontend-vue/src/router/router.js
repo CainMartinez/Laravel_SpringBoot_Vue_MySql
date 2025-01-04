@@ -14,7 +14,7 @@ const requireAuth = (userType) => (to, from, next) => {
     }
 };
 
-// Función para cargar datos de una sala
+// Función para cargar varios tipos de datos
 const loadRoomData = async (to, from, next) => {
     const store = useStore();
     if (to.params.slug) {

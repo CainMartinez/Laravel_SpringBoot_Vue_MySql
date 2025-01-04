@@ -27,6 +27,23 @@ const ReservationService = {
             console.error("Error al hacer la reserva:", error);
             throw error;
         }
+    },
+
+    async fetchReservations(token) {
+        try {
+            console.log("Token:", token);
+            const response = await api_spring.get('client/bookings', {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+            console.log("Reservas cargadas:", response.data);
+            return response;
+        } catch (error) {
+            console.error("Error al obtener las reservas:", error);
+            throw error;
+        }
     }
 };
 

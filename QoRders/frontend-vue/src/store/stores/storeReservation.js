@@ -3,6 +3,7 @@ import ReservationService from '../../services/client/ReservationService';
 const state = {
     shifts: [],
     reservation: null,
+    reservations: []
 };
 
 const mutations = {
@@ -11,8 +12,10 @@ const mutations = {
     },
     setReservation(state, reservation) {
         state.reservation = reservation;
-        console.log("Reserva guardada en la store:", reservation);
     },
+    setReservations(state, reservations) {
+        state.reservations = reservations;
+    }
 };
 
 const actions = {
@@ -35,6 +38,16 @@ const actions = {
             console.error('Error al realizar la reserva:', error);
             throw error;
         }
+    },
+
+    async fetchReservations({ commit }, token) {
+        try {
+            const reservations = await ReservationService.fetchReservations(token);
+            commit('setReservations', reservations);
+        } catch (error) {
+            console.error('Error al cargar las reservas:', error);
+            throw error;
+        }
     }
 };
 
@@ -44,6 +57,9 @@ const getters = {
     },
     getReservation(state) {
         return state.reservation;
+    },
+    getReservations(state) {
+        return state.reservations;
     }
 };
 

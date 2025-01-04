@@ -23,6 +23,7 @@ import AccordionHeader from 'primevue/accordionheader';
 import InputNumber from 'primevue/inputnumber';
 import Dialog from 'primevue/dialog';
 import DatePicker from 'primevue/datepicker';
+import Card from 'primevue/card';
 
 // PrimeVue Directives
 import Tooltip from 'primevue/tooltip';
@@ -58,6 +59,7 @@ app.component('AccordionHeader', AccordionHeader);
 app.component('InputNumber', InputNumber);
 app.component('Dialog', Dialog);
 app.component('DatePicker', DatePicker);
+app.component('Card', Card);
 
 app.directive('tooltip', Tooltip);
 
