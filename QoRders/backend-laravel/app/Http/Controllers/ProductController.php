@@ -8,6 +8,7 @@ use App\Models\Product;
 
 class ProductController extends Controller
 {
+    // Listar todos los productos
     public function index()
     {
         try {
@@ -31,29 +32,26 @@ class ProductController extends Controller
         }
     }
 
-    public function show($id)
+    // Listar productos filtrados por sala (theme)
+    public function indexByRoom($room_theme)
     {
-        try {
-            $product = Product::findOrFail($id);
+        $products = Product::where('origin', $room_theme)->get();
 
+        if ($products->isEmpty()) {
             return response()->json([
-                'message' => 'Product retrieved successfully',
-                'data' => $product
-            ], 200);
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            return response()->json([
-                'message' => 'Product not found',
-                'id' => $id
+                'message' => "No products found for the room theme: $room_theme"
             ], 404);
-        } catch (\Exception $e) {
-            return response()->json([
-                'message' => 'An unexpected error occurred',
-                'error' => $e->getMessage()
-            ], 500);
         }
+
+        return response()->json([
+            'message' => 'Products by room retrieved successfully',
+            'room_theme' => $room_theme,
+            'data' => $products
+        ], 200);
     }
 
-    public function showBySlug($slug)
+    // Listar un producto por su slug
+    public function indexBySlug($slug)
     {
         try {
             $product = Product::where('product_slug', $slug)->firstOrFail();
@@ -78,103 +76,124 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         try {
+            // Validación de datos
             $validated = $request->validate([
                 'product_name' => 'required|string|max:150',
                 'unit_price' => 'required|numeric|min:0',
-                'product_type' => 'required|in:Starter,Main Course,Dessert,Drink,Other',
-                'origin' => 'required|string|max:100',
-                'stock' => 'integer|min:0',
-                // Añade más validaciones si lo necesitas
+                'product_type' => 'required|in:Starter,Main Course,Dessert,Drink',
+                'stock' => 'required|integer|min:1',
+                'allergens' => 'nullable|string', 
+                'image_url' => 'required|string',  
+                'description' => 'nullable|string', 
+                'origin' => 'required|string|max:100'
             ]);
 
-            // Generar el slug automáticamente
-            $validated['product_slug'] = Str::slug($validated['product_name']) . '_' . rand(100000, 999999);
+            // Verificar si ya existe un producto con el mismo nombre en la misma sala (origin)
+            $existingProduct = Product::where('product_name', $validated['product_name'])
+                                    ->where('origin', $validated['origin'])
+                                    ->first();
 
+            if ($existingProduct) {
+                return response()->json([
+                    'message' => 'A product with this name already exists in the selected room.',
+                ], 409);  // Código 409: Conflict
+            }
+
+            // Generar el slug usando el nombre del producto
+            $validated['product_slug'] = Product::generateSlug($validated['product_name']);
+
+            // Crear el nuevo producto
             $product = Product::create($validated);
 
             return response()->json([
                 'message' => 'Product created successfully',
                 'data' => $product
-            ], 201);
+            ], 201); // Estado HTTP 201: Created
+
         } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json([
                 'message' => 'Validation failed',
                 'errors' => $e->errors()
-            ], 422);
+            ], 422);  // Estado HTTP 422: Unprocessable Entity
+
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'An unexpected error occurred',
                 'error' => $e->getMessage()
-            ], 500);
+            ], 500);  // Estado HTTP 500: Internal Server Error
         }
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, $slug)
     {
         try {
+            // Validar los campos proporcionados en la solicitud
             $validated = $request->validate([
-                'product_name' => 'string|max:150',
-                'unit_price' => 'numeric|min:0',
-                'product_type' => 'in:Starter,Main Course,Dessert,Drink,Other',
-                'origin' => 'string|max:100',
-                'stock' => 'integer|min:0',
-                // Añade más validaciones si lo necesitas
+                'product_name' => 'nullable|string|max:150',
+                'unit_price' => 'nullable|numeric|min:0',
+                'product_type' => 'nullable|in:Starter,Main Course,Dessert,Drink',
+                'stock' => 'nullable|integer|min:1',
+                'description' => 'nullable|string',
+                'allergens' => 'nullable|string',
+                'image_url' => 'nullable|string'
             ]);
 
-            $product = Product::findOrFail($id);
-            $product->update($validated);
-
-            return response()->json([
-                'message' => 'Product updated successfully',
-                'data' => $product
-            ], 200);
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            return response()->json([
-                'message' => 'Validation failed',
-                'errors' => $e->errors()
-            ], 422);
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            return response()->json([
-                'message' => 'Product not found',
-                'id' => $id
-            ], 404);
-        } catch (\Exception $e) {
-            return response()->json([
-                'message' => 'An unexpected error occurred',
-                'error' => $e->getMessage()
-            ], 500);
-        }
-    }
-
-    public function updateBySlug(Request $request, $slug)
-    {
-        try {
-            $validated = $request->validate([
-                'product_name' => 'string|max:150',
-                'unit_price' => 'numeric|min:0',
-                'product_type' => 'in:Starter,Main Course,Dessert,Drink,Other',
-                'origin' => 'string|max:100',
-                'stock' => 'integer|min:0',
-                // Añade más validaciones si lo necesitas
-            ]);
-
+            // Buscar el producto por el slug
             $product = Product::where('product_slug', $slug)->firstOrFail();
-            $product->update($validated);
+
+            // Filtrar campos no vacíos o nulos
+            $updateData = [];
+            foreach ($validated as $key => $value) {
+                if (!is_null($value) && $value !== '') {
+                    $updateData[$key] = $value;
+                }
+            }
+
+            // Comprobar si el nombre del producto cambia
+            if (isset($updateData['product_name']) && $product->product_name !== $updateData['product_name']) {
+                
+                // Verificar si ya existe un producto con el mismo nombre y origin
+                $existingProduct = Product::where('product_name', $updateData['product_name'])
+                                        ->where('origin', $product->origin) // Mantener el mismo origin
+                                        ->where('product_id', '!=', $product->product_id) // Excluir el propio producto
+                                        ->first();
+
+                if ($existingProduct) {
+                    return response()->json([
+                        'message' => 'A product with this name already exists in this room.',
+                    ], 409);  // Código 409: Conflict
+                }
+
+                // Generar un nuevo slug si cambia el nombre
+                $updateData['product_slug'] = Product::generateSlug($updateData['product_name']);
+            }
+
+            // Actualizar el producto si hay cambios
+            if (!empty($updateData)) {
+                $product->update($updateData);
+                return response()->json([
+                    'message' => 'Product updated successfully',
+                    'data' => $product
+                ], 200);
+            }
 
             return response()->json([
-                'message' => 'Product updated successfully',
-                'data' => $product
-            ], 200);
+                    'message' => 'No changes detected',
+                    'data' => $product
+                ], 204);
+
         } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json([
                 'message' => 'Validation failed',
                 'errors' => $e->errors()
             ], 422);
+
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return response()->json([
                 'message' => 'Product not found',
                 'slug' => $slug
             ], 404);
+
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'An unexpected error occurred',
@@ -183,30 +202,8 @@ class ProductController extends Controller
         }
     }
 
-    public function destroy($id)
-    {
-        try {
-            $product = Product::findOrFail($id);
-            $product->delete();
-
-            return response()->json([
-                'message' => 'Product deleted successfully',
-                'id' => $id
-            ], 200);
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            return response()->json([
-                'message' => 'Product not found',
-                'id' => $id
-            ], 404);
-        } catch (\Exception $e) {
-            return response()->json([
-                'message' => 'An unexpected error occurred',
-                'error' => $e->getMessage()
-            ], 500);
-        }
-    }
-
-    public function enableBySlug($slug)
+    // Habilitar producto con su slug
+    public function enable($slug)
     {
         try {
             // Buscar el producto por su slug
@@ -239,7 +236,8 @@ class ProductController extends Controller
         }
     }
 
-    public function unableBySlug($slug)
+    // Deshabilitar producto por su slug
+    public function disable($slug)
     {
         try {
             // Buscar el producto por su slug

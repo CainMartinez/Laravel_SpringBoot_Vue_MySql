@@ -59,7 +59,7 @@ class Product extends Model
                     ->withPivot(['quantity', 'is_delivered', 'created_at', 'updated_at']);
     }
 
-    private static function generateSlug($name)
+    protected static function generateSlug($name)
     {
         return Str::slug($name, '_') . '_' . mt_rand(100000, 999999);
     }

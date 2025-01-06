@@ -10,6 +10,8 @@ use App\Http\Controllers\AuthController;
 use App\Http\Middleware\IsWaiter;
 use App\Http\Middleware\IsManager;
 use App\Http\Controllers\DonationController;
+use App\Http\Controllers\WaiterController;
+use App\Http\Controllers\DashboardController;
 
 // Rutas públicas (sin middleware)
 Route::prefix('auth')->group(function () {
@@ -17,8 +19,7 @@ Route::prefix('auth')->group(function () {
     Route::post('/login', [AuthController::class, 'login']); // Login
 });
 
-
-// Rutas protegidas por middlewares específicos
+// Rutas protegidas por middlewares específicos (IsWaiter, IsManager)
 Route::group(['prefix' => 'auth'], function () {
 
     // Rutas para Waiter
@@ -31,49 +32,50 @@ Route::group(['prefix' => 'auth'], function () {
 
     // Rutas para Manager
     Route::middleware(['IsManager'])->group(function () {
+        
+        // Rutas del módulo Auth
         Route::post('/manager/logout', [AuthController::class, 'logout']); // Logout para Manager
         Route::post('/manager/refresh', [AuthController::class, 'refresh']); // Refrescar token para Manager
         Route::get('/manager/me', [AuthController::class, 'me']); // Perfil del Manager
         Route::put('/manager/update', [AuthController::class, 'updateManager']); // Actualizar perfil del Manager
+
+        // Ruta para métricas generales del dashboard
+        Route::get('/manager/dashboard-metrics', [DashboardController::class, 'getMetrics']);
+
+        // CRUD para ONGs
+        Route::get('/manager/ngos', [NGOController::class, 'index']);
+        Route::get('/manager/ngos/{slug}', [NGOController::class, 'indexBySlug']);
+        Route::post('/manager/ngos', [NGOController::class, 'store']);
+        Route::put('/manager/ngos/{slug}', [NGOController::class, 'update']);
+        Route::put('/manager/ngos/{slug}/enable', [NGOController::class, 'enable']);
+        Route::put('/manager/ngos/{slug}/disable', [NGOController::class, 'disable']);
+
+        // CRUD para Salas (Rooms)
+        Route::get('/manager/rooms', [RoomController::class, 'index']);
+        Route::get('/manager/rooms/{slug}', [RoomController::class, 'indexBySlug']);
+        Route::post('/manager/rooms', [RoomController::class, 'store']);
+        Route::put('/manager/rooms/{slug}', [RoomController::class, 'update']);
+        Route::put('/manager/rooms/{slug}/enable', [RoomController::class, 'enable']);
+        Route::put('/manager/rooms/{slug}/disable', [RoomController::class, 'disable']);
+
+        // CRUD para Productos
+        Route::get('/manager/products', [ProductController::class, 'index']);
+        Route::get('/manager/products/{room_theme}/by-room', [ProductController::class, 'indexByRoom']);
+        Route::get('/manager/products/{slug}', [ProductController::class, 'indexBySlug']);
+        Route::post('/manager/products', [ProductController::class, 'store']);
+        Route::put('/manager/products/{slug}', [ProductController::class, 'update']);
+        Route::put('/manager/products/{slug}/enable', [ProductController::class, 'enable']);
+        Route::put('/manager/products/{slug}/disable', [ProductController::class, 'disable']);
+
+        // CRUD para Camareros (Waiters)
+        Route::get('/manager/waiters', [WaiterController::class, 'index']);
+        Route::get('/manager/waiters/{email}', [WaiterController::class, 'indexByEmail']);
+        Route::post('/manager/waiters', [WaiterController::class, 'store']);
+        Route::put('/manager/waiters/{email}', [WaiterController::class, 'update']);
+        Route::put('/manager/waiters/{email}/enable', [WaiterController::class, 'enable']);
+        Route::put('/manager/waiters/{email}/disable', [WaiterController::class, 'disable']);
     });
 });
-
-// // Otros endpoints (NGOs, Products, Rooms, Bookings)
-// Route::prefix('ngos')->group(function () {
-//     Route::get('/', [NGOController::class, 'index']);
-//     Route::get('/{slug}', [NGOController::class, 'showBySlug']);
-//     Route::post('/', [NGOController::class, 'store']);
-//     Route::put('/{slug}', [NGOController::class, 'updateBySlug']);
-//     Route::put('/{slug}/unable', [NGOController::class, 'unableBySlug']); // Deshabilitar
-//     Route::put('/{slug}/enable', [NGOController::class, 'enableBySlug']); // Habilitar
-// });
-
-// Route::prefix('products')->group(function () {
-//     Route::get('/', [ProductController::class, 'index']);
-//     Route::get('/{slug}', [ProductController::class, 'showBySlug']);
-//     Route::post('/', [ProductController::class, 'store']);
-//     Route::put('/{slug}', [ProductController::class, 'updateBySlug']);
-//     Route::put('/{slug}/unable', [ProductController::class, 'unableBySlug']); // Deshabilitar
-//     Route::put('/{slug}/enable', [ProductController::class, 'enableBySlug']); // Habilitar
-// });
-
-// Route::prefix('rooms')->group(function () {
-//     Route::get('/', [RoomController::class, 'index']);
-//     Route::get('/{slug}', [RoomController::class, 'showBySlug']);
-//     Route::post('/', [RoomController::class, 'store']);
-//     Route::put('/{slug}', [RoomController::class, 'updateBySlug']);
-//     Route::put('/{slug}/unable', [RoomController::class, 'unableBySlug']); // Deshabilitar
-//     Route::put('/{slug}/enable', [RoomController::class, 'enableBySlug']); // Habilitar
-//     Route::get('/{slug}/products', [RoomController::class, 'getProductsByRoomSlug']);
-// });
-
-// Route::prefix('bookings')->group(function () {
-//     Route::get('/', [BookingController::class, 'index']); // Obtener todas las reservas
-//     Route::get('/{uuid}', [BookingController::class, 'show']); // Obtener una reserva por UUID
-//     Route::post('/', [BookingController::class, 'store']); // Crear una nueva reserva
-//     Route::put('/{uuid}', [BookingController::class, 'update']); // Actualizar una reserva por UUID
-//     Route::put('/{uuid}/unable', [BookingController::class, 'unable']); // Desactivar una reserva
-// });
 
 // Ruta para crear una donación
 Route::post('/donations', [DonationController::class, 'store']);

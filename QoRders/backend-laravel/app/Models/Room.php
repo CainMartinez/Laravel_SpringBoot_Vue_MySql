@@ -52,6 +52,12 @@ class Room extends Model
         return $this->hasMany(RoomShift::class, 'room_id', 'room_id');
     }
 
+    // Relación con Waiter (1 a N): Una sala puede tener muchos camareros
+    public function waiters()
+    {
+        return $this->hasMany(Waiter::class, 'room_id', 'room_id');
+    }
+    
     // Generar UUID automáticamente al crear un registro
     protected static function boot()
     {
@@ -74,9 +80,13 @@ class Room extends Model
         });
     }
 
-    private static function generateSlug($name)
+    protected static function generateSlug($name)
     {
         return Str::slug($name, '_') . '_' . mt_rand(100000, 999999);
     }
 
+    public static function findBySlugOrFail($slug)
+    {
+        return self::where('room_slug', $slug)->with('ngo')->firstOrFail();
+    }
 }

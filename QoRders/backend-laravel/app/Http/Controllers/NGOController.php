@@ -31,29 +31,7 @@ class NGOController extends Controller
         }
     }
 
-    public function show($id)
-    {
-        try {
-            $ngo = NGO::findOrFail($id);
-
-            return response()->json([
-                'message' => 'NGO retrieved successfully',
-                'data' => $ngo
-            ], 200);
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            return response()->json([
-                'message' => 'NGO not found',
-                'id' => $id
-            ], 404);
-        } catch (\Exception $e) {
-            return response()->json([
-                'message' => 'An unexpected error occurred',
-                'error' => $e->getMessage()
-            ], 500);
-        }
-    }
-
-    public function showBySlug($slug)
+    public function indexBySlug($slug)
     {
         try {
             $ngo = NGO::where('ngo_slug', $slug)->firstOrFail();
@@ -81,25 +59,34 @@ class NGOController extends Controller
             $validated = $request->validate([
                 'ngo_name' => 'required|string|max:150',
                 'email' => 'required|email',
-                'description' => 'nullable|string',
-                'country' => 'nullable|string|max:100',
-                'phone_number' => 'nullable|string|max:15',
-                'website_url' => 'nullable|url',
-                'logo_url' => 'nullable|url',
-                'image_url' => 'nullable|url',
+                'description' => 'required|string',
+                'country' => 'required|string|max:100',
+                'phone_number' => 'required|string|max:25',
+                'website_url' => 'required|string',
+                'logo_url' => 'required|string',
+                'image_url' => 'required|string',
+                'description_img_url' => 'required|string',
             ]);
 
-            // Generar automáticamente el uuid y el slug
-            $validated['ngo_uuid'] = (string) \Illuminate\Support\Str::uuid();
-            $validated['ngo_slug'] = strtolower(
-                preg_replace(
-                    '/[^A-Za-z0-9_]/',
-                    '_',
-                    iconv('UTF-8', 'ASCII//TRANSLIT', $validated['ngo_name'])
-                )
-            ) . '_' . random_int(100000, 999999);
+            // Comprobar si existe una ONG con el mismo nombre o email
+            $existingNGO = NGO::where('ngo_name', $validated['ngo_name'])
+                        ->orWhere('email', $validated['email'])
+                        ->first();
 
-            $ngo = NGO::create($validated);
+            if ($existingNGO) {
+                return response()->json([
+                'message' => 'An NGO with this name or email already exists',
+                ], 409);
+            }
+
+            // Crear el nuevo registro de ONG
+            $ngo = new NGO($validated);
+
+            // Generar el slug usando el método del modelo
+            $ngo->ngo_slug = NGO::generateSlug($ngo->ngo_name);
+
+            // Guardar la ONG en la base de datos
+            $ngo->save();
 
             return response()->json([
                 'message' => 'NGO created successfully',
@@ -118,54 +105,65 @@ class NGOController extends Controller
         }
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, $slug)
     {
         try {
+            // Validar solo los campos proporcionados en la solicitud
             $validated = $request->validate([
-                'ngo_name' => 'string|max:150',
-                'email' => 'email',
+                'ngo_name' => 'nullable|string|max:150',
+                'email' => 'nullable|email|max:150',
+                'description' => 'nullable|string',
+                'phone_number' => 'nullable|string|max:25',
+                'website_url' => 'nullable|string',
+                'logo_url' => 'nullable|string',
+                'image_url' => 'nullable|string',
+                'description_img_url' => 'nullable|string',
             ]);
 
-            $ngo = NGO::findOrFail($id);
-            $ngo->update($validated);
-
-            return response()->json([
-                'message' => 'NGO updated successfully',
-                'data' => $ngo
-            ], 200);
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            return response()->json([
-                'message' => 'Validation failed',
-                'errors' => $e->errors()
-            ], 422);
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            return response()->json([
-                'message' => 'NGO not found',
-                'id' => $id
-            ], 404);
-        } catch (\Exception $e) {
-            return response()->json([
-                'message' => 'An unexpected error occurred',
-                'error' => $e->getMessage()
-            ], 500);
-        }
-    }
-
-    public function updateBySlug(Request $request, $slug)
-    {
-        try {
-            $validated = $request->validate([
-                'ngo_name' => 'string|max:150',
-                'email' => 'email',
-            ]);
-
+            // Buscar la ONG por slug
             $ngo = NGO::where('ngo_slug', $slug)->firstOrFail();
-            $ngo->update($validated);
+
+            // Campos que no pueden ser nulos o vacíos
+            $nonNullableFields = ['ngo_name', 'email', 'country'];
+
+            // Filtrar solo los campos que han cambiado
+            $updateData = [];
+
+            foreach ($validated as $key => $value) {
+                // Si el valor es nulo o vacío y el campo es obligatorio, lanzar error
+                if (in_array($key, $nonNullableFields) && (is_null($value) || $value === '')) {
+                    return response()->json([
+                        'message' => "The field '$key' cannot be null or empty.",
+                    ], 422);
+                }
+
+                // Comprobar si el valor es diferente al actual
+                if ($ngo->$key !== $value) {
+                    $updateData[$key] = $value;
+
+                    // Si el nombre cambia, generar un nuevo slug
+                    if ($key === 'ngo_name') {
+                        $updateData['ngo_slug'] = NGO::generateSlug($value);
+                    }
+                }
+            }
+
+            // Si no hay cambios, responder sin actualizar
+            if (empty($updateData)) {
+                return response()->json([
+                    'message' => 'No changes detected',
+                    'data' => $ngo
+                ], 204);
+            }
+
+            // Realizar la actualización
+            $ngo->update($updateData);
 
             return response()->json([
                 'message' => 'NGO updated successfully',
                 'data' => $ngo
             ], 200);
+
         } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json([
                 'message' => 'Validation failed',
@@ -184,30 +182,7 @@ class NGOController extends Controller
         }
     }
 
-    public function destroy($id)
-    {
-        try {
-            $ngo = NGO::findOrFail($id);
-            $ngo->delete();
-
-            return response()->json([
-                'message' => 'NGO deleted successfully',
-                'id' => $id
-            ], 200);
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            return response()->json([
-                'message' => 'NGO not found',
-                'id' => $id
-            ], 404);
-        } catch (\Exception $e) {
-            return response()->json([
-                'message' => 'An unexpected error occurred',
-                'error' => $e->getMessage()
-            ], 500);
-        }
-    }
-
-    public function enableBySlug($slug)
+    public function enable($slug)
     {
         try {
             // Buscar el NGO por su slug
@@ -241,7 +216,7 @@ class NGOController extends Controller
         }
     }
 
-    public function unableBySlug($slug)
+    public function disable($slug)
     {
         try {
             // Buscar el NGO por su slug

@@ -22,30 +22,18 @@ class RoomController extends Controller
             'data' => $rooms
         ], 200);
     }
-    // Obtener una sala por ID
-    public function show($id)
-    {
-        $room = Room::find($id);
-        if (!$room) {
-            return response()->json([
-                'message' => 'Room not found',
-                'id' => $id
-            ], 404);
-        }
-        return response()->json([
-            'message' => 'Room retrieved successfully',
-            'data' => $room
-        ], 200);
-    }
+
     // Obtener una sala por Slug
-    public function showBySlug($slug)
+    public function indexBySlug($slug)
     {
         try {
-            $room = Room::where('room_slug', $slug)->firstOrFail();
+            $room = Room::findBySlugOrFail($slug);
+
             return response()->json([
                 'message' => 'Room retrieved successfully',
                 'data' => $room
             ], 200);
+
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return response()->json([
                 'message' => 'Room not found',
@@ -58,8 +46,9 @@ class RoomController extends Controller
             ], 500);
         }
     }
-    // Crear una nueva sala
-    public function store(Request $request)
+
+    // Crear una nueva salapublic 
+    function store(Request $request)
     {
         try {
             // Validación de datos
@@ -67,12 +56,24 @@ class RoomController extends Controller
                 'room_name' => 'required|string|max:100',
                 'description' => 'nullable|string',
                 'max_capacity' => 'required|integer|min:1',
-                'ngo_id' => 'required|integer|exists:NGO,ngo_id',
-                'is_active' => 'boolean',
+                'image_url' => 'required|string',
+                'ngo_id' => 'required|integer|exists:NGO,ngo_id',  // Verifica que la ONG exista
             ]);
 
+            // Verificar si ya existe una sala con el mismo nombre
+            $existingRoom = Room::where('room_name', $validated['room_name'])->first();
+            if ($existingRoom) {
+                return response()->json([
+                    'message' => 'A room with this name already exists.',
+                ], 409);  // Código 409: Conflict
+            }
+
             // Generar slug usando room_name y un número aleatorio
-            $validated['room_slug'] = Str::slug($validated['room_name'], '_') . '_' . rand(100000, 999999);
+            $validated['room_slug'] = Room::generateSlug($validated['room_name']);
+
+            // Obtener el país (theme) desde la ONG vinculada
+            $ngo = NGO::findOrFail($validated['ngo_id']);
+            $validated['theme'] = $ngo->country;
 
             // Crear la nueva sala
             $room = Room::create($validated);
@@ -81,59 +82,13 @@ class RoomController extends Controller
                 'message' => 'Room created successfully',
                 'data' => $room
             ], 201); // Estado HTTP 201: Created
+
         } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json([
                 'message' => 'Validation failed',
                 'errors' => $e->errors()
             ], 422); // Estado HTTP 422: Unprocessable Entity
-        } catch (\Exception $e) {
-            return response()->json([
-                'message' => 'An unexpected error occurred',
-                'error' => $e->getMessage()
-            ], 500);
-        }
-    }
-    // Actualizar una sala por id
-    public function update(Request $request, $id)
-    {
-        $room = Room::find($id);
-        if ($room) {
-            $room->update($request->all());
-            return $room;
-        }
-        return response()->json(['error' => 'Room not found'], 404);
-    }
-    // Actualizar una sala por slug
-    public function updateBySlug(Request $request, $slug)
-    {
-        try {
-            // Validar los datos de la solicitud
-            $validated = $request->validate([
-                'room_name' => 'string|max:100',
-                'description' => 'nullable|string',
-                'theme' => 'string|max:100',
-                'max_capacity' => 'integer|min:1',
-                'ngo_id' => 'integer|exists:ngos,ngo_id',
-                'is_active' => 'boolean',
-            ]);
-            // Buscar la sala por el slug
-            $room = Room::where('room_slug', $slug)->firstOrFail();
-            // Actualizar la sala con los datos validados
-            $room->update($validated);
-            return response()->json([
-                'message' => 'Room updated successfully',
-                'data' => $room
-            ], 200);
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            return response()->json([
-                'message' => 'Validation failed',
-                'errors' => $e->errors()
-            ], 422); // Estado HTTP 422: Unprocessable Entity
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            return response()->json([
-                'message' => 'Room not found',
-                'slug' => $slug
-            ], 404); // Estado HTTP 404: Not Found
+
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'An unexpected error occurred',
@@ -141,18 +96,91 @@ class RoomController extends Controller
             ], 500); // Estado HTTP 500: Internal Server Error
         }
     }
-    // Borrar una sala por id
-    public function destroy($id)
+
+    // Actualizar una sala por slug
+    public function update(Request $request, $slug)
     {
-        $room = Room::find($id);
-        if ($room) {
-            $room->delete();
-            return response()->json(['message' => 'Room deleted successfully']);
+        try {
+            // Validar los datos de la solicitud
+            $validated = $request->validate([
+                'room_name' => 'nullable|string|max:100',
+                'description' => 'nullable|string',
+                'max_capacity' => 'nullable|integer|min:1',
+                'image_url' => 'nullable|string',
+            ]);
+
+            // Buscar la sala por el slug
+            $room = Room::where('room_slug', $slug)->firstOrFail();
+
+            //Comprobar que el nombre nuevo no coincide con el de una sala diferente a la que estamos actualizando
+            if ($request->room_name && Room::where('room_name', $request->room_name)->where('room_id', '!=', $room->room_id)->exists()) {
+                return response()->json([
+                    'message' => 'A room with this name already exists.',
+                ], 409);
+            }
+
+            // Campos que no pueden ser nulos o vacíos
+            $nonNullableFields = ['room_name', 'image_url', 'max_capacity'];
+
+            // Filtrar solo los campos que han cambiado
+            $updateData = [];
+
+            foreach ($validated as $key => $value) {
+                // Si el valor es nulo o vacío y el campo es obligatorio, lanzar error
+                if (in_array($key, $nonNullableFields) && (is_null($value) || $value === '')) {
+                    return response()->json([
+                        'message' => "The field '$key' cannot be null or empty.",
+                    ], 422); // Código 422: Unprocessable Entity
+                }
+
+                // Comprobar si el valor ha cambiado
+                if ($room->$key !== $value) {
+                    $updateData[$key] = $value;
+
+                    // Si cambia el nombre de la sala, actualizar el slug
+                    if ($key === 'room_name') {
+                        $updateData['room_slug'] = Room::generateSlug($value);
+                    }
+                }
+            }
+
+            // Si no hay cambios, devolver respuesta sin actualizar
+            if (empty($updateData)) {
+                return response()->json([
+                    'message' => 'No changes detected',
+                    'data' => $room
+                ], 204);
+            }
+
+            // Actualizar la sala
+            $room->update($updateData);
+
+            return response()->json([
+                'message' => 'Room updated successfully',
+                'data' => $room
+            ], 200);
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'message' => 'Validation failed',
+                'errors' => $e->errors()
+            ], 422); // Estado HTTP 422: Unprocessable Entity
+
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json([
+                'message' => 'Room not found',
+                'slug' => $slug
+            ], 404); // Estado HTTP 404: Not Found
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'An unexpected error occurred',
+                'error' => $e->getMessage()
+            ], 500); // Estado HTTP 500: Internal Server Error
         }
-        return response()->json(['error' => 'Room not found'], 404);
     }
 
-    public function enableBySlug($slug)
+    public function enable($slug)
     {
         try {
             // Buscar la sala por su slug
@@ -186,7 +214,7 @@ class RoomController extends Controller
         }
     }
 
-    public function unableBySlug($slug)
+    public function disable($slug)
     {
         try {
             // Buscar la sala por su slug

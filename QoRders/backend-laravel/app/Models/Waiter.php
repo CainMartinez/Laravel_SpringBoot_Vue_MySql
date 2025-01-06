@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
+use Illuminate\Support\Str;
 
 class Waiter extends Authenticatable implements JWTSubject
 {
@@ -23,11 +24,12 @@ class Waiter extends Authenticatable implements JWTSubject
      protected $keyType = 'int';
 
      // Timestamps automáticos
-     public $timestamps = true;
+     public $timestamps = false;
 
      // Columnas que pueden ser llenadas masivamente
      protected $fillable = [
           'waiter_uuid',
+          'room_id',
           'firstName',
           'lastName',
           'email',
@@ -39,19 +41,23 @@ class Waiter extends Authenticatable implements JWTSubject
           'shift_disponibility',
           'is_active',
           'avatar_url',
-          'bio',
-          'room_id'
+          'bio'
      ];
 
-     // Métodos requeridos por la interfaz JWTSubject
-     public function getJWTIdentifier()
+     // Generación automática de UUID al crear un registro
+     protected static function booted()
      {
-     return $this->email; // Identificador único: email
+          static::creating(function ($waiter) {
+               if (empty($waiter->waiter_uuid)) {
+                    $waiter->waiter_uuid = (string) Str::uuid();
+               }
+          });
      }
 
-     public function getJWTCustomClaims()
+     // Relación con Room (N a 1): Un camarero pertenece a una sala
+     public function room()
      {
-          return ['role' => 'waiter']; // Reclamo personalizado para indicar el rol
+          return $this->belongsTo(Room::class, 'room_id', 'room_id');
      }
 
      // Scope para filtrar solo camareros activos
@@ -66,10 +72,20 @@ class Waiter extends Authenticatable implements JWTSubject
           return $query->where('is_active', 0);
      }
 
-     // Scope para filtrar por disponiblidad de turno
+     // Scope para filtrar por disponibilidad de turno
      public function scopeByShift($query, $shift)
      {
           return $query->where('shift_disponibility', $shift);
      }
 
+     // Métodos requeridos por la interfaz JWTSubject
+     public function getJWTIdentifier()
+     {
+          return $this->email; // Identificador único: email
+     }
+
+     public function getJWTCustomClaims()
+     {
+          return ['role' => 'waiter']; // Reclamo personalizado para indicar el rol
+     }
 }

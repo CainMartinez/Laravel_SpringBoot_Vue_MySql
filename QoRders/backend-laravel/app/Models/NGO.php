@@ -60,10 +60,14 @@ class NGO extends Model
             if (empty($ngo->ngo_slug)) {
                 $ngo->ngo_slug = self::generateSlug($ngo->ngo_name);
             }
+
+            if (empty($ngo->ngo_uuid)) {
+                $ngo->ngo_uuid = (string) Str::uuid();
+            }
         });
     }
 
-    private static function generateSlug($name)
+    protected static function generateSlug($name)
     {
         return Str::slug($name, '_') . '_' . mt_rand(100000, 999999);
     }
