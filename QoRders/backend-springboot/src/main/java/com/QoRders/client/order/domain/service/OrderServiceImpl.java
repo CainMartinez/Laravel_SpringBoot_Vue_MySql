@@ -4,6 +4,7 @@ import com.QoRders.client.booking.domain.entity.BookingEntity;
 import com.QoRders.client.booking.domain.repository.BookingRepository;
 import com.QoRders.client.order.domain.entity.OrderEntity;
 import com.QoRders.client.order.domain.entity.OrderProductsEntity;
+import com.QoRders.client.order.domain.exceptions.ActiveOrderExistsException;
 import com.QoRders.client.order.domain.repository.OrderProductsRepository;
 import com.QoRders.client.order.domain.repository.OrderRepository;
 import com.QoRders.client.shop.domain.entity.ProductEntity;
@@ -34,6 +35,13 @@ public class OrderServiceImpl implements OrderService {
         BookingEntity booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Booking not found"));
 
+        boolean existsActiveOrder = orderRepository.existsByBookingIdAndOrderStatusNot(
+                bookingId, OrderEntity.OrderStatus.Delivered);
+
+        if (existsActiveOrder) {
+            throw new ActiveOrderExistsException("Ya existe un pedido activo para esta reserva. Espere a que se le entregue para poder realizar otro.");
+        }
+
         OrderEntity order = new OrderEntity();
         order.setBooking(booking);
         order.setOrderStatus(OrderEntity.OrderStatus.Waiting);
@@ -41,7 +49,6 @@ public class OrderServiceImpl implements OrderService {
         order.setTotalAmount(BigDecimal.ZERO);
         order.setNotes(notes != null ? notes : "");
         order.setIsActive(true);
-
 
         return orderRepository.save(order);
     }

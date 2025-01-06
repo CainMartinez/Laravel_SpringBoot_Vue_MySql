@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface OrderRepository extends JpaRepository<OrderEntity, Integer> {
+    boolean existsByBookingIdAndOrderStatusNot(Integer bookingId, OrderEntity.OrderStatus orderStatus);
 }
