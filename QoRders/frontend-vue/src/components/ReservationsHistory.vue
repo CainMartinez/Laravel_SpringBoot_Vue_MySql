@@ -18,7 +18,7 @@
                     <!-- Accordion para tickets -->
                     <Accordion :activeIndex="null" v-if="reservation.tickets.length !== 0">
                         <AccordionPanel v-for="ticket in reservation.tickets" :key="ticket.ticketId">
-                            <AccordionHeader>Ticket {{ ticket.ticketId }}</AccordionHeader>
+                            <AccordionHeader>Ticket Nº {{ ticket.ticketId }}</AccordionHeader>
                             <AccordionContent>
                                 <p><strong>Cantidad a pagar:</strong> €{{ ticket.amountToPay }}</p>
                                 <p><strong>Estado de pago:</strong> {{ ticket.paymentStatus }}</p>

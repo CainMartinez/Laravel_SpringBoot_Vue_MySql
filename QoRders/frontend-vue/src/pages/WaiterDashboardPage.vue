@@ -26,7 +26,7 @@ import WaiterSettings from '../components/waiter/WaiterSettings.vue';
 
 const store = useStore();
 const userType = computed(() => store.getters['storeAuth/getUserType']);
-const currentView = ref('Data');
+const currentView = ref('ReservationsHistory');
 
 const setCurrentView = (view) => {
     currentView.value = view;

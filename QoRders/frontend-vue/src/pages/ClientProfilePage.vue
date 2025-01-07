@@ -29,7 +29,7 @@ import useReservation from '../composables/useReservation';
 
 const store = useStore();
 const { loadReservations } = useReservation();
-const currentView = ref('Data');
+const currentView = ref('ReservationsHistory');
 const userType = computed(() => store.getters['storeAuth/getUserType']);
 const reservations = ref([]);
 
