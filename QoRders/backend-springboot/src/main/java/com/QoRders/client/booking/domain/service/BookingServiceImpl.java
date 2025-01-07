@@ -213,4 +213,11 @@ public class BookingServiceImpl implements BookingService {
 
         return clientSecret; // Devuelve el clientSecret si aplica
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public BookingEntity getBookingById(Integer bookingId) {
+        return bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Booking not found"));
+    }
 }

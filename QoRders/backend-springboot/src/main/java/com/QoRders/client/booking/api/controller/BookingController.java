@@ -2,7 +2,9 @@ package com.QoRders.client.booking.api.controller;
 
 import com.QoRders.client.booking.api.request.BookingRequest;
 import com.QoRders.client.booking.api.request.PaymentRequest;
+import com.QoRders.client.booking.api.response.BookingDetailsResponse;
 import com.QoRders.client.booking.api.response.BookingResponse;
+import com.QoRders.client.booking.domain.entity.BookingEntity;
 import com.QoRders.client.booking.domain.service.BookingService;
 
 import jakarta.validation.Valid;
@@ -72,5 +74,26 @@ public class BookingController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("message", "Fallo al procesar el pago: " + e.getMessage()));
         }
+    }
+
+    @GetMapping("/{bookingId}")
+    public ResponseEntity<BookingDetailsResponse> getBookingDetails(@PathVariable Integer bookingId) {
+        BookingEntity booking = bookingService.getBookingById(bookingId);
+
+        BookingDetailsResponse response = new BookingDetailsResponse(
+            booking.getId(),
+            booking.getUuid(),
+            booking.getClient().getEmail(),
+            booking.getRoomShift().getRoom().getRoomName(),
+            booking.getRoomShift().getRoom().getRoomSlug(),
+            booking.getGuestCount(),
+            booking.getStatus().toString(),
+            booking.getNotes(),
+            booking.getBookingDate(),
+            booking.getCreatedAt(),
+            booking.getUpdatedAt()
+        );
+
+        return ResponseEntity.ok(response);
     }
 }
