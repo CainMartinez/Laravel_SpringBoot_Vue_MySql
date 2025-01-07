@@ -155,8 +155,8 @@ public class ClientServiceImpl implements ClientService {
     @Override
     @Transactional(readOnly = true)
     public List<BookingWithTicketsResponse> getBookingsWithTickets(String clientEmail) {
-        List<BookingEntity> bookings = bookingRepository.findByClientEmail(clientEmail);
-
+        List<BookingEntity> bookings = bookingRepository.findByClientEmailOrderByIdDesc(clientEmail);
+    
         return bookings.stream().map(booking -> {
             List<TicketDto> tickets = booking.getTickets().stream()
                 .map(ticket -> new TicketDto(
@@ -167,7 +167,7 @@ public class ClientServiceImpl implements ClientService {
                     ticket.getCreatedAt()
                 ))
                 .toList();
-
+    
             return new BookingWithTicketsResponse(
                 booking.getId(),
                 booking.getRoomShift().getRoom().getRoomName(),

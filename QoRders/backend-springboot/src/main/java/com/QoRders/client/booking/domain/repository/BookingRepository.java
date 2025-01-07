@@ -12,4 +12,5 @@ import org.springframework.stereotype.Repository;
 public interface BookingRepository extends JpaRepository<BookingEntity, Integer> {
     boolean existsByClientEmailAndRoomShiftShiftShiftDate(String email, LocalDate shiftDate);
     List<BookingEntity> findByClientEmail(String email);
+    List<BookingEntity> findByClientEmailOrderByIdDesc(String clientEmail);
 }
