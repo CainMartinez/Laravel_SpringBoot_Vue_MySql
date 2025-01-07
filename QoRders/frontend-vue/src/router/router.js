@@ -14,6 +14,19 @@ const requireAuth = (userType) => (to, from, next) => {
     }
 };
 
+const loadManagerData = (userType) => async (to, from, next) => {
+    const store = useStore();
+    const isAuthenticated = store.getters['storeAuth/getIsAuthenticated'];
+    const currentUserType = store.getters['storeAuth/getUserType'];
+
+    await store.dispatch('storeAdmin/fetchGetGeneralMetrics');
+    if (isAuthenticated && currentUserType === userType) {
+        next();
+    } else {
+        next('/');
+    }
+}
+
 // Función para cargar varios tipos de datos
 const loadRoomData = async (to, from, next) => {
     const store = useStore();
@@ -101,7 +114,7 @@ const routes = [
         path: '/dashboard-manager',
         name: 'ManagerDashboard',
         component: () => import('../pages/ManagerDashboardPage.vue'),
-        beforeEnter: requireAuth('manager'),
+        beforeEnter: loadManagerData('manager'),
     },
 ];
 
