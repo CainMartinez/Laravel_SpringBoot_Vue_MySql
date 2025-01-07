@@ -5,4 +5,5 @@ import com.QoRders.client.booking.api.response.BookingResponse;
 
 public interface BookingService {
     BookingResponse createBooking(BookingRequest request, String token);
+    String finalizeBookingPayment(Integer orderId, String paymentMethod);
 }

@@ -159,4 +159,52 @@ public class BookingServiceImpl implements BookingService {
                 })
                 .subscribe();
     }
+
+    @Override
+    @Transactional
+    public String finalizeBookingPayment(Integer bookingId, String paymentMethod) {
+        // Verificar si existe el booking
+        BookingEntity booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No se encuentra la reserva."));
+
+        // Verificar si hay tickets asociados
+        TicketEntity ticket = booking.getTickets().stream()
+                .filter(t -> t.getPaymentStatus() != TicketEntity.PaymentStatus.Paid)
+                .findFirst()
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Esta reserva no tiene tickets pendientes de pago."));
+
+        String clientSecret = null;
+
+        if ("card".equalsIgnoreCase(paymentMethod)) {
+            String stripeUrl = "http://host.docker.internal:3002/api/payment";
+            WebClient webClient = WebClient.create();
+
+            Map<String, Object> request = Map.of(
+                    "bookingId", bookingId,
+                    "totalAmount", ticket.getTotalAmount() // Usar el monto del ticket
+            );
+
+            @SuppressWarnings("unchecked")
+            Map<String, String> stripeResponse = webClient.post()
+                    .uri(stripeUrl)
+                    .header("Content-Type", "application/json")
+                    .bodyValue(request)
+                    .retrieve()
+                    .bodyToMono(Map.class)
+                    .block();
+
+            if (stripeResponse == null || !"Success".equalsIgnoreCase((String) stripeResponse.get("status"))) {
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Payment failed");
+            }
+
+            clientSecret = stripeResponse.get("clientSecret");
+            ticket.setPaymentStatus(TicketEntity.PaymentStatus.Paid); // Marcar el ticket como pagado
+        }
+
+        // Marcar el booking como completado si aplica
+        booking.setStatus(BookingEntity.Status.Completed);
+        bookingRepository.save(booking);
+
+        return clientSecret; // Devuelve el clientSecret si aplica
+    }
 }

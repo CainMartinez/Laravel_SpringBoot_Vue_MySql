@@ -14,11 +14,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
-import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -92,48 +90,5 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public OrderEntity updateOrder(OrderEntity order) {
         return orderRepository.save(order);
-    }
-
-    @Override
-    @Transactional
-    public String finalizeOrder(Integer orderId, String paymentMethod) {
-        OrderEntity order = getOrderById(orderId);
-    
-        if (order.getPaymentStatus() == OrderEntity.PaymentStatus.Paid) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The order is already paid");
-        }
-    
-        String clientSecret = null;
-    
-        if ("card".equalsIgnoreCase(paymentMethod)) {
-            String stripeUrl = "http://host.docker.internal:3002/api/payment";
-            WebClient webClient = WebClient.create();
-    
-            Map<String, Object> request = Map.of(
-                    "orderId", orderId,
-                    "totalAmount", order.getTotalAmount()
-            );
-    
-            @SuppressWarnings("unchecked")
-            Map<String, String> stripeResponse = webClient.post()
-                    .uri(stripeUrl)
-                    .header("Content-Type", "application/json")
-                    .bodyValue(request)
-                    .retrieve()
-                    .bodyToMono(Map.class)
-                    .block();
-    
-            if (stripeResponse == null || !"Success".equalsIgnoreCase((String) stripeResponse.get("status"))) {
-                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Payment failed");
-            }
-    
-            clientSecret = stripeResponse.get("clientSecret");
-            order.setPaymentStatus(OrderEntity.PaymentStatus.Paid);
-        }
-    
-        order.setIsActive(false);
-        orderRepository.save(order);
-    
-        return clientSecret; // Devuelve el clientSecret si aplica
     }
 }

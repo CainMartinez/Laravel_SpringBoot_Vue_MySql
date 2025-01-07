@@ -1,6 +1,7 @@
 package com.QoRders.client.booking.api.controller;
 
 import com.QoRders.client.booking.api.request.BookingRequest;
+import com.QoRders.client.booking.api.request.PaymentRequest;
 import com.QoRders.client.booking.api.response.BookingResponse;
 import com.QoRders.client.booking.domain.service.BookingService;
 
@@ -42,6 +43,34 @@ public class BookingController {
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } catch (ResponseStatusException e) {
             return ResponseEntity.status(e.getStatusCode()).body(Map.of("error", e.getReason()));
+        }
+    }
+
+    @PostMapping("/pay")
+    public ResponseEntity<Map<String, String>> payBooking(
+            @RequestBody @Valid PaymentRequest paymentRequest) {
+        try {
+            // Finalizar el pago usando el servicio
+            String clientSecret = bookingService.finalizeBookingPayment(
+                    paymentRequest.getBookingId(),
+                    paymentRequest.getPaymentMethod()
+            );
+
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Pago completado con éxito.");
+
+            // Incluir el clientSecret en la respuesta solo si existe
+            if (clientSecret != null) {
+                response.put("clientSecret", clientSecret);
+            }
+
+            return ResponseEntity.ok(response);
+        } catch (ResponseStatusException e) {
+            return ResponseEntity.status(e.getStatusCode())
+                    .body(Map.of("message", e.getReason()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("message", "Fallo al procesar el pago: " + e.getMessage()));
         }
     }
 }
