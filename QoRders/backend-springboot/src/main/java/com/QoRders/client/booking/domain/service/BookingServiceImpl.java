@@ -8,6 +8,8 @@ import com.QoRders.client.booking.domain.entity.*;
 import com.QoRders.client.booking.domain.repository.*;
 import com.QoRders.client.client.domain.entity.ClientEntity;
 import com.QoRders.client.client.domain.repository.ClientRepository;
+import com.QoRders.client.order.domain.entity.OrderEntity;
+import com.QoRders.client.order.domain.repository.OrderRepository;
 
 import org.springframework.beans.factory.annotation.Value;
 
@@ -22,10 +24,13 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.math.BigDecimal;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -40,6 +45,8 @@ public class BookingServiceImpl implements BookingService {
     private final WebClient webClient;
     private final QRCodeService qrCodeService;
     private final QRCodeRepository qrCodeRepository;
+    private final TicketRepository ticketRepository;
+    private final OrderRepository orderRepository;
     
     @Value("${aes.encryption.key}")
     private String secretKey;
@@ -219,5 +226,38 @@ public class BookingServiceImpl implements BookingService {
     public BookingEntity getBookingById(Integer bookingId) {
         return bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Booking not found"));
+    }
+
+    @Override
+    @Transactional
+    public TicketEntity generateTicket(Integer bookingId) {
+        // Verificar que el booking exista
+        bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Booking not found"));
+
+        // Verificar que todas las órdenes estén en estado Delivered
+        List<OrderEntity> nonDeliveredOrders = orderRepository.findByBookingIdAndOrderStatus(
+                bookingId, OrderEntity.OrderStatus.Delivered
+        );
+
+        if (nonDeliveredOrders.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "No se han efectuado pedidos o todavía hay alguno por entregar.");
+        }
+
+        // Sumar el total de todas las órdenes asociadas al booking
+        BigDecimal totalAmount = orderRepository.findByBookingId(bookingId).stream()
+                .map(OrderEntity::getTotalAmount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        // Crear y guardar el ticket
+        TicketEntity ticket = new TicketEntity();
+        ticket.setBookingId(bookingId);
+        ticket.setTotalAmount(totalAmount);
+        ticket.setAmountToPay(totalAmount);
+        ticket.setDonatedAmount(BigDecimal.ZERO);
+        ticket.setPaymentStatus(TicketEntity.PaymentStatus.Pending);
+        ticket.setTicketUuid(UUID.randomUUID().toString());
+        ticketRepository.save(ticket);
+        return ticket;
     }
 }

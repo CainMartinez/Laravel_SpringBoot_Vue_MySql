@@ -5,6 +5,7 @@ import com.QoRders.client.booking.api.request.PaymentRequest;
 import com.QoRders.client.booking.api.response.BookingDetailsResponse;
 import com.QoRders.client.booking.api.response.BookingResponse;
 import com.QoRders.client.booking.domain.entity.BookingEntity;
+import com.QoRders.client.booking.domain.entity.TicketEntity;
 import com.QoRders.client.booking.domain.service.BookingService;
 
 import jakarta.validation.Valid;
@@ -96,5 +97,25 @@ public class BookingController {
         );
 
         return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/{bookingId}/ticket")
+    public ResponseEntity<?> generateTicket(@PathVariable Integer bookingId) {
+        try {
+            // Generar el ticket
+            TicketEntity ticket = bookingService.generateTicket(bookingId);
+
+            // Construir la respuesta
+            Map<String, Object> response = new HashMap<>();
+            response.put("message", "Ticket generated successfully.");
+            response.put("ticketId", ticket.getTicketId());
+            response.put("totalAmount", ticket.getTotalAmount());
+            response.put("status", ticket.getPaymentStatus());
+
+            return ResponseEntity.ok(response);
+        } catch (ResponseStatusException e) {
+            return ResponseEntity.status(e.getStatusCode())
+                    .body(Map.of("error", e.getReason()));
+        }
     }
 }

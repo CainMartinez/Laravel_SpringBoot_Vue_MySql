@@ -1,7 +1,9 @@
 package com.QoRders.client.booking.api.controller;
 
 import com.QoRders.client.auth.api.security.jwt.JwtProvider;
+import com.QoRders.client.booking.domain.entity.BookingEntity;
 import com.QoRders.client.booking.domain.entity.QREntity;
+import com.QoRders.client.booking.domain.repository.BookingRepository;
 import com.QoRders.client.booking.domain.repository.QRCodeRepository;
 import com.QoRders.client.booking.domain.service.QRCodeService;
 import com.QoRders.client.client.domain.entity.ClientEntity;
@@ -27,6 +29,7 @@ public class QRController {
     private final ClientRepository clientRepository;
     private final JwtProvider jwtProvider;
     private final QRCodeRepository qrRepository;
+    private final BookingRepository bookingRepository;
 
     @Value("${aes.encryption.key}")
     private String SECRET_KEY;
@@ -58,7 +61,8 @@ public class QRController {
             clientRepository.save(client);
 
             updateQRStatus(bookingId, QREntity.Status.In_progress);
-            
+            updateBookingStatus(bookingId, BookingEntity.Status.InProgress);
+
             return ResponseEntity.ok(Map.of(
                     "accessToken", newAccessToken,
                     "message", "Login automático exitoso. Cliente ahora está sentado.",
@@ -76,5 +80,12 @@ public class QRController {
         qrEntity.setUpdatedAt(LocalDateTime.now()); // Actualizar la fecha de modificación
         qrRepository.save(qrEntity);
         log.info("Estado del QR actualizado a {} para bookingId: {}", status, bookingId);
+    }
+    private void updateBookingStatus(Integer bookingId, BookingEntity.Status status) {
+        BookingEntity booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new IllegalArgumentException("Booking no encontrada para bookingId: " + bookingId));
+        booking.setStatus(status);
+        bookingRepository.save(booking);
+        log.info("Estado de la Booking actualizado a {} para bookingId: {}", status, bookingId);
     }
 }
