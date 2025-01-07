@@ -61,7 +61,8 @@ public class QRController {
             
             return ResponseEntity.ok(Map.of(
                     "accessToken", newAccessToken,
-                    "message", "Login automático exitoso. Cliente ahora está sentado."
+                    "message", "Login automático exitoso. Cliente ahora está sentado.",
+                    "bookingId", bookingId
             ));
         } catch (Exception e) {
             log.error("Error validando el QR: {}", e.getMessage());

@@ -6,9 +6,11 @@ import com.QoRders.client.booking.api.request.BookingRequest;
 import com.QoRders.client.booking.api.response.BookingResponse;
 import com.QoRders.client.booking.domain.entity.*;
 import com.QoRders.client.booking.domain.repository.*;
+import com.QoRders.client.client.domain.entity.ClientEntity;
 import com.QoRders.client.client.domain.repository.ClientRepository;
 
 import org.springframework.beans.factory.annotation.Value;
+
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -204,6 +206,10 @@ public class BookingServiceImpl implements BookingService {
         // Marcar el booking como completado si aplica
         booking.setStatus(BookingEntity.Status.Completed);
         bookingRepository.save(booking);
+
+        ClientEntity client = booking.getClient();
+        client.setIs_seated(false); // Cambiar is_seated a false
+        clientRepository.save(client);
 
         return clientSecret; // Devuelve el clientSecret si aplica
     }

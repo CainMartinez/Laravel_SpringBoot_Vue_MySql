@@ -53,7 +53,7 @@ public class QRCodeServiceImpl implements QRCodeService {
             log.info("Credenciales encriptadas: {}", encryptedCredentials);
 
             // Construir la URL del QR
-            String qrUrl = "http://localhost:8090/spring/api/qr/validate?data=" + URLEncoder.encode(encryptedCredentials, StandardCharsets.UTF_8);
+            String qrUrl = "http://localhost:8085/qr?data=" + URLEncoder.encode(encryptedCredentials, StandardCharsets.UTF_8);
             log.info("QR URL generada: {}", qrUrl);
 
             return qrUrl;
