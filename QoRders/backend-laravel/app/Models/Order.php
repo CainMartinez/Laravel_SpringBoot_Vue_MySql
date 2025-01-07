@@ -43,10 +43,9 @@ class Order extends Model
      }
 
      //Relación con Order_Product (N a N)
-     public function products()
+     public function orderProducts()
      {
-     return $this->belongsToMany(Product::class, 'Orders_Products', 'order_id', 'product_id')
-                    ->withPivot(['quantity', 'is_delivered', 'created_at', 'updated_at']);
+          return $this->hasMany(OrderProduct::class, 'order_id', 'order_id');
      }
 
      // Scope para filtrar órdenes activas

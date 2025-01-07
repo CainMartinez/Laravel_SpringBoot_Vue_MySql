@@ -24,15 +24,43 @@ Route::group(['prefix' => 'auth'], function () {
 
     // Rutas para Waiter
     Route::middleware(['IsWaiter'])->group(function () {
+
+        // Rutas del módulo Auth
         Route::post('/waiter/logout', [AuthController::class, 'logout']); // Logout para Waiter
         Route::post('/waiter/refresh', [AuthController::class, 'refresh']); // Refrescar token para Waiter
         Route::get('/waiter/me', [AuthController::class, 'me']); // Perfil del Waiter
         Route::put('/waiter/update', [AuthController::class, 'updateWaiter']); // Actualizar perfil del Waiter
+    
+        // Rutas del dashboard de Waiter
+
+        // Obtenemos las reservas correspondientes a la sala a la que pertenece el camarero logueado
+        Route::get('/waiter/bookings', [DashboardController::class, 'indexBookings']);
+
+        // Dependiendo del "status" de cada reserva Vue dará acceso a los diferentes endpoints siguientes:
+        // Las que sean Confirmed -> botón Generate QR
+        // Las que sean Completed -> botón Show Ticket
+        // Las que sean InProgress -> botón Ver Comandas
+
+        // Generate QR (QR -> Printed)
+        Route::put('/waiter/send-qr/{booking_id}', [DashboardController::class, 'sendQR']);
+
+        // Show Ticket
+        Route::get('/waiter/bookings/{booking_id}/ticket', [DashboardController::class, 'showTicket']);
+        
+        // Ver comandas
+        Route::get('/waiter/bookings/{booking_id}/orders', [DashboardController::class, 'indexOrders']);
+        // Las que sean Waiting -> botón Asignar comanda
+        // Las que sean Assigned -> botón Entregar comanda
+        // Las que sean Delivered (Sin cambios)
+        // Asignar comandas (Orders -> Assigned)
+        Route::put('/waiter/orders/{order_id}/assign', [DashboardController::class, 'assignOrder']);
+        // Entregar comandas (Orders -> Delivered)
+        Route::put('/waiter/orders/{order_id}/deliver', [DashboardController::class, 'deliverOrder']);
     });
 
     // Rutas para Manager
     Route::middleware(['IsManager'])->group(function () {
-        
+
         // Rutas del módulo Auth
         Route::post('/manager/logout', [AuthController::class, 'logout']); // Logout para Manager
         Route::post('/manager/refresh', [AuthController::class, 'refresh']); // Refrescar token para Manager
