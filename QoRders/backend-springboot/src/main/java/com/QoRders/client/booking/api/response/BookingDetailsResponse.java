@@ -16,6 +16,7 @@ public class BookingDetailsResponse {
     private String clientEmail;
     private String roomName;
     private String roomSlug;
+    private String shiftType;
     private Integer guestCount;
     private String status;
     private String notes;

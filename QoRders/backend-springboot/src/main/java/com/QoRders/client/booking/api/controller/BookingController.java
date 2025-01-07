@@ -86,6 +86,7 @@ public class BookingController {
             booking.getClient().getEmail(),
             booking.getRoomShift().getRoom().getRoomName(),
             booking.getRoomShift().getRoom().getRoomSlug(),
+            booking.getRoomShift().getShift().getShiftType().toString(),
             booking.getGuestCount(),
             booking.getStatus().toString(),
             booking.getNotes(),
