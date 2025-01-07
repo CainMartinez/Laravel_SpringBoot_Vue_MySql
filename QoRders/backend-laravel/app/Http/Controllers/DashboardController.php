@@ -12,6 +12,7 @@ use App\Models\RoomShift;
 use App\Models\QR;
 use App\Models\Order;
 use App\Models\OrderProduct;
+use App\Models\Ticket;
 use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 
 class DashboardController extends Controller
@@ -32,7 +33,8 @@ class DashboardController extends Controller
                          'active' => Product::where('is_active', 1)->count(),
                          'inactive' => Product::where('is_active', 0)->count(),
                     ],
-                    'total_donations' => NGO::sum('total_donations'),
+                    'total_donations' => Ticket::sum('donated_amount'),
+                    'total_earnings' => Ticket::sum('total_amount'),
                ];
 
                // Devolver respuesta con los datos
