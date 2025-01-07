@@ -6,7 +6,7 @@
 
         <div class="dashboard-content">
             <WaiterData v-if="currentView === 'Data'" />
-            <ReservationsHistory v-if="currentView === 'ReservationsHistory'" :userType="userType" />
+            <ReservationsWaiter v-if="currentView === 'ReservationsWaiter'" :userType="userType" />
             <OrdersHistory v-if="currentView === 'OrdersHistory'" :userType="userType" />
             <Feedback v-if="currentView === 'Feedback'" :userType="userType" />
             <WaiterSettings v-if="currentView === 'Settings'" />
@@ -19,14 +19,14 @@ import { ref, computed } from 'vue';
 import { useStore } from 'vuex';
 import ProfileMenu from '../components/ProfileMenu.vue';
 import WaiterData from '../components/waiter/WaiterData.vue';
-import ReservationsHistory from '../components/ReservationsHistory.vue';
+import ReservationsWaiter from '../components/waiter/ReservationsWaiter.vue';
 import OrdersHistory from '../components/OrdersHistory.vue';
 import Feedback from '../components/Feedback.vue';
 import WaiterSettings from '../components/waiter/WaiterSettings.vue';
 
 const store = useStore();
 const userType = computed(() => store.getters['storeAuth/getUserType']);
-const currentView = ref('ReservationsHistory');
+const currentView = ref('ReservationsWaiter');
 
 const setCurrentView = (view) => {
     currentView.value = view;

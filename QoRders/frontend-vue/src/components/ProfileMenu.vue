@@ -6,9 +6,11 @@
         <nav>
             <ul>
                 <li :class="{ active: activeView === 'Data' }" @click="changeView('Data')">Datos Personales</li>
-                <li v-if="props.userType !== 'manager'" :class="{ active: activeView === 'ReservationsHistory' }"
+                <li v-if="props.userType === 'client'" :class="{ active: activeView === 'ReservationsHistory' }"
                     @click="changeView('ReservationsHistory')">Historial de Reservas</li>
-                <li v-if="props.userType !== 'manager'" :class="{ active: activeView === 'OrdersHistory' }"
+                <li v-if="props.userType === 'waiter'" :class="{ active: activeView === 'ReservationsWaiter' }"
+                    @click="changeView('ReservationsWaiter')">Reservas a atender</li>
+                <li v-if="props.userType === 'client'" :class="{ active: activeView === 'OrdersHistory' }"
                     @click="changeView('OrdersHistory')">Historial de Pedidos</li>
                 <li v-if="props.userType === 'manager'" :class="{ active: activeView === 'RoomManagement' }"
                     @click="changeView('RoomManagement')">Gestion de Salas</li>
