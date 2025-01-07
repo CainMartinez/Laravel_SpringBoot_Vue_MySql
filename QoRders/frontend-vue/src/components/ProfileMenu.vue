@@ -41,7 +41,7 @@ const userName = computed(() => props.userType === 'client' ? store.getters['sto
 const userImageUrl = computed(() => props.userType === 'client' ? store.getters['storeAuth/getUserData'].client.avatar_url : store.getters['storeAuth/getUserData'].avatar_url);
 
 const emit = defineEmits(['change-view']);
-const activeView = ref('Data');
+const activeView = ref('ReservationsHistory');
 
 const changeView = (view) => {
     activeView.value = view;

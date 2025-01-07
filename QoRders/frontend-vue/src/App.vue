@@ -67,4 +67,8 @@ body {
   font-weight: normal;
   letter-spacing: 1px;
 }
+
+.highcharts-credits {
+  display: none !important;
+}
 </style>
