@@ -20,6 +20,7 @@ import java.time.LocalDateTime;
 import java.util.Map;
 
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:8085")
 @RestController
 @RequestMapping("/api/qr")
 public class QRController {
