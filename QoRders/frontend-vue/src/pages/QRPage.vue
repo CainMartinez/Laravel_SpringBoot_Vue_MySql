@@ -7,12 +7,12 @@
         </div>
 
         <!-- Pantalla de Bienvenida -->
-        <div v-else class="welcome-screen">
+        <div v-else class="welcome-screen" :style="{ backgroundImage: 'url(' + roomImageUrl + ')' }">
             <div class="welcome-content">
                 <h1>Bienvenido a {{ roomName }}</h1>
-                <div class="room-image-container">
-                    <img :src="roomImageUrl" alt="Imagen de la sala" />
-                </div>
+                <p>Gracias por reservar con nosotros. </p>
+                <p>Recuerda que dispone de una reserva con una duración de <b>dos horas</b>
+                    para disfrutar de tu viaje gastronómico.</p>
                 <button @click="redirectToCard" :value="roomSlug.value">Ir a la carta</button>
             </div>
         </div>
@@ -23,7 +23,7 @@
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import useQR from '../composables/useQR';
-
+import useProducts from '../composables/useProducts';
 
 const router = useRouter();
 
@@ -33,30 +33,31 @@ const roomSlug = ref('');
 const roomImageUrl = ref('');
 const bookingData = ref(null);
 
-// Usamos el composable que ya implementamos para el QR
-const { loading: qrLoading, bookingId, validateQRCode, validateBooking } = useQR();
+const { loading: qrLoading, validateQRCode, getRoomData } = useQR();
+const { createOrder } = useProducts();
 
 onMounted(async () => {
-    // Obtener los datos del QR del URL
     const queryParams = new URLSearchParams(window.location.search);
     const qrData = queryParams.get('data');
 
     if (qrData) {
-        await validateQRCode(qrData);
-        if (!qrLoading.value && bookingId.value) {
-            bookingData.value = await validateBooking(bookingId);
-            console.log(bookingData.value);
-            // roomName.value = bookingData.value.roomName;
-            // roomSlug.value = bookingData.value.roomSlug; 
-            // roomImageUrl.value = bookingData.value.roomImageUrl;
+        bookingData.value = await validateQRCode(qrData);
+
+        if (!qrLoading.value && bookingData.value) {
+            roomName.value = bookingData.value.data.roomName;
+            roomSlug.value = bookingData.value.data.roomSlug;
+            const roomData = await getRoomData(roomSlug.value);
+            roomImageUrl.value = roomData.imageUrl;
             loading.value = false;
         }
     }
 });
 
-const redirectToCard = () => {
-    // router.push(`/room/${roomName.value}`);
-    console.log('Redirigiendo a la carta de:' + bookingData.value);
+const redirectToCard = async () => {
+    console.log(bookingData.value.data.bookingId);
+    const orderData = await createOrder(bookingData.value.data.bookingId);
+    console.log(orderData);
+    window.location.href = `/room/${roomSlug.value}`;
 };
 </script>
 
@@ -85,36 +86,19 @@ const redirectToCard = () => {
 
 .welcome-screen {
     animation: slideInDown 1s forwards;
-}
-
-@keyframes slideInUp {
-    from {
-        transform: translateY(100%);
-    }
-
-    to {
-        transform: translateY(0);
-    }
-}
-
-@keyframes slideInDown {
-    from {
-        transform: translateY(-100%);
-    }
-
-    to {
-        transform: translateY(0);
-    }
+    background-size: cover;
+    background-position: center;
+    width: 100%;
+    height: 100%;
+    position: relative;
 }
 
 .welcome-content {
     text-align: center;
-}
-
-.room-image-container img {
-    max-width: 100%;
-    height: auto;
-    margin-top: 20px;
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 20px;
+    border-radius: 10px;
+    color: white;
 }
 
 button {

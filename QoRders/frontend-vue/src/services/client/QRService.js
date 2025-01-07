@@ -4,15 +4,8 @@ const QRService = {
     async validateQRCode(queryData) {
         try {
             const response = await api_spring.post(`/qr/validate?data=${queryData}`);
-
-            if (response.data && response.data.token) {
-                return {
-                    token: response.data.token,
-                    bookingId: response.data.bookingId
-                };
-            } else {
-                throw new Error('No se ha podido validar el QR');
-            }
+            console.log(response.data);
+            return response.data;
         } catch (error) {
             console.error("Error al validar el QR:", error);
             throw error;

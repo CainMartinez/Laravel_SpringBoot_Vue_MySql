@@ -23,6 +23,21 @@ const ProductsService = {
             console.error("ProductsService.js: Error fetching products by room:", error);
             throw error;
         }
+    },
+
+    async createOrder(bookingId, token) {
+        try {
+            console.log(bookingId);
+            const response = await api_spring.post('/orders', { bookingId }, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                }
+            });
+            return response.data;
+        } catch (error) {
+            console.error("ProductsService.js: Error creating order:", error);
+            throw error;
+        }
     }
 };
 

@@ -1,5 +1,6 @@
 import { computed, ref } from 'vue';
 import { useStore } from 'vuex';
+import ProductsService from '../services/client/ProductsService';
 
 export default function useProducts(room_slug) {
     const store = useStore();
@@ -64,6 +65,17 @@ export default function useProducts(room_slug) {
         store.dispatch('storeProducts/fetchProductsByRoom', { room_slug: room_slug, filters });
     };
 
+    const createOrder = async (bookingId) => {
+        try {
+            const token = store.getters['storeAuth/getToken'];
+            const response = await ProductsService.createOrder(bookingId, token);
+            return response;
+        } catch (error) {
+            console.error("Error creando la orden:", error);
+            throw error;
+        }
+    };
+
     return {
         products,
         totalProducts,
@@ -71,6 +83,7 @@ export default function useProducts(room_slug) {
         setProductType,
         setOrderBy,
         resetFilters,
-        updateStore
+        updateStore,
+        createOrder,
     };
 }

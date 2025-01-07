@@ -12,13 +12,12 @@
                 <p>{{ product.description }}</p>
 
                 <!-- Cantidad -->
-                <!-- <div class="quantity" v-if="user">
+                <div class="quantity" v-if="userData && userData.is_seated === true">
                     <button @click="adjustQuantity(product, -1)">-</button>
-                    <span>{{ product.quantity }}</span>
+                    <span>{{ quantity }}</span>
                     <button @click="adjustQuantity(product, 1)">+</button>
-                </div> -->
+                </div>
             </div>
-
 
             <!-- Precio -->
             <div class="price">{{ parseFloat(product.unitPrice).toFixed(2) }}€</div>
@@ -40,13 +39,20 @@
 </template>
 
 <script setup>
+import { ref, computed } from 'vue';
+import { useStore } from 'vuex';
+
+const store = useStore();
+const userData = computed(() => store.getters['storeAuth/getUserData']?.client);
+console.log(userData);
 
 const props = defineProps({
     product: Object
 });
 
-const emit = defineEmits(['adjustQuantity']);
+const quantity = ref(0);
 
+const emit = defineEmits(['adjustQuantity']);
 
 const adjustQuantity = (product, delta) => {
     emit('adjustQuantity', product, delta);

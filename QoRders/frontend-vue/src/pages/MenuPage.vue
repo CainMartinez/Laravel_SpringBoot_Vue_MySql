@@ -64,9 +64,7 @@ const { currentPage, pageSize, offset, onPageChange } = usePagination();
 
 // Función para ajustar la cantidad del producto
 const adjustQuantity = (product, delta) => {
-    if (product.quantity + delta >= 0) {
-        product.quantity += delta;
-    }
+    console.log(product, delta);
 };
 
 // Watchers para los filtros y la paginación
