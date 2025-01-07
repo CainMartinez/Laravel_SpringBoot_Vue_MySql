@@ -10,7 +10,6 @@ import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
-import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -53,7 +52,7 @@ public class QRCodeServiceImpl implements QRCodeService {
             log.info("Credenciales encriptadas: {}", encryptedCredentials);
 
             // Construir la URL del QR
-            String qrUrl = "http://localhost:8085/qr?data=" + URLEncoder.encode(encryptedCredentials, StandardCharsets.UTF_8);
+            String qrUrl = "http://localhost:8085/qr?data=" + encryptedCredentials; // Encrypted credentials ya es URL-safe
             log.info("QR URL generada: {}", qrUrl);
 
             return qrUrl;
@@ -68,6 +67,9 @@ public class QRCodeServiceImpl implements QRCodeService {
     public Map<String, Object> decryptQRCodeData(String encryptedData, String secretKey) {
         log.info("Iniciando desencriptación de datos del QR");
         try {
+            if (encryptedData == null || encryptedData.isEmpty()) {
+                throw new IllegalArgumentException("El parámetro data no puede estar vacío");
+            }
             log.info("Desencriptando datos: {}", encryptedData);
             String decryptedData = decrypt(encryptedData, secretKey);
             log.info("Datos desencriptados: {}", decryptedData);
@@ -85,15 +87,17 @@ public class QRCodeServiceImpl implements QRCodeService {
         Cipher cipher = Cipher.getInstance(ENCRYPTION_ALGORITHM);
         cipher.init(Cipher.ENCRYPT_MODE, keySpec);
         byte[] encryptedBytes = cipher.doFinal(data.getBytes(StandardCharsets.UTF_8));
-        return Base64.getEncoder().encodeToString(encryptedBytes);
+        // Usar Base64 URL-safe
+        return Base64.getUrlEncoder().encodeToString(encryptedBytes);
     }
-
+    
     private String decrypt(String encryptedData, String secretKey) throws Exception {
         log.info("Iniciando desencriptación de datos");
         SecretKeySpec keySpec = new SecretKeySpec(secretKey.getBytes(StandardCharsets.UTF_8), ENCRYPTION_ALGORITHM);
         Cipher cipher = Cipher.getInstance(ENCRYPTION_ALGORITHM);
         cipher.init(Cipher.DECRYPT_MODE, keySpec);
-        byte[] decodedBytes = Base64.getDecoder().decode(encryptedData);
+        // Decodificar usando Base64 URL-safe
+        byte[] decodedBytes = Base64.getUrlDecoder().decode(encryptedData);
         return new String(cipher.doFinal(decodedBytes), StandardCharsets.UTF_8);
     }
 }
