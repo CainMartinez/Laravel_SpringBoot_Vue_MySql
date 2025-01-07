@@ -24,6 +24,7 @@ import InputNumber from 'primevue/inputnumber';
 import Dialog from 'primevue/dialog';
 import DatePicker from 'primevue/datepicker';
 import Card from 'primevue/card';
+import ProgressSpinner from 'primevue/progressspinner';
 
 // PrimeVue Directives
 import Tooltip from 'primevue/tooltip';
@@ -60,6 +61,7 @@ app.component('InputNumber', InputNumber);
 app.component('Dialog', Dialog);
 app.component('DatePicker', DatePicker);
 app.component('Card', Card);
+app.component('ProgressSpinner', ProgressSpinner);
 
 app.directive('tooltip', Tooltip);
 

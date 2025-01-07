@@ -116,6 +116,21 @@ const routes = [
         component: () => import('../pages/ManagerDashboardPage.vue'),
         beforeEnter: loadManagerData('manager'),
     },
+    {
+        path: '/qr',
+        name: 'QRPage',
+        component: () => import('../pages/QRPage.vue'),
+        beforeEnter: (to, from, next) => {
+            const data = to.query.data;
+            if (data) {
+                next();
+                console.log(data);
+            } else {
+                next();
+                console.error("El parámetro 'data' no está definido en la ruta.");
+            }
+        }
+    },
 ];
 
 const router = createRouter({
