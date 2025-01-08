@@ -114,7 +114,7 @@ class DashboardController extends Controller
                     return response()->json([
                          'message' => 'QR has already been sent.',
                          'data' => $qr
-                    ], 409);  // Código 409: Conflict
+                    ], 200);  // Código 200: OK
                }elseif($qr->status === 'In_progress'){
                     return response()->json([
                          'message' => 'QR is in progress.',
