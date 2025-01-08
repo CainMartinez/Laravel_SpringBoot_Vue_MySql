@@ -6,6 +6,7 @@ import storeAuth from "./stores/storeAuth";
 import storeReservation from "./stores/storeReservation";
 import storeOrders from "./stores/storeOrders";
 import storeAdmin from "./stores/storeAdmin";
+import storeWaiter from "./stores/storeWaiter";
 
 export default createStore({
     modules: {
@@ -14,6 +15,7 @@ export default createStore({
         storeAuth,
         storeReservation,
         storeOrders,
-        storeAdmin
+        storeAdmin,
+        storeWaiter
     }
 });

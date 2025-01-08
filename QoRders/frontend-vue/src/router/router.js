@@ -31,6 +31,20 @@ const loadManagerData = (userType) => async (to, from, next) => {
     }
 }
 
+const loadWaiterData = (userType) => async (to, from, next) => {
+    const store = useStore();
+    const isAuthenticated = store.getters['storeAuth/getIsAuthenticated'];
+    const currentUserType = store.getters['storeAuth/getUserType'];
+
+    // await store.dispatch('storeWaiter/fetchGetAllOrders');
+
+    if (isAuthenticated && currentUserType === userType) {
+        next();
+    } else {
+        next('/');
+    }
+}
+
 // Función para cargar varios tipos de datos
 const loadRoomData = async (to, from, next) => {
     const store = useStore();
@@ -112,7 +126,7 @@ const routes = [
         path: '/dashboard-waiter',
         name: 'WaiterDashboard',
         component: () => import('../pages/WaiterDashboardPage.vue'),
-        beforeEnter: requireAuth('waiter'),
+        beforeEnter: loadWaiterData('waiter'),
     },
     {
         path: '/dashboard-manager',
