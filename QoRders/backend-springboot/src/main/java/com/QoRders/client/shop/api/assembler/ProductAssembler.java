@@ -13,6 +13,7 @@ public class ProductAssembler {
 
     public ProductResponse toResponse(ProductEntity product) {
         ProductResponse response = new ProductResponse();
+        response.setProductId(product.getProductId());
         response.setUuid(product.getProductUuid());
         response.setName(product.getProductName());
         response.setSlug(product.getProductSlug());
@@ -39,6 +40,7 @@ public class ProductAssembler {
 
     public ProductDto toDto(ProductEntity product) {
         ProductDto dto = new ProductDto();
+        dto.setProductId(product.getProductId());
         dto.setUuid(product.getProductUuid());
         dto.setName(product.getProductName());
         dto.setSlug(product.getProductSlug());

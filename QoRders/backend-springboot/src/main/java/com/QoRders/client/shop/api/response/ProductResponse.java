@@ -10,6 +10,9 @@ import java.math.BigDecimal;
 @Setter
 public class ProductResponse {
 
+    @JsonProperty("product_id")
+    private Integer productId;
+
     @JsonProperty("uuid")
     private String uuid;
 
