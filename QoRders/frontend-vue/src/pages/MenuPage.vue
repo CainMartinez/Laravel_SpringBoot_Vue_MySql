@@ -12,6 +12,10 @@
                 @adjustQuantity="adjustQuantity" />
         </div>
 
+        <div v-if="userData && userData.is_seated === true">
+            <button @click="handleSubmitOrder">Añadir al Pedido</button>
+        </div>
+
         <!-- Paginador -->
         <Paginator v-if="totalProducts > pageSize" :rows="pageSize" :totalRecords="totalProducts" :first="offset"
             @page="onPageChange" />
@@ -30,6 +34,7 @@ import Filters from '../components/Filters.vue';
 import ProductCard from '../components/ProductCard.vue';
 import useFilters from '../composables/useFilters';
 import usePagination from '../composables/usePagination';
+import useOrders from '../composables/useOrders';
 
 const route = useRoute();
 const room_slug = computed(() => route.params.slug);
@@ -38,6 +43,8 @@ const store = useStore();
 const products = computed(() => store.getters['storeProducts/getProductsByRoom']);
 const totalProducts = computed(() => store.getters['storeProducts/getTotalProducts']);
 const room = computed(() => store.getters['storeRooms/getRoomBySlug']);
+const userData = computed(() => store.getters['storeAuth/getUserData']?.client);
+const { createOrder, addProductsToExistingOrder, submitOrder } = useOrders();
 
 // Actualización de datos en Vuex
 const updateStore = () => {
@@ -63,8 +70,17 @@ const { selectedType, orderBy, filteredProducts, setProductType, setOrderBy, res
 const { currentPage, pageSize, offset, onPageChange } = usePagination();
 
 // Función para ajustar la cantidad del producto
-const adjustQuantity = (product, delta) => {
-    console.log(product, delta);
+const adjustQuantity = ({ productId, quantity }) => {
+    store.dispatch('storeOrders/addProductsToExistingOrder', { productId, quantity });
+};
+
+const handleSubmitOrder = async () => {
+    try {
+        const response = await submitOrder();
+        console.log("Orden creada exitosamente", response);
+    } catch (error) {
+        console.error("Error al crear la orden:", error);
+    }
 };
 
 // Watchers para los filtros y la paginación

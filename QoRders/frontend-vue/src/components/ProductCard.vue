@@ -1,29 +1,24 @@
 <template>
     <div class="product-card">
         <div class="product-card-container">
-            <!-- Imagen -->
             <div class="product-image-container">
                 <img :src="product.imageUrl" :alt="product.name" class="product-image" />
             </div>
 
-            <!-- Información del Producto -->
             <div class="product-info">
                 <h3>{{ product.name }}</h3>
                 <p>{{ product.description }}</p>
 
-                <!-- Cantidad -->
                 <div class="quantity" v-if="userData && userData.is_seated === true">
-                    <button @click="adjustQuantity(product, -1)">-</button>
+                    <button @click="adjustQuantity(product.productId, -1)">-</button>
                     <span>{{ quantity }}</span>
-                    <button @click="adjustQuantity(product, 1)">+</button>
+                    <button @click="adjustQuantity(product.productId, 1)">+</button>
                 </div>
             </div>
 
-            <!-- Precio -->
             <div class="price">{{ parseFloat(product.unitPrice).toFixed(2) }}€</div>
         </div>
         <div>
-            <!-- Alérgenos Dropdown -->
             <Accordion :activeIndex="null" v-if="product.allergens !== null">
                 <AccordionPanel value="0">
                     <AccordionHeader>Alérgenos</AccordionHeader>
@@ -44,8 +39,6 @@ import { useStore } from 'vuex';
 
 const store = useStore();
 const userData = computed(() => store.getters['storeAuth/getUserData']?.client);
-console.log(userData);
-
 const props = defineProps({
     product: Object
 });
@@ -54,8 +47,12 @@ const quantity = ref(0);
 
 const emit = defineEmits(['adjustQuantity']);
 
-const adjustQuantity = (product, delta) => {
-    emit('adjustQuantity', product, delta);
+const adjustQuantity = (productId, delta) => {
+    if (quantity.value + delta >= 0) {
+        quantity.value += delta;
+        emit('adjustQuantity', { productId, quantity: quantity.value });
+        store.dispatch('storeOrders/addProductsToExistingOrder', { productId, quantity: quantity.value });
+    }
 };
 </script>
 
