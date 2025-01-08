@@ -23,9 +23,7 @@
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import useQR from '../composables/useQR';
-import useProducts from '../composables/useProducts';
-
-const router = useRouter();
+import useOrders from '../composables/useOrders';
 
 const loading = ref(true);
 const roomName = ref('');
@@ -34,7 +32,7 @@ const roomImageUrl = ref('');
 const bookingData = ref(null);
 
 const { loading: qrLoading, validateQRCode, getRoomData } = useQR();
-const { createOrder } = useProducts();
+const { createOrder } = useOrders();
 
 onMounted(async () => {
     const queryParams = new URLSearchParams(window.location.search);
