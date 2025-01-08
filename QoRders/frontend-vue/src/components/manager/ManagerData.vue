@@ -11,10 +11,10 @@
         </div>
     </div>
     <div class="metrics-data">
-        <p><strong>Reservas Realizadas:</strong> </p>
-        <p><strong>Pedidos Atendidos:</strong> €</p>
-        <p><strong>Personal:</strong> </p>
-        <p><strong>Feedback:</strong> </p>
+        <p><strong>Reservas Realizadas:</strong> {{ generalMetrics?.data?.bookings?.confirmed }} en total.</p>
+        <p><strong>Pedidos Atendidos:</strong> {{ generalMetrics?.data?.bookings?.completed }} en total.</p>
+        <p><strong>Personal:</strong> {{ generalMetrics.data.total_waiters }} empleados.</p>
+        <!-- <p><strong>Feedback:</strong> </p> -->
     </div>
 </template>
 
@@ -25,6 +25,9 @@ import { useStore } from 'vuex';
 const store = useStore();
 
 const userData = computed(() => store.getters['storeAuth/getUserData']);
+
+const generalMetrics = computed(() => store.getters['storeAdmin/getGeneralMetrics']);
+
 </script>
 
 <style scoped>

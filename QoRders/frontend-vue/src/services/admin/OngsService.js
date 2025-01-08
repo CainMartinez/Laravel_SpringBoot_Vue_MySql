@@ -1,9 +1,9 @@
 import { api_laravel } from "../api";
 
-const ProductsService = {
-    async getAllProducts(token) {
+const NgosService = {
+    async getAllNgos(token) {
         try {
-            const response = await api_laravel.get(`/auth/manager/products`, {
+            const response = await api_laravel.get(`/auth/manager/ngos`, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'
@@ -11,14 +11,14 @@ const ProductsService = {
             });
             return response.data;
         } catch (error) {
-            console.error(`Error al obtener los productos`, error);
+            console.error(`Error al obtener las salas`, error);
             throw error;
         }
     },
 
-    async createProduct(token, product) {
+    async createNgos(token, ngo) {
         try {
-            const response = await api_laravel.post(`/auth/manager/products`, product, {
+            const response = await api_laravel.post(`/auth/manager/ngos`, ngo, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'
@@ -26,14 +26,14 @@ const ProductsService = {
             });
             return response.data;
         } catch (error) {
-            console.error(`Error al obtener los productos`, error);
+            console.error(`Error al crear la sala`, error);
             throw error;
         }
     },
 
-    async updateProduct(token, product) {
+    async updateNgos(token, ngo) {
         try {
-            const response = await api_laravel.put(`/auth/manager/products/${product.slug}`, product, {
+            const response = await api_laravel.put(`/auth/manager/ngos/${ngo.ngo_slug}`, ngo, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'
@@ -41,14 +41,14 @@ const ProductsService = {
             });
             return response.data;
         } catch (error) {
-            console.error(`Error al obtener los productos`, error);
+            console.error(`Error al actualizar la sala`, error);
             throw error;
         }
     },
 
-    async enableProduct(token, slug) {
+    async enableNgos(token, slug) {
         try {
-            const response = await api_laravel.put(`/auth/manager/products/${slug}/enable`, {
+            const response = await api_laravel.put(`/auth/manager/ngos/${slug}/enable`, {}, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'
@@ -56,14 +56,14 @@ const ProductsService = {
             });
             return response.data;
         } catch (e) {
-            console.error(`Error al obtener los productos`, error);
+            console.error(`Error al habilitar la sala`, error);
             throw error;
         }
     },
 
-    async disableProduct(token, slug) {
+    async disableNgos(token, slug) {
         try {
-            const response = await api_laravel.put(`/auth/manager/products/${slug}/disable`, {
+            const response = await api_laravel.put(`/auth/manager/ngos/${slug}/disable`, {}, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'
@@ -71,10 +71,10 @@ const ProductsService = {
             });
             return response.data;
         } catch (e) {
-            console.error(`Error al obtener los productos`, error);
+            console.error(`Error al deshabilitar la sala`, error);
             throw error;
         }
     }
 };
 
-export default ProductsService;
+export default NgosService;

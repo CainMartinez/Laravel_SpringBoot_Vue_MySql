@@ -10,7 +10,6 @@
             <ReservationsHistory v-if="currentView === 'ReservationsHistory'" :userType="userType"
                 :reservations="reservations" />
             <OrdersHistory v-if="currentView === 'OrdersHistory'" :userType="userType" />
-            <Feedback v-if="currentView === 'Feedback'" :userType="userType" />
             <ClientSettings v-if="currentView === 'Settings'" />
         </div>
     </div>
@@ -23,7 +22,6 @@ import ProfileMenu from '../components/ProfileMenu.vue';
 import ClientData from '../components/client/ClientData.vue';
 import ReservationsHistory from '../components/ReservationsHistory.vue';
 import OrdersHistory from '../components/OrdersHistory.vue';
-import Feedback from '../components/Feedback.vue';
 import ClientSettings from '../components/client/ClientSettings.vue';
 import useReservation from '../composables/useReservation';
 

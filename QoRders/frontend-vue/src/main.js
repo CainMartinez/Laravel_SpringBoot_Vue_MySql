@@ -25,16 +25,18 @@ import Dialog from 'primevue/dialog';
 import DatePicker from 'primevue/datepicker';
 import Card from 'primevue/card';
 import ProgressSpinner from 'primevue/progressspinner';
+import DataTable from 'primevue/datatable';
+import Column from 'primevue/column';
+import FloatLabel from 'primevue/floatlabel';
+import ToggleButton from 'primevue/togglebutton';
 
 // PrimeVue Directives
 import Tooltip from 'primevue/tooltip';
-
 
 //Prime React Components
 import 'primereact/resources/themes/lara-light-blue/theme.css';
 import 'primereact/resources/primereact.min.css';
 import 'primeicons/primeicons.css';
-
 
 const app = createApp(App);
 
@@ -62,6 +64,10 @@ app.component('Dialog', Dialog);
 app.component('DatePicker', DatePicker);
 app.component('Card', Card);
 app.component('ProgressSpinner', ProgressSpinner);
+app.component('DataTable', DataTable);
+app.component('Column', Column);
+app.component('FloatLabel', FloatLabel);
+app.component('ToggleButton', ToggleButton);
 
 app.directive('tooltip', Tooltip);
 

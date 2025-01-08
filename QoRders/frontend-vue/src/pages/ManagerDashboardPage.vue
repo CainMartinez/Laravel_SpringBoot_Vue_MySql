@@ -6,11 +6,11 @@
 
         <div class="dashboard-content">
             <ManagerData v-if="currentView === 'Data'" />
+            <OngsManagement v-if="currentView === 'OngsManagement'" :userType="userType" />
             <RoomManagement v-if="currentView === 'RoomManagement'" :userType="userType" />
             <MenuManagement v-if="currentView === 'MenuManagement'" :userType="userType" />
             <ReservationManagement v-if="currentView === 'ReservationManagement'" :userType="userType" />
             <StaffManagement v-if="currentView === 'StaffManagement'" :userType="userType" />
-            <Feedback v-if="currentView === 'Feedback'" />
             <ManagerSettings v-if="currentView === 'Settings'" />
         </div>
     </div>
@@ -25,8 +25,8 @@ import RoomManagement from '../components/manager/RoomManagement.vue';
 import MenuManagement from '../components/manager/MenuManagement.vue';
 import ReservationManagement from '../components/manager/ReservationManagement.vue';
 import StaffManagement from '../components/manager/StaffManagement.vue';
-import Feedback from '../components/Feedback.vue';
 import ManagerSettings from '../components/manager/ManagerSettings.vue';
+import OngsManagement from '../components/manager/OngsManagement.vue';
 
 const store = useStore();
 const userType = computed(() => store.getters['storeAuth/getUserType']);

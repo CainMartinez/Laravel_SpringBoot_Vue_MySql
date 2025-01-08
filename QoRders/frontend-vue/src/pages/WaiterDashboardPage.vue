@@ -7,8 +7,6 @@
         <div class="dashboard-content">
             <WaiterData v-if="currentView === 'Data'" />
             <ReservationsWaiter v-if="currentView === 'ReservationsWaiter'" :userType="userType" />
-            <OrdersHistory v-if="currentView === 'OrdersHistory'" :userType="userType" />
-            <Feedback v-if="currentView === 'Feedback'" :userType="userType" />
             <WaiterSettings v-if="currentView === 'Settings'" />
         </div>
     </div>
@@ -20,8 +18,6 @@ import { useStore } from 'vuex';
 import ProfileMenu from '../components/ProfileMenu.vue';
 import WaiterData from '../components/waiter/WaiterData.vue';
 import ReservationsWaiter from '../components/waiter/ReservationsWaiter.vue';
-import OrdersHistory from '../components/OrdersHistory.vue';
-import Feedback from '../components/Feedback.vue';
 import WaiterSettings from '../components/waiter/WaiterSettings.vue';
 
 const store = useStore();

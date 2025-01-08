@@ -20,6 +20,10 @@ const loadManagerData = (userType) => async (to, from, next) => {
     const currentUserType = store.getters['storeAuth/getUserType'];
 
     await store.dispatch('storeAdmin/fetchGetGeneralMetrics');
+    await store.dispatch('storeAdmin/fetchGetAllProducts');
+    await store.dispatch('storeAdmin/fetchGetAllRooms');
+    await store.dispatch('storeAdmin/fetchGetAllNgos');
+
     if (isAuthenticated && currentUserType === userType) {
         next();
     } else {
