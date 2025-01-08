@@ -142,7 +142,6 @@ const routes = [
             const data = to.query.data;
             if (data) {
                 next();
-                console.log(data);
             } else {
                 next();
                 console.error("El parámetro 'data' no está definido en la ruta.");

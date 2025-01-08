@@ -16,16 +16,36 @@ const OrderService = {
         }
     },
 
-    async submitOrder(products, token) {
+    async submitOrder(order, token) {
         try {
-            console.log(products); 
-            const response = await api_spring.post(`/orders/products`, { products }, {
+            const orderData = {
+                orderId: order.orderId,
+                products: order.products.map(product => ({
+                    productId: product.productId,
+                    quantity: product.quantity
+                }))
+            };
+            const response = await api_spring.post(`/orders/products`, orderData, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
-            console.log(response);
-            // return response.data;
+            return response.data;
         } catch (error) {
             console.error("OrderService.js: Error submitting order:", error);
+            throw error;
+        }
+    },
+
+    async fetchOrder(orderId, token) {
+        try {
+            const response = await api_spring.get(`/orders/${orderId}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+            return response.data;
+        } catch (error) {
+            console.error("OrderService.js: Error fetching order:", error);
             throw error;
         }
     }

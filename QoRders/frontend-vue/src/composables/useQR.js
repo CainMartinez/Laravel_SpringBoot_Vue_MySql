@@ -17,8 +17,6 @@ export default function useQR() {
         try {
             const response = await QRService.validateQRCode(queryData);
 
-            console.log(response);
-
             if (response && response.accessToken) {
                 token.value = response.accessToken;
                 store.commit('storeAuth/setToken', token.value);

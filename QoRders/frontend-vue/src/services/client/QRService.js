@@ -4,7 +4,6 @@ const QRService = {
     async validateQRCode(queryData) {
         try {
             const response = await api_spring.post(`/qr/validate?data=${queryData}`);
-            console.log(response.data);
             return response.data;
         } catch (error) {
             console.error("Error al validar el QR:", error);

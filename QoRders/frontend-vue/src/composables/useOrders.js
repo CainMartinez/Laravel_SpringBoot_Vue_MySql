@@ -8,7 +8,7 @@ export default function useOrders() {
         try {
             const token = store.getters['storeAuth/getToken'];
             const response = await OrderService.createOrder(bookingId, token);
-            store.commit('storeOrders/setOrderId', response.orderId); // Set the orderId in the store
+            localStorage.setItem('orderId', response.orderId);
             return response;
         } catch (error) {
             console.error("Error creando la orden:", error);
@@ -39,9 +39,22 @@ export default function useOrders() {
         }
     };
 
+    const fetchOrder = async () => {
+        try {
+            const orderId = store.getters['storeOrders/getOrderId'];
+            const token = store.getters['storeAuth/getToken'];
+            const response = await OrderService.fetchOrder(orderId, token);
+            return response;
+        } catch (error) {
+            console.error("Error fetching order:", error);
+            throw error;
+        }
+    };
+
     return {
         createOrder,
         addProductsToExistingOrder,
         submitOrder,
+        fetchOrder
     };
 }

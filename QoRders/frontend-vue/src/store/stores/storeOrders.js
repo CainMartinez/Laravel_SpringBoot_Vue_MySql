@@ -1,9 +1,14 @@
 import OrderService from "../../services/client/OrderService";
 
 const state = {
-    orderId: 0,
+    orderId: parseInt(localStorage.getItem('orderId')) || 0,
     bookingId: null,
     products: [],
+    orderData: {
+        orderId: null,
+        orderStatus: null,
+        products: [],
+    },
 };
 
 const mutations = {
@@ -21,20 +26,25 @@ const mutations = {
             state.products.push(product);
         }
     },
+    setOrderData(state, orderData) {
+        state.orderData = orderData;
+    },
     clearOrder(state) {
         state.orderId = 0;
+        state.bookingId = null;
         state.products = [];
-    }
+        state.orderData = {
+            orderId: null,
+            orderStatus: null,
+            products: [],
+        };
+    },
 };
 
 const actions = {
-    async createOrder({ commit, state }) {
+    async createOrder({ commit, state }, { bookingId, token }) {
         try {
-            const orderData = {
-                bookingId: state.bookingId,
-                notes: "",
-            };
-            const response = await OrderService.createOrder(orderData);
+            const response = await OrderService.createOrder(bookingId, token);
             commit('setOrderId', response.orderId);
             commit('setBookingId', response.bookingId);
             commit('addProductsToOrder', response.products);
@@ -54,11 +64,10 @@ const actions = {
         }
     },
 
-    async submitOrder({ commit, state }) {
+    async submitOrder({ commit, state }, token) {
         try {
             const orderId = state.orderId;
             const products = state.products;
-            const token = store.getters['storeAuth/getToken'];
             const response = await OrderService.submitOrder({ orderId, products }, token);
             commit('clearOrder');
             return response;
@@ -67,10 +76,6 @@ const actions = {
             throw error;
         }
     },
-
-    clearOrder({ commit }) {
-        commit('clearOrder');
-    }
 };
 
 const getters = {
@@ -85,7 +90,10 @@ const getters = {
     },
     getProducts(state) {
         return state.products;
-    }
+    },
+    getOrderData(state) {
+        return state.orderData;
+    },
 };
 
 export default {

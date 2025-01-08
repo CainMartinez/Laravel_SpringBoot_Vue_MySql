@@ -12,17 +12,20 @@
                 @adjustQuantity="adjustQuantity" />
         </div>
 
-        <div v-if="userData && userData.is_seated === true">
-            <button @click="handleSubmitOrder">Añadir al Pedido</button>
-        </div>
-
         <!-- Paginador -->
         <Paginator v-if="totalProducts > pageSize" :rows="pageSize" :totalRecords="totalProducts" :first="offset"
             @page="onPageChange" />
 
+        <div v-if="userData && userData.is_seated === true" class="order-buttons">
+            <Button label="Crear un Pedido" icon="pi pi-check" @click="handleSubmitOrder" class="order-button" />
+            <Button label="Pagar" icon="pi pi-dollar" @click="handlePayOrder" class="order-button" />
+        </div>
+
         <!-- Scroll to Top -->
         <ScrollTop target=".product-list" :threshold="100"
             style="--scrolltop-size: 3rem; --scrolltop-border-radius: 50%;" />
+
+        <Modal v-model:visible="isModalVisible" :message="modalMessage" :title="modalTitle" />
     </div>
 </template>
 
@@ -35,6 +38,7 @@ import ProductCard from '../components/ProductCard.vue';
 import useFilters from '../composables/useFilters';
 import usePagination from '../composables/usePagination';
 import useOrders from '../composables/useOrders';
+import Modal from '../components/Modal.vue';
 
 const route = useRoute();
 const room_slug = computed(() => route.params.slug);
@@ -44,7 +48,10 @@ const products = computed(() => store.getters['storeProducts/getProductsByRoom']
 const totalProducts = computed(() => store.getters['storeProducts/getTotalProducts']);
 const room = computed(() => store.getters['storeRooms/getRoomBySlug']);
 const userData = computed(() => store.getters['storeAuth/getUserData']?.client);
-const { createOrder, addProductsToExistingOrder, submitOrder } = useOrders();
+const { createOrder, addProductsToExistingOrder, submitOrder, fetchOrder } = useOrders();
+const isModalVisible = ref(false);
+const modalMessage = ref('');
+const modalTitle = ref('');
 
 // Actualización de datos en Vuex
 const updateStore = () => {
@@ -76,10 +83,43 @@ const adjustQuantity = ({ productId, quantity }) => {
 
 const handleSubmitOrder = async () => {
     try {
-        const response = await submitOrder();
-        console.log("Orden creada exitosamente", response);
+        const response = await fetchOrder();
+        if (response.orderStatus === 'Delivered') {
+            const response = await submitOrder();
+            modalMessage.value = response.message;
+            modalTitle.value = 'Éxito';
+            isModalVisible.value = true;
+        } else {
+            modalMessage.value = 'Espere hasta recibir todos los productos';
+            modalTitle.value = 'Información';
+            isModalVisible.value = true;
+        }
+
+
     } catch (error) {
         console.error("Error al crear la orden:", error);
+        modalMessage.value = 'Error al crear la orden';
+        modalTitle.value = 'Error';
+        isModalVisible.value = true;
+    }
+};
+
+const handlePayOrder = async () => {
+    try {
+        const response = await fetchOrder();
+        if (response.orderStatus === 'Delivered') {
+            // router.push('/payment');
+            console.log('Pagando la orden...');
+        } else {
+            modalMessage.value = 'Espere hasta recibir todos los productos';
+            modalTitle.value = 'Información';
+            isModalVisible.value = true;
+        }
+    } catch (error) {
+        console.error("Error al pagar la orden:", error);
+        modalMessage.value = 'Error al procesar el pago';
+        modalTitle.value = 'Error';
+        isModalVisible.value = true;
     }
 };
 
@@ -99,6 +139,7 @@ watch([selectedType, orderBy, currentPage], updateStore);
     max-height: 850px;
     overflow-y: auto;
     color: #333;
+    gap: 20px;
 }
 
 .menu-page h1 {
@@ -115,5 +156,16 @@ watch([selectedType, orderBy, currentPage], updateStore);
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     gap: 30px;
+}
+
+.order-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.order-button {
+    background-color: #f7f7f7;
+    color: #333;
+    border: none;
 }
 </style>
