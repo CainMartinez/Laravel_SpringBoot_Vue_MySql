@@ -78,4 +78,11 @@ public class OrderController {
             );
         }
     }
+
+    @GetMapping("/{orderId}")
+    public ResponseEntity<OrderResponse> getOrderById(@PathVariable Integer orderId) {
+        OrderEntity order = orderService.getOrderById(orderId);
+        OrderResponse response = orderAssembler.toResponse(order);
+        return ResponseEntity.ok(response);
+    }
 }

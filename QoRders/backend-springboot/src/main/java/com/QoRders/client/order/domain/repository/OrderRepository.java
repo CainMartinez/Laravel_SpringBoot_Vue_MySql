@@ -12,4 +12,5 @@ public interface OrderRepository extends JpaRepository<OrderEntity, Integer> {
     boolean existsByBookingIdAndOrderStatusNot(Integer bookingId, OrderEntity.OrderStatus orderStatus);
     List<OrderEntity> findByBookingIdAndOrderStatus(Integer bookingId, OrderEntity.OrderStatus orderStatus);
     List<OrderEntity> findByBookingId(Integer bookingId);
+    OrderEntity findByOrderId(Integer orderId);
 }
