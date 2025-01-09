@@ -79,6 +79,18 @@ const actions = {
             console.error("Error al cambiar el estado de la orden:", error);
             throw error;
         }
+    },
+    async fetchTicketFromStore(_, bookingId) {
+        try {
+            const authToken = localStorage.getItem("token");
+            const response = await WaiterService.getTicket(authToken, bookingId);
+    
+            // Retorna los datos del ticket
+            return response.data;
+        } catch (error) {
+            console.error("Error al obtener el ticket:", error);
+            throw error;
+        }
     }
 };
 

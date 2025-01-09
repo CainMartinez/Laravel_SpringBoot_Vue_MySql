@@ -58,6 +58,20 @@ const WaiterService = {
             console.error(`Error al cambiar el estado de la orden ${orderId}:`, error);
             throw error;
         }
+    },
+    async getTicket(token, bookingId) {
+        try {
+            const response = await api_laravel.get(`/auth/waiter/bookings/${bookingId}/ticket`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+    
+            return response.data; // Retorna el ticket y las órdenes
+        } catch (error) {
+            console.error(`Error al obtener el ticket de la reserva ${bookingId}:`, error);
+            throw error;
+        }
     }
 };
 

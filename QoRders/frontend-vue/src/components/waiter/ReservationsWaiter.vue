@@ -1,7 +1,7 @@
 <template>
     <div class="reservations-waiter">
         <h1 class="title">Reservas</h1>
-        
+
         <div v-if="reservations.length > 0">
             <ul class="reservations-list">
                 <li v-for="reservation in reservations" :key="reservation.id" class="reservation-card">
@@ -16,18 +16,19 @@
                         <p><strong>Estado:</strong> {{ reservation.status }}</p>
                     </div>
                     <div class="reservation-footer">
-                        <button v-if="reservation.status === 'Confirmed'"  @click="generateQr(reservation)" class="btn-generate-qr">Mostrar QR</button>
-                        <GenerateQR 
-                            v-if="reservation.showQr" 
-                            :url="reservation.qrUrl" 
-                            @close="closeQr(reservation)"
-                        />
-                        &nbsp;
+                        <button v-if="reservation.status === 'Confirmed'" @click="generateQr(reservation)"
+                            class="btn-generate-qr">Mostrar QR</button>
+                        <GenerateQR v-if="reservation.showQr" :url="reservation.qrUrl" @close="closeQr(reservation)" />
 
                         <!-- Botón para Ver Pedidos, visible solo si el estado es InProgress -->
                         <button v-if="reservation.status === 'InProgress'" @click="fetchOrders(reservation)"
                             class="btn-view-orders">
                             Ver Pedidos
+                        </button>
+
+                        <button v-if="reservation.status === 'Completed'" @click="fetchTicket(reservation)"
+                            class="btn-view-ticket">
+                            Ver Ticket
                         </button>
                     </div>
 
@@ -37,7 +38,8 @@
                         <ul>
                             <li v-for="order in reservation.orders" :key="order.id" class="order-item">
                                 <p><strong>Pedido Nº:</strong> {{ order.id }}</p>
-                                <p><strong>Estado:</strong> {{ order.status }}</p><hr>
+                                <p><strong>Estado:</strong> {{ order.status }}</p>
+                                <hr>
 
                                 <!-- Productos dentro de la orden -->
                                 <h3>Productos</h3>
@@ -53,6 +55,30 @@
                                     :disabled="order.status === 'Delivered'">
                                     {{ getOrderButtonLabel(order.status) }}
                                 </button>
+                            </li>
+                        </ul>
+                    </div>
+                    <div v-if="reservation.ticket" class="ticket-section">
+                        <h4>Ticket</h4><hr>
+                        <p><strong>Total:</strong> {{ reservation.ticket.total_amount }}</p>
+                        <p><strong>Donación:</strong> {{ reservation.ticket.donated_amount }}</p>
+                        <p><strong>Estado de pago:</strong> {{ reservation.ticket.payment_status }}</p><hr>
+
+                        <h5>Pedidos Realizados</h5>
+                        <ul>
+                            <li v-for="order in reservation.ticketOrders" :key="order.order_id">
+                                <p><strong>Orden Nº:</strong> {{ order.order_id }}</p>
+                                <p><strong>Total:</strong> {{ order.total_amount }}</p><hr>
+
+                                <h3>Productos</h3>
+                                <ul>
+                                    <li v-for="product in order.products" :key="product.product_name">
+                                        <p><strong>Producto:</strong> {{ product.product_name }}</p>
+                                        <p><strong>Cantidad:</strong> {{ product.product_quantity }}</p>
+                                        <p><strong>Precio unitario:</strong> {{ product.unit_price }}</p>
+                                        <p><strong>Subtotal:</strong> {{ product.subtotal }}</p>
+                                    </li>
+                                </ul>
                             </li>
                         </ul>
                     </div>
@@ -130,6 +156,20 @@ export default {
             if (status === "Waiting") return "Asignar";
             if (status === "Assigned") return "Entregado";
             return "Finalizado";
+        },
+        ...mapActions("storeWaiter", ["fetchTicketFromStore"]),
+        async fetchTicket(reservation) {
+            try {
+                const response = await this.fetchTicketFromStore(reservation.id);
+
+                // Almacena el ticket y las órdenes en la reserva
+                reservation.ticket = response.ticket;
+                reservation.ticketOrders = response.orders;
+
+                console.log("Ticket obtenido:", response); // Log para depuración
+            } catch (error) {
+                console.error("Error al obtener el ticket:", error);
+            }
         },
     },
     async mounted() {
@@ -341,6 +381,46 @@ ul {
 
 .btn-view-orders:hover {
     background-color: #0056b3;
+}
+
+.btn-view-ticket {
+    background-color:rgb(166, 153, 67);
+    color: white;
+    padding: 0.6rem 1rem;
+    font-size: 1rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn-view-ticket:hover {
+    background-color:rgb(179, 170, 0);
+}
+
+.ticket-section {
+    margin-top: 1rem;
+    background-color: #f9f9f9;
+    padding: 1rem;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+}
+
+.ticket-section h4 {
+    font-size: 1.5rem;
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+.ticket-section h5 {
+    font-size: 1.2rem;
+    margin-top: 1rem;
+}
+
+.ticket-section ul {
+    list-style: none;
+    padding: 0;
 }
 
 .btn-change-status {
