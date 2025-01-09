@@ -32,7 +32,26 @@ const selectedDate = ref(null);
 const store = useStore();
 const shifts = computed(() => store.getters['storeReservation/getShifts'].data);
 
+const translateDate = (date) => {
+    const padZero = (num) => (num < 10 ? '0' + num : num);
+
+    const year = date.year;
+    const month = padZero(date.month + 1);
+    const day = padZero(date.day);
+
+    return `${year}-${month}-${day}`;
+};
+
+const today = new Date();
+const todayString = translateDate({
+    year: today.getFullYear(),
+    month: today.getMonth(),
+    day: today.getDate()
+});
+
 const checkGreenDay = (date) => {
+    if (translateDate(date) < todayString) return false;
+
     let dayShifts = shifts.value.filter(s => s.shiftDate === translateDate(date));
     if (dayShifts.length === 0) return false;
     let shiftSelected = dayShifts.find(s => s.shiftType === props.selectedShift);
@@ -42,6 +61,8 @@ const checkGreenDay = (date) => {
 };
 
 const checkYellowDay = (date) => {
+    if (translateDate(date) < todayString) return false;
+
     let dayShifts = shifts.value.filter(s => s.shiftDate === translateDate(date));
     if (dayShifts.length === 0) return false;
     let shiftSelected = dayShifts.find(s => s.shiftType === props.selectedShift);
@@ -56,6 +77,8 @@ const checkYellowDay = (date) => {
 };
 
 const checkRedDay = (date) => {
+    if (translateDate(date) < todayString) return false;
+
     let dayShifts = shifts.value.filter(s => s.shiftDate === translateDate(date));
     if (dayShifts.length === 0) return false;
     let shiftSelected = dayShifts.find(s => s.shiftType === props.selectedShift);
@@ -67,16 +90,6 @@ const checkRedDay = (date) => {
 
         return true;
     });
-};
-
-const translateDate = (date) => {
-    const padZero = (num) => (num < 10 ? '0' + num : num);
-
-    const year = date.year;
-    const month = padZero(date.month + 1);
-    const day = padZero(date.day);
-
-    return `${year}-${month}-${day}`;
 };
 
 const selectDay = (date, isDisabled) => {
