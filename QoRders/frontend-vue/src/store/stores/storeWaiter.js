@@ -17,22 +17,42 @@ const mutations = {
 const actions = {
     async fetchReservations({ commit }) {
         try {
-            const authToken = localStorage.getItem('token');
+            const authToken = localStorage.getItem("token");
             const response = await WaiterService.getReservations(authToken);
 
-            // Si los datos necesitan un mapeo
-            const mappedReservations = response.data.map(reservation => ({
+            const mappedReservations = response.data.map((reservation) => ({
                 id: reservation.booking_id,
-                clientName: reservation.client_name || reservation.email,
-                date: reservation.date || reservation.booking_date,
+                clientName: reservation.email,
+                date: reservation.booking_date,
                 guestCount: reservation.guest_count,
-                notes: reservation.notes || "Sin notas"
+                notes: reservation.notes || "Sin notas",
+                status: reservation.status,
             }));
 
-            console.log("Reservas mapeadas:", mappedReservations);
-            commit('setReservations', mappedReservations);
+            commit("setReservations", mappedReservations);
         } catch (error) {
             console.error("Error al obtener las reservas:", error);
+            throw error;
+        }
+    },
+    async fetchOrders(_, bookingId) {
+        try {
+            const authToken = localStorage.getItem("token");
+            const response = await WaiterService.getOrders(authToken, bookingId);
+    
+            // Mapea las órdenes y sus productos
+            const mappedOrders = response.data.map((order) => ({
+                id: order.order_id,
+                status: order.order_status,
+                products: order.products.map((product) => ({
+                    name: product.product_name,
+                    quantity: product.quantity,
+                })),
+            }));
+    
+            return mappedOrders; // Devuelve las órdenes mapeadas
+        } catch (error) {
+            console.error("Error al obtener las órdenes:", error);
             throw error;
         }
     },
@@ -48,6 +68,18 @@ const actions = {
             throw error;
         }
     },
+    async changeOrderStatus(_, { endpoint, orderId }) {
+        try {
+            const authToken = localStorage.getItem("token");
+            const response = await WaiterService.changeOrderStatus(authToken, endpoint, orderId);
+    
+            console.log("Respuesta del backend en Vuex:", response); // Log de la respuesta
+            return response.data;
+        } catch (error) {
+            console.error("Error al cambiar el estado de la orden:", error);
+            throw error;
+        }
+    }
 };
 
 const getters = {
