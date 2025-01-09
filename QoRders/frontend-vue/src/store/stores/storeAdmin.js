@@ -15,7 +15,7 @@ const mutations = {
         state.generalMetrics = metrics;
     },
     setProducts(state, products) {
-        state.allProducts = products.data;
+        state.allProducts = products;
     },
     setAllRooms(state, rooms) {
         state.allRooms = rooms;
@@ -43,7 +43,7 @@ const actions = {
             let response;
             let authToken = localStorage.getItem('token');
             response = await ProductsService.getAllProducts(authToken);
-            commit('setGeneralMetrics', response);
+            commit('setProducts', response);
         } catch (error) {
             console.error("Error al obtener las métricas generales:", error);
             throw error;
@@ -250,7 +250,9 @@ const actions = {
 
 const getters = {
     getGeneralMetrics: (state) => state.generalMetrics,
-    getAllProducts: (state) => state.allProducts,
+    getAllProducts: (state) => {
+        return state.allProducts;
+    },
     getAllRooms: (state) => {
         return state.allRooms;
     },

@@ -16,10 +16,10 @@
                     @click="changeView('RoomManagement')">Gestion de Salas</li>
                 <li v-if="props.userType === 'manager'" :class="{ active: activeView === 'MenuManagement' }"
                     @click="changeView('MenuManagement')">Gestion de Carta</li>
-                <li v-if="props.userType === 'manager'" :class="{ active: activeView === 'ReservationManagement' }"
+                <!-- <li v-if="props.userType === 'manager'" :class="{ active: activeView === 'ReservationManagement' }"
                     @click="changeView('ReservationManagement')">Gestion de Reserva</li>
                 <li v-if="props.userType === 'manager'" :class="{ active: activeView === 'StaffManagement' }"
-                    @click="changeView('StaffManagement')">Gestion de Personal</li>
+                    @click="changeView('StaffManagement')">Gestion de Personal</li> -->
                 <li :class="{ active: activeView === 'Settings' }" @click="changeView('Settings')">Ajustes</li>
             </ul>
         </nav>
