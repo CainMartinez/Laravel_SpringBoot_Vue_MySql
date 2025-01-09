@@ -16,18 +16,13 @@ const Header = () => {
                 >
                     Inicio
                 </NavLink>
-                {/* <NavLink
-                    to="/rooms"
-                    className={({ isActive }) => (isActive ? 'active-link' : 'link')}
+                
+                <a
+                    href="http://localhost:8085"
+                    className="link"
                 >
-                    Carta
-                </NavLink> */}
-                <NavLink
-                    to="/ngos"
-                    className={({ isActive }) => (isActive ? 'active-link' : 'link')}
-                >
-                    Organizaciones
-                </NavLink>
+                    Restaurante
+                </a>
                 <NavLink
                     to="/donations"
                     className={({ isActive }) => (isActive ? 'active-link' : 'link')}

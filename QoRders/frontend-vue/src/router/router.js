@@ -114,7 +114,10 @@ const routes = [
     {
         path: '/donations',
         name: 'Donaciones',
-        component: ReactWrapper,
+        // component: ReactWrapper,
+        beforeEnter: (to, from, next) => {
+            window.location.href = 'http://localhost:8086';
+        },
     },
     {
         path: '/profile',

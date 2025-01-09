@@ -13,7 +13,7 @@ const App = () => {
             <Routes>
                 <Route path="/" element={<NgosPage />} />
                 <Route path="/home" element={<NgosPage />} />
-                <Route path="/ngos" element={<NgosPage />} />
+                {/* <Route path="/localhost:8085" /> Debe redirigir al restaurante. Donde "organizaciones" será "restaurante" */}
                 <Route path="/ngos/:ngo_slug" element={<NgoDetailsPage />} />
                 <Route path="/donations" element={<DonationsPage />} />
             </Routes>
