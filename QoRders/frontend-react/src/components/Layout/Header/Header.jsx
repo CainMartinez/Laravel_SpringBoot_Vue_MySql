@@ -1,22 +1,16 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import './Header.css';
+import logo from '../../../assets/logo.png';
 
 const Header = () => {
     return (
         <div className="header">
             <div className="logo">
-                <img src="/assets/logo.png" alt="Logo" />
+                <img src={logo} alt="Logo" />
             </div>
 
             <div className="menu">
-                <NavLink
-                    to="/home"
-                    className={({ isActive }) => (isActive ? 'active-link' : 'link')}
-                >
-                    Inicio
-                </NavLink>
-                
                 <a
                     href="http://localhost:8085"
                     className="link"
@@ -32,12 +26,10 @@ const Header = () => {
             </div>
 
             <div className="login-button">
-                <NavLink
-                    to="/login"
-                    className={({ isActive }) => (isActive ? 'active-link' : 'link')}
-                >
-                    Iniciar sesión
-                </NavLink>
+                <a
+                    href="http://localhost:8085/login"
+                    className="link"
+                >Iniciar sesión</a>
             </div>
         </div>
     );
