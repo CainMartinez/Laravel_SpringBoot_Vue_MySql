@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: mysql_container
--- Tiempo de generación: 24-12-2024 a las 04:15:52
+-- Tiempo de generación: 09-01-2025 a las 12:54:12
 -- Versión del servidor: 8.0.40
 -- Versión de PHP: 8.2.8
 
@@ -41,7 +41,10 @@ CREATE TABLE `Blacklist` (
 --
 
 INSERT INTO `Blacklist` (`id`, `token`, `email`, `expiration_date`) VALUES
-(1, 'eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiY2xpZW50Iiwic3ViIjoianVhbkBnbWFpbC5jb20iLCJpYXQiOjE3MzQ5OTg5NTgsImV4cCI6MTczNTAwMjU1OH0.SunnUpFuRkcKzqnui_juRkTGDtqTeGJ6qfubzxg5fCo', 'juan@gmail.com', '2024-12-24');
+(1, 'eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiY2xpZW50Iiwic3ViIjoianVhbkBnbWFpbC5jb20iLCJpYXQiOjE3MzQ5OTg5NTgsImV4cCI6MTczNTAwMjU1OH0.SunnUpFuRkcKzqnui_juRkTGDtqTeGJ6qfubzxg5fCo', 'juan@gmail.com', '2024-12-24'),
+(2, 'eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiY2xpZW50Iiwic3ViIjoianVhbkBnbWFpbC5jb20iLCJpYXQiOjE3MzY0MjI5OTEsImV4cCI6MTczNjQyNjU5MX0.hqoqGaRaksJCoALUcG12WDo6pZ0KQkhiKuhfBcELUo4', 'juan@gmail.com', '2025-01-09'),
+(3, 'eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiY2xpZW50Iiwic3ViIjoianVhbkBnbWFpbC5jb20iLCJpYXQiOjE3MzY0MjU2MDIsImV4cCI6MTczNjQyOTIwMn0.ashkv-N1hEj0G4g99S3ZBc8FhlOerK3bqYgPM4AIaTQ', 'juan@gmail.com', '2025-01-09'),
+(4, 'eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiY2xpZW50Iiwic3ViIjoianVhbkBnbWFpbC5jb20iLCJpYXQiOjE3MzY0MjYyMTYsImV4cCI6MTczNjQyOTgxNn0.m1Qpbj8FE83E3nTD4gFg1N8dwqlY8jQ5M6YWkqyUn1E', 'juan@gmail.com', '2025-01-09');
 
 -- --------------------------------------------------------
 
@@ -57,7 +60,7 @@ CREATE TABLE `Booking` (
   `guest_count` int NOT NULL,
   `status` enum('Pending','Confirmed','InProgress','Completed') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'Pending',
   `notes` text,
-  `booking_date` date,
+  `booking_date` date DEFAULT NULL,
   `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
   `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -66,28 +69,13 @@ CREATE TABLE `Booking` (
 -- Volcado de datos para la tabla `Booking`
 --
 
-
 INSERT INTO `Booking` (`booking_id`, `booking_uuid`, `email`, `room_shift_id`, `guest_count`, `status`, `notes`, `booking_date`, `created_at`, `updated_at`) VALUES
-(1, '84e9a868-c908-4126-b404-7221e819298d', 'yomogan@gmail.com', 3, 3, 'Confirmed', 'Silla para niño pequeño.', '2024-12-02', '2024-12-24 01:20:56', '2024-12-24 01:20:56'),
-(2, '84e9a868-c908-4126-b404-7221e819298e', 'yomogan@gmail.com', 4, 2, 'Confirmed', 'Mesa cerca de la ventana.', '2024-12-02', '2024-12-24 01:21:56', '2024-12-24 01:21:56'),
-(3, '84e9a868-c908-4126-b404-7221e819298f', 'juan@gmail.com', 3, 4, 'Confirmed', 'Mesa en la terraza.', '2024-12-02', '2024-12-24 01:22:56', '2024-12-24 01:22:56'),
-(4, '84e9a868-c908-4126-b404-7221e8192990', 'juan@gmail.com', 5, 3, 'Confirmed', 'Mesa cerca de la entrada.', '2024-12-03', '2024-12-24 01:23:56', '2024-12-24 01:23:56'),
-(5, '84e9a868-c908-4126-b404-7221e8192991', 'ramon@gmail.com', 2, 2, 'Confirmed', 'Mesa en el patio.', '2024-12-01', '2024-12-24 01:24:56', '2024-12-24 01:24:56'),
-(6, '84e9a868-c908-4126-b404-7221e8192992', 'ramon@gmail.com', 1, 5, 'Confirmed', 'Mesa en el salón principal.', '2024-12-01', '2024-12-24 01:25:56', '2024-12-24 01:25:56'),
-(7, '84e9a868-c908-4126-b404-7221e8192993', 'hasan@gmail.com', 3, 3, 'Confirmed', 'Mesa en la esquina.', '2024-12-02', '2024-12-24 01:26:56', '2024-12-24 01:26:56'),
-(8, '84e9a868-c908-4126-b404-7221e8192994', 'hasan@gmail.com', 4, 2, 'Confirmed', 'Mesa cerca del bar.', '2024-12-02', '2024-12-24 01:27:56', '2024-12-24 01:27:56'),
-(9, '84e9a868-c908-4126-b404-7221e8192995', 'abdel@gmail.com', 5, 4, 'Confirmed', 'Mesa en el jardín.', '2024-12-03', '2024-12-24 01:28:56', '2024-12-24 01:28:56'),
-(10, '84e9a868-c908-4126-b404-7221e8192996', 'abdel@gmail.com', 1, 3, 'Confirmed', 'Mesa en el salón VIP.', '2024-12-01', '2024-12-24 01:29:56', '2024-12-24 01:29:56'),
-(11, '84e9a868-c908-4126-b404-7221e8192997', 'mohamed@gmail.com', 2, 2, 'Confirmed', 'Mesa en la terraza.', '2024-12-01', '2024-12-24 01:30:56', '2024-12-24 01:30:56'),
-(12, '84e9a868-c908-4126-b404-7221e8192998', 'mohamed@gmail.com', 3, 5, 'Confirmed', 'Mesa en el salón principal.', '2024-12-02', '2024-12-24 01:31:56', '2024-12-24 01:31:56'),
-(13, '84e9a868-c908-4126-b404-7221e8192999', 'ali@gmail.com', 4, 3, 'Confirmed', 'Mesa en la esquina.', '2024-12-02', '2024-12-24 01:32:56', '2024-12-24 01:32:56'),
-(14, '84e9a868-c908-4126-b404-7221e8193000', 'ali@gmail.com', 5, 2, 'Confirmed', 'Mesa cerca del bar.', '2024-12-03', '2024-12-24 01:33:56', '2024-12-24 01:33:56'),
-(15, '84e9a868-c908-4126-b404-7221e8193001', 'yamal@gmail.com', 1, 4, 'Confirmed', 'Mesa en el jardín.', '2024-12-01', '2024-12-24 01:34:56', '2024-12-24 01:34:56'),
-(16, '84e9a868-c908-4126-b404-7221e8193002', 'yamal@gmail.com', 2, 3, 'Confirmed', 'Mesa en el salón VIP.', '2024-12-01', '2024-12-24 01:35:56', '2024-12-24 01:35:56'),
-(17, '84e9a868-c908-4126-b404-7221e8193003', 'omar@gmail.com', 3, 2, 'Confirmed', 'Mesa en la terraza.', '2024-12-02', '2024-12-24 01:36:56', '2024-12-24 01:36:56'),
-(18, '84e9a868-c908-4126-b404-7221e8193004', 'omar@gmail.com', 4, 5, 'Confirmed', 'Mesa en el salón principal.', '2024-12-02', '2024-12-24 01:37:56', '2024-12-24 01:37:56'),
-(19, '84e9a868-c908-4126-b404-7221e8193005', 'drills@gmail.com', 5, 3, 'Confirmed', 'Mesa en la esquina.', '2024-12-03', '2024-12-24 01:38:56', '2024-12-24 01:38:56'),
-(20, '84e9a868-c908-4126-b404-7221e8193006', 'drills@gmail.com', 1, 2, 'Confirmed', 'Mesa cerca del bar.', '2024-12-01', '2024-12-24 01:39:56', '2024-12-24 01:39:56');
+(21, '95c8a0aa-2556-4e41-8e7a-a31a45f6923e', 'juan@gmail.com', 395, 2, 'Confirmed', NULL, '2025-01-12', '2025-01-09 11:31:41', '2025-01-09 11:31:41'),
+(22, '530d7b3b-40ba-4928-a53c-37d460732e9b', 'juan@gmail.com', 450, 2, 'Confirmed', NULL, '2025-01-08', '2025-01-09 11:34:15', '2025-01-09 11:34:15'),
+(23, '87cb622c-8de5-4c0d-9dee-b4f2dd3e6171', 'juan@gmail.com', 527, 2, 'Confirmed', NULL, '2025-01-16', '2025-01-09 11:37:32', '2025-01-09 11:37:32'),
+(24, '31d49932-019e-4bc4-b306-c967087f511c', 'juan@gmail.com', 602, 2, 'Confirmed', NULL, '2025-01-22', '2025-01-09 11:38:14', '2025-01-09 11:38:14'),
+(25, 'e19e71e0-4ee6-45a5-bc38-4deafaf79d1b', 'juan@gmail.com', 390, 2, 'Completed', NULL, '2025-01-09', '2025-01-09 11:40:28', '2025-01-09 12:28:16');
+
 -- --------------------------------------------------------
 
 --
@@ -139,7 +127,7 @@ CREATE TABLE `Customer` (
 
 INSERT INTO `Customer` (`customer_id`, `customer_uuid`, `first_name`, `last_name`, `age`, `address`, `email`, `phone_number`, `password`, `avatar_url`, `bio`, `has_coupon`, `loyalty_points`, `is_active`, `is_seated`, `refresh_token`, `created_at`, `updated_at`) VALUES
 (21, '394e3a53-3c2c-4132-9b10-4a757a4efac4', 'Yolanda', 'Yolanda', NULL, NULL, 'yomogan@gmail.com', NULL, '$argon2id$v=19$m=4096,t=3,p=1$LlZawwwdCHzz1ztxqNBNQg$eXlXClwlNahzjzpE8iP8GWOcY2tcohFIPZstJ0HHm1Q', 'https://i.pravatar.cc/150?u=Yolanda', NULL, 0, 0, 1, 0, 'eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiY2xpZW50Iiwic3ViIjoieW9tb2dhbkBnbWFpbC5jb20iLCJpYXQiOjE3MzUwMDMyMzMsImV4cCI6MTczNTYwODAzM30.oRVLloPnt6VLdy2wt9xRxPw5K-L6GEwwD_Svepmr_Po', '2024-12-11 22:38:47', '2024-12-24 01:20:34'),
-(22, '0efe659e-a186-4976-82f0-1b3682b2d247', 'Juan', 'Cuesta', NULL, NULL, 'juan@gmail.com', NULL, '$argon2id$v=19$m=4096,t=3,p=1$auhKCd8nlIeWU0LZFocohA$nyJ7uplPd1nwvLaMxRGKtSsNqjUPL5ZNpfhhczK5fGU', 'https://i.pravatar.cc/150?u=Juan', NULL, 0, 0, 1, 0, 'eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiY2xpZW50Iiwic3ViIjoianVhbkBnbWFpbC5jb20iLCJpYXQiOjE3MzQ5OTg5NTgsImV4cCI6MTczNTYwMzc1OH0.ZsrZcCh7Bh_pAND1wdYEpSPaLGm-YkAx8pV3yi4eqj0', '2024-12-24 00:08:59', '2024-12-24 00:09:18'),
+(22, '0efe659e-a186-4976-82f0-1b3682b2d247', 'Juan', 'Cuesta', NULL, NULL, 'juan@gmail.com', NULL, '$argon2id$v=19$m=4096,t=3,p=1$auhKCd8nlIeWU0LZFocohA$nyJ7uplPd1nwvLaMxRGKtSsNqjUPL5ZNpfhhczK5fGU', 'https://i.pravatar.cc/150?u=Juan', NULL, 0, 0, 1, 0, 'eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiY2xpZW50Iiwic3ViIjoianVhbkBnbWFpbC5jb20iLCJpYXQiOjE3MzY0MjYzMjYsImV4cCI6MTczNzAzMTEyNn0.v0cyg34MTu16ve_ZVJMY76QQao7c1cvDuS3VJeoUJsg', '2024-12-24 00:08:59', '2025-01-09 12:38:46'),
 (23, '55e18edb-382e-493d-8924-0e431b398f37', 'Ramón', 'García', NULL, NULL, 'ramon@gmail.com', NULL, '$argon2id$v=19$m=4096,t=3,p=1$CCkz5/EaJUpRPRCuMTPWKw$+trduusnsBNLgbmsteFQsXE1WR6TlEyJkRCX2MlgXvQ', 'https://i.pravatar.cc/150?u=Ramón', NULL, 0, 0, 1, 0, NULL, '2024-12-24 01:09:14', '2024-12-24 01:09:14'),
 (24, 'dcb2cebc-a6b1-4c67-a09c-5270f2947be3', 'Saúl', 'Hasan', NULL, NULL, 'hasan@gmail.com', NULL, '$argon2id$v=19$m=4096,t=3,p=1$ZzsyTAzkdW4mH6SV+Thzvg$Gw2erf/wiB+JJKWJCJjJlsYDGDEk6xT2UwcEPWlP3aM', 'https://i.pravatar.cc/150?u=Salomón', NULL, 0, 0, 1, 0, NULL, '2024-12-24 01:10:14', '2024-12-24 01:10:14'),
 (25, 'dcb2cebc-a6b1-4c67-a09c-5270f2947be2', 'Jose', 'Abdel', NULL, NULL, 'abdel@gmail.com', NULL, '$argon2id$v=19$m=4096,t=3,p=1$ZzsyTAzkdW4mH6SV+Thzvg$Gw2erf/wiB+JJKWJCJjJlsYDGDEk6xT2UwcEPWlP3aM', 'https://i.pravatar.cc/150?u=Salomón', NULL, 0, 0, 1, 0, NULL, '2024-12-24 01:10:14', '2024-12-24 01:10:14'),
@@ -163,6 +151,13 @@ CREATE TABLE `Donations` (
   `ngo_slug` varchar(255) NOT NULL,
   `created_at` datetime DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Volcado de datos para la tabla `Donations`
+--
+
+INSERT INTO `Donations` (`donation_id`, `customer_username`, `quantity`, `ngo_slug`, `created_at`) VALUES
+(1, 'pepe', 33.00, 'Helping_Hands_India_375839', '2025-01-09 12:44:56');
 
 -- --------------------------------------------------------
 
@@ -243,7 +238,7 @@ CREATE TABLE `NGO` (
 --
 
 INSERT INTO `NGO` (`ngo_id`, `ngo_uuid`, `ngo_name`, `ngo_slug`, `description`, `country`, `email`, `phone_number`, `website_url`, `logo_url`, `image_url`, `description_img_url`, `is_active`, `total_donations`, `created_at`, `updated_at`) VALUES
-(1, 'bfe0dd93-a383-11ef-a437-0242ac140002', 'Sakura Foundation', 'Sakura_Foundation_123456', 'La Sakura Foundation está dedicada a preservar el patrimonio cultural japonés y apoyar a las comunidades desfavorecidas. Fundada en 1995, ha trabajado incansablemente para promover la educación y la cultura japonesa en todo el mundo.; La fundación organiza eventos culturales, talleres educativos y programas de intercambio para jóvenes. Además, proporciona becas a estudiantes de bajos recursos para que puedan continuar sus estudios. Su misión es crear un puente entre Japón y el resto del mundo, fomentando el entendimiento y la cooperación internacional.', 'Japón', 'contact@sakurafoundation.jp', '+81345678901', 'https://www.sakurafoundation.jp', '/src/assets/ngos/SakuraFoundation_01.webp', '/src/assets/ngos/SakuraFoundation_03.webp', '/src/assets/ngos/SakuraFoundation_02.webp', 1, 1500.00, '2024-11-15 18:59:32', '2024-11-15 18:59:32'),
+(1, 'bfe0dd93-a383-11ef-a437-0242ac140002', 'Sakura Foundations', 'sakura_foundations_482111', 'La Sakura Foundation está dedicada a preservar el patrimonio cultural japonés y apoyar a las comunidades desfavorecidas. Fundada en 1995, ha trabajado incansablemente para promover la educación y la cultura japonesa en todo el mundo.; La fundación organiza eventos culturales, talleres educativos y programas de intercambio para jóvenes. Además, proporciona becas a estudiantes de bajos recursos para que puedan continuar sus estudios. Su misión es crear un puente entre Japón y el resto del mundo, fomentando el entendimiento y la cooperación internacional.', 'Japón', 'contact@sakurafoundation.jp', '+81345678901', 'https://www.sakurafoundation.jp', '/src/assets/ngos/SakuraFoundation_01.webp', '/src/assets/ngos/SakuraFoundation_03.webp', '/src/assets/ngos/SakuraFoundation_02.webp', 1, 1500.00, '2024-11-15 18:59:32', '2025-01-09 11:16:06'),
 (2, 'bfe0e287-a383-11ef-a437-0242ac140002', 'Helping Hands India', 'Helping_Hands_India_375839', 'Helping Hands India se centra en la educación y la atención médica para niños desfavorecidos en India. Desde su creación en 2001, ha impactado positivamente en la vida de miles de niños.; La organización ofrece programas de tutoría, clínicas móviles y campañas de concienciación sobre la salud. También colabora con escuelas locales para mejorar la infraestructura educativa y proporcionar materiales de estudio. Su objetivo es romper el ciclo de pobreza a través de la educación y la salud.', 'India', 'info@helpinghands.in', '+911234567890', 'https://www.helpinghandsindia.org', '/src/assets/ngos/HelpingHandsIndia_01.webp', '/src/assets/ngos/HelpingHandsIndia_03.webp', '/src/assets/ngos/HelpingHandsIndia_02.webp', 1, 2400.00, '2024-11-15 18:59:32', '2024-11-15 18:59:32'),
 (3, 'bfe0e439-a383-11ef-a437-0242ac140002', 'Solidaridad Española', 'Solidaridad_Española_740284', 'Solidaridad Española promueve la inclusión social y proporciona ayuda a comunidades marginadas en España. Desde su fundación en 1987, ha trabajado en proyectos de integración y apoyo social.; La organización ofrece servicios de asesoramiento legal, apoyo psicológico y programas de formación laboral. También organiza actividades recreativas y culturales para fomentar la cohesión social. Su misión es construir una sociedad más justa e inclusiva.', 'España', 'solidaridad@espanola.es', '+34912345678', 'https://www.solidaridadespanola.org', '/src/assets/ngos/SolidaridadEspanyola_01.webp', '/src/assets/ngos/SolidaridadEspanyola_03.webp', '/src/assets/ngos/SolidaridadEspanyola_02.webp', 1, 1800.00, '2024-11-15 18:59:32', '2024-11-15 18:59:32'),
 (4, 'bfe0e52b-a383-11ef-a437-0242ac140002', 'Amici della Vita', 'Amici_della_Vita_982023', 'Amici della Vita apoya a familias y niños necesitados, enfocándose en la educación y la atención médica en Italia. Desde 1990, ha proporcionado recursos esenciales a comunidades vulnerables.; La organización gestiona centros comunitarios, clínicas de salud y programas de apoyo escolar. También trabaja en la sensibilización sobre la importancia de la educación y la salud. Su visión es garantizar que todos los niños tengan acceso a una vida digna y saludable.', 'Italia', 'info@amicivita.it', '+390123456789', 'https://www.amicidellavita.it', '/src/assets/ngos/AmiciDellaVita_01.webp', '/src/assets/ngos/AmiciDellaVita_03.webp', '/src/assets/ngos/AmiciDellaVita_02.webp', 1, 2000.00, '2024-11-15 18:59:32', '2024-11-15 18:59:32'),
@@ -274,26 +269,7 @@ CREATE TABLE `Orders` (
 --
 
 INSERT INTO `Orders` (`order_id`, `order_uuid`, `booking_id`, `is_active`, `order_status`, `payment_status`, `total_amount`, `notes`, `created_at`, `updated_at`) VALUES
-(1, 'bfb268f8-cf23-499b-8bb5-7aae73abfb53', 1, 0, 'Waiting', 'Paid', 47.00, 'Somos 1 persona más, traed 1 cubierto extra.', '2024-12-24 01:21:31', '2024-12-24 01:22:42'),
-(2, 'bfb268f8-cf23-499b-8bb5-7aae73abfb54', 2, 0, 'Waiting', 'Paid', 50.00, 'Traed una silla alta para bebé.', '2024-12-24 01:23:31', '2024-12-24 01:24:42'),
-(3, 'bfb268f8-cf23-499b-8bb5-7aae73abfb55', 3, 0, 'Waiting', 'Paid', 60.00, 'Mesa con vista al mar.', '2024-12-24 01:25:31', '2024-12-24 01:26:42'),
-(4, 'bfb268f8-cf23-499b-8bb5-7aae73abfb56', 4, 0, 'Waiting', 'Paid', 70.00, 'Mesa cerca de la chimenea.', '2024-12-24 01:27:31', '2024-12-24 01:28:42'),
-(5, 'bfb268f8-cf23-499b-8bb5-7aae73abfb57', 5, 0, 'Waiting', 'Paid', 80.00, 'Mesa en el jardín.', '2024-12-24 01:29:31', '2024-12-24 01:30:42'),
-(6, 'bfb268f8-cf23-499b-8bb5-7aae73abfb58', 6, 0, 'Waiting', 'Paid', 90.00, 'Mesa en el salón principal.', '2024-12-24 01:31:31', '2024-12-24 01:32:42'),
-(7, 'bfb268f8-cf23-499b-8bb5-7aae73abfb59', 7, 0, 'Waiting', 'Paid', 100.00, 'Mesa en la esquina.', '2024-12-24 01:33:31', '2024-12-24 01:34:42'),
-(8, 'bfb268f8-cf23-499b-8bb5-7aae73abfb60', 8, 0, 'Waiting', 'Paid', 110.00, 'Mesa cerca del bar.', '2024-12-24 01:35:31', '2024-12-24 01:36:42'),
-(9, 'bfb268f8-cf23-499b-8bb5-7aae73abfb61', 9, 0, 'Waiting', 'Paid', 120.00, 'Mesa en el jardín.', '2024-12-24 01:37:31', '2024-12-24 01:38:42'),
-(10, 'bfb268f8-cf23-499b-8bb5-7aae73abfb62', 10, 0, 'Waiting', 'Paid', 130.00, 'Mesa en el salón VIP.', '2024-12-24 01:39:31', '2024-12-24 01:40:42'),
-(11, 'bfb268f8-cf23-499b-8bb5-7aae73abfb63', 11, 0, 'Waiting', 'Paid', 140.00, 'Mesa en la terraza.', '2024-12-24 01:41:31', '2024-12-24 01:42:42'),
-(12, 'bfb268f8-cf23-499b-8bb5-7aae73abfb64', 12, 0, 'Waiting', 'Paid', 150.00, 'Mesa en el salón principal.', '2024-12-24 01:43:31', '2024-12-24 01:44:42'),
-(13, 'bfb268f8-cf23-499b-8bb5-7aae73abfb65', 13, 0, 'Waiting', 'Paid', 160.00, 'Mesa en la esquina.', '2024-12-24 01:45:31', '2024-12-24 01:46:42'),
-(14, 'bfb268f8-cf23-499b-8bb5-7aae73abfb66', 14, 0, 'Waiting', 'Paid', 170.00, 'Mesa cerca del bar.', '2024-12-24 01:47:31', '2024-12-24 01:48:42'),
-(15, 'bfb268f8-cf23-499b-8bb5-7aae73abfb67', 15, 0, 'Waiting', 'Paid', 180.00, 'Mesa en el jardín.', '2024-12-24 01:49:31', '2024-12-24 01:50:42'),
-(16, 'bfb268f8-cf23-499b-8bb5-7aae73abfb68', 16, 0, 'Waiting', 'Paid', 190.00, 'Mesa en el salón VIP.', '2024-12-24 01:51:31', '2024-12-24 01:52:42'),
-(17, 'bfb268f8-cf23-499b-8bb5-7aae73abfb69', 17, 0, 'Waiting', 'Paid', 200.00, 'Mesa en la terraza.', '2024-12-24 01:53:31', '2024-12-24 01:54:42'),
-(18, 'bfb268f8-cf23-499b-8bb5-7aae73abfb70', 18, 0, 'Waiting', 'Paid', 210.00, 'Mesa en el salón principal.', '2024-12-24 01:55:31', '2024-12-24 01:56:42'),
-(19, 'bfb268f8-cf23-499b-8bb5-7aae73abfb71', 19, 0, 'Waiting', 'Paid', 220.00, 'Mesa en la esquina.', '2024-12-24 01:57:31', '2024-12-24 01:58:42'),
-(20, 'bfb268f8-cf23-499b-8bb5-7aae73abfb72', 20, 0, 'Waiting', 'Paid', 230.00, 'Mesa cerca del bar.', '2024-12-24 01:59:31', '2024-12-24 02:00:42');
+(23, '6daac3e1-3d81-46af-a6ab-e52b12897a59', 25, 1, 'Delivered', 'Unpaid', 23.00, '', '2025-01-09 12:36:59', '2025-01-09 12:37:33');
 
 -- --------------------------------------------------------
 
@@ -317,27 +293,67 @@ CREATE TABLE `Orders_Products` (
 --
 
 INSERT INTO `Orders_Products` (`order_product_id`, `order_product_uuid`, `order_id`, `product_id`, `quantity`, `is_delivered`, `created_at`, `updated_at`) VALUES
-(1, '19e938d0-8d64-45e3-b4be-da80a8e34af6', 1, 44, 2, 0, '2024-12-24 01:22:11', '2024-12-24 01:22:11'),
-(2, '6fcaa5c9-afe9-4f14-977f-dcbdc204b308', 1, 33, 2, 0, '2024-12-24 01:22:11', '2024-12-24 01:22:11'),
-(3, '7b25ed02-221c-4cdc-b86e-1c4a2cd6f9f8', 3, 5, 5, 0, '2024-12-24 01:22:11', '2024-12-24 01:22:11'),
-(4, '19e938d0-8d64-45e3-b4be-da80a8e34af7', 4, 44, 2, 0, '2024-12-24 01:22:11', '2024-12-24 01:22:11'),
-(5, '6fcaa5c9-afe9-4f14-977f-dcbdc204b309', 5, 33, 2, 0, '2024-12-24 01:22:11', '2024-12-24 01:22:11'),
-(6, '7b25ed02-221c-4cdc-b86e-1c4a2cd6f9f9', 6, 5, 5, 0, '2024-12-24 01:22:11', '2024-12-24 01:22:11'),
-(7, '19e938d0-8d64-45e3-b4be-da80a8e34af8', 7, 44, 2, 0, '2024-12-24 01:22:11', '2024-12-24 01:22:11'),
-(8, '6fcaa5c9-afe9-4f14-977f-dcbdc204b310', 8, 33, 2, 0, '2024-12-24 01:22:11', '2024-12-24 01:22:11'),
-(9, '7b25ed02-221c-4cdc-b86e-1c4a2cd6f9f0', 9, 5, 5, 0, '2024-12-24 01:22:11', '2024-12-24 01:22:11'),
-(10, '19e938d0-8d64-45e3-b4be-da80a8e34af9', 10, 44, 2, 0, '2024-12-24 01:22:11', '2024-12-24 01:22:11'),
-(11, '6fcaa5c9-afe9-4f14-977f-dcbdc204b311', 11, 33, 2, 0, '2024-12-24 01:22:11', '2024-12-24 01:22:11'),
-(12, '7b25ed02-221c-4cdc-b86e-1c4a2cd6f9f1', 12, 5, 5, 0, '2024-12-24 01:22:11', '2024-12-24 01:22:11'),
-(13, '19e938d0-8d64-45e3-b4be-da80a8e34af0', 13, 44, 2, 0, '2024-12-24 01:22:11', '2024-12-24 01:22:11'),
-(14, '6fcaa5c9-afe9-4f14-977f-dcbdc204b312', 14, 33, 2, 0, '2024-12-24 01:22:11', '2024-12-24 01:22:11'),
-(15, '7b25ed02-221c-4cdc-b86e-1c4a2cd6f9f2', 15, 5, 5, 0, '2024-12-24 01:22:11', '2024-12-24 01:22:11'),
-(16, '19e938d0-8d64-45e3-b4be-da80a8e34af1', 16, 44, 2, 0, '2024-12-24 01:22:11', '2024-12-24 01:22:11'),
-(17, '6fcaa5c9-afe9-4f14-977f-dcbdc204b313', 17, 33, 2, 0, '2024-12-24 01:22:11', '2024-12-24 01:22:11'),
-(18, '7b25ed02-221c-4cdc-b86e-1c4a2cd6f9f3', 18, 5, 5, 0, '2024-12-24 01:22:11', '2024-12-24 01:22:11'),
-(19, '19e938d0-8d64-45e3-b4be-da80a8e34af2', 19, 44, 2, 0, '2024-12-24 01:22:11', '2024-12-24 01:22:11'),
-(20, '6fcaa5c9-afe9-4f14-977f-dcbdc2043338', 2, 33, 2, 0, '2024-12-24 01:22:11', '2024-12-24 01:22:11'),
-(21, '6fcaa5c9-afe9-45e3-b4be-da80a8e34af2', 20, 33, 2, 0, '2024-12-24 01:22:11', '2024-12-24 01:22:11');
+(22, 'e67e83b8-e8e8-43be-b1ff-d1e0e9bc58cd', 22, 21, 1, 0, '2025-01-09 11:49:41', '2025-01-09 11:49:41'),
+(23, '3b4cc328-1fcf-4825-b5f9-efd61de5217d', 22, 23, 1, 0, '2025-01-09 11:49:41', '2025-01-09 11:49:41'),
+(24, '041834f2-8606-458c-a6d2-096e33b01c58', 22, 25, 1, 0, '2025-01-09 11:49:41', '2025-01-09 11:49:41'),
+(25, '128b4a31-604f-4483-b28f-e301dbd12988', 22, 121, 1, 0, '2025-01-09 11:49:41', '2025-01-09 11:49:41'),
+(26, '096ffbb5-1c9f-44df-9cb4-2cb8e8fadef8', 22, 122, 1, 0, '2025-01-09 11:49:41', '2025-01-09 11:49:41'),
+(27, '42cbcca9-06ad-48d5-8d01-30e24381b53c', 22, 123, 1, 0, '2025-01-09 11:49:41', '2025-01-09 11:49:41'),
+(28, 'e5e7e7ef-8aff-4491-9102-9444b0f83ff1', 22, 32, 1, 0, '2025-01-09 11:49:42', '2025-01-09 11:49:42'),
+(29, 'bf35512c-813f-417e-bfee-6c774ae5ff89', 22, 31, 1, 0, '2025-01-09 11:49:42', '2025-01-09 11:49:42'),
+(30, 'a7024f8d-7f0d-45bc-a41b-b2288831f6aa', 22, 28, 1, 0, '2025-01-09 11:49:42', '2025-01-09 11:49:42'),
+(31, 'f6a2dd0a-2cf2-4965-ba71-d6ee6c822bbd', 22, 27, 1, 0, '2025-01-09 11:49:42', '2025-01-09 11:49:42'),
+(32, 'c63c01c1-9e09-43ca-9c35-523a0de5b1c5', 22, 29, 1, 0, '2025-01-09 11:49:42', '2025-01-09 11:49:42'),
+(33, 'd54fae5a-540c-4e37-adb2-870c286ba086', 22, 21, 1, 0, '2025-01-09 11:50:37', '2025-01-09 11:50:37'),
+(34, '122e9a23-a643-4f47-8f46-dd8e7d08bd45', 22, 23, 1, 0, '2025-01-09 11:50:37', '2025-01-09 11:50:37'),
+(35, '5f38bcec-cfaf-4925-b281-31d650cd7674', 22, 25, 1, 0, '2025-01-09 11:50:37', '2025-01-09 11:50:37'),
+(36, '7fabd709-a09b-4e49-a673-03213645a33e', 22, 121, 1, 0, '2025-01-09 11:50:37', '2025-01-09 11:50:37'),
+(37, '1262f3b5-3ee5-4b36-a0fa-ebac07c12c93', 22, 122, 1, 0, '2025-01-09 11:50:37', '2025-01-09 11:50:37'),
+(38, '91a3f2b5-0590-45a1-9e9f-ed8e78898180', 22, 123, 1, 0, '2025-01-09 11:50:37', '2025-01-09 11:50:37'),
+(39, '26d92be8-eb3b-4a5f-8f31-430a01efdfb1', 22, 32, 1, 0, '2025-01-09 11:50:37', '2025-01-09 11:50:37'),
+(40, 'cdda0ca6-3d44-46bc-99e9-e04992e4ef07', 22, 31, 1, 0, '2025-01-09 11:50:37', '2025-01-09 11:50:37'),
+(41, 'fa78330c-097f-4b91-8470-bc43b0b3ce68', 22, 28, 1, 0, '2025-01-09 11:50:37', '2025-01-09 11:50:37'),
+(42, '32640783-db7a-4b66-8627-2341241e16f5', 22, 27, 1, 0, '2025-01-09 11:50:37', '2025-01-09 11:50:37'),
+(43, 'dce6a774-21ee-42a9-b4ec-5cb16dfbdd72', 22, 29, 1, 0, '2025-01-09 11:50:37', '2025-01-09 11:50:37'),
+(44, 'c0aa3bf4-8aaf-43d7-a9d7-527b888b12c4', 22, 21, 1, 0, '2025-01-09 11:50:40', '2025-01-09 11:50:40'),
+(45, '97180155-2906-4f56-85c4-e449d3dffac0', 22, 23, 1, 0, '2025-01-09 11:50:41', '2025-01-09 11:50:41'),
+(46, 'd80f9f70-c01b-4d41-b61c-fc6e92321517', 22, 25, 1, 0, '2025-01-09 11:50:41', '2025-01-09 11:50:41'),
+(47, '3bd7fbc6-49fc-4e25-8c75-e2c43a07d400', 22, 121, 1, 0, '2025-01-09 11:50:41', '2025-01-09 11:50:41'),
+(48, 'f9dabdcc-26d7-4f67-9f1e-2e4ae617b602', 22, 122, 1, 0, '2025-01-09 11:50:41', '2025-01-09 11:50:41'),
+(49, 'ccff7a4b-7587-43b7-b6e2-400733cd172a', 22, 123, 1, 0, '2025-01-09 11:50:41', '2025-01-09 11:50:41'),
+(50, '9a88f20e-64c0-4768-9857-6d0ecddc213e', 22, 32, 1, 0, '2025-01-09 11:50:41', '2025-01-09 11:50:41'),
+(51, '4fb4b2ff-2a2f-4bd3-8334-cc0059f48c98', 22, 31, 1, 0, '2025-01-09 11:50:41', '2025-01-09 11:50:41'),
+(52, '900f802c-0ac0-4bbe-b56f-b69d8fc21703', 22, 28, 1, 0, '2025-01-09 11:50:41', '2025-01-09 11:50:41'),
+(53, 'cc4a027c-6bf7-46ef-87dd-8881e26ca27c', 22, 27, 1, 0, '2025-01-09 11:50:41', '2025-01-09 11:50:41'),
+(54, 'e326ef18-aa94-4c6f-bfec-a7721dd5d634', 22, 29, 1, 0, '2025-01-09 11:50:41', '2025-01-09 11:50:41'),
+(55, '39dab098-79cc-44d8-89d5-e29a7eb3d46f', 22, 21, 1, 0, '2025-01-09 11:50:46', '2025-01-09 11:50:46'),
+(56, '9389c4f0-e807-4ec4-bc80-a6e47a28637f', 22, 23, 1, 0, '2025-01-09 11:50:46', '2025-01-09 11:50:46'),
+(57, '33d22fe7-44bf-48ad-a08c-c38043a63de1', 22, 25, 1, 0, '2025-01-09 11:50:46', '2025-01-09 11:50:46'),
+(58, 'f3cb6322-3e83-4775-ba26-a50fab8208b3', 22, 121, 1, 0, '2025-01-09 11:50:46', '2025-01-09 11:50:46'),
+(59, '75f639ec-b03d-46b5-9c61-a33dd2acb946', 22, 122, 1, 0, '2025-01-09 11:50:46', '2025-01-09 11:50:46'),
+(60, 'b726a17f-d66f-42ed-9888-a798511f0abf', 22, 123, 1, 0, '2025-01-09 11:50:46', '2025-01-09 11:50:46'),
+(61, 'f6f9597b-dc90-48e4-880e-0b3286130a83', 22, 32, 1, 0, '2025-01-09 11:50:46', '2025-01-09 11:50:46'),
+(62, '273ab3f1-8b25-4908-bb43-b8f68ee6e6f2', 22, 31, 1, 0, '2025-01-09 11:50:46', '2025-01-09 11:50:46'),
+(63, 'f396c90e-8654-4cd5-ada5-475fbc997551', 22, 28, 1, 0, '2025-01-09 11:50:46', '2025-01-09 11:50:46'),
+(64, '5f22c2cb-1e2e-490a-bf8a-510bcc304ed1', 22, 27, 1, 0, '2025-01-09 11:50:46', '2025-01-09 11:50:46'),
+(65, '365ad1d3-28fe-4339-9dd0-8322e5044800', 22, 29, 1, 0, '2025-01-09 11:50:46', '2025-01-09 11:50:46'),
+(66, '6409cab1-449b-4c13-8de2-b6201237f413', 22, 24, 1, 0, '2025-01-09 11:53:24', '2025-01-09 11:53:24'),
+(67, '36137f0a-7f8e-46ee-a96b-dd4dd78e3ac2', 22, 24, 1, 0, '2025-01-09 11:55:45', '2025-01-09 11:55:45'),
+(68, '113ac295-2cdd-444a-b90a-c2bb8117c3c6', 22, 24, 1, 0, '2025-01-09 11:55:49', '2025-01-09 11:55:49'),
+(69, '61b9bc37-8861-4148-bd85-25adac51e8e3', 22, 24, 1, 0, '2025-01-09 11:55:54', '2025-01-09 11:55:54'),
+(70, '5834dfaf-8e53-4226-9e68-a263ff568c69', 22, 32, 2, 0, '2025-01-09 11:55:54', '2025-01-09 11:55:54'),
+(71, 'eec8fb26-a4a0-405d-907d-9b24110eab7d', 22, 24, 1, 0, '2025-01-09 11:56:27', '2025-01-09 11:56:27'),
+(72, '0aac776a-f59b-4d29-be0c-5f9b9661d3e6', 22, 32, 2, 0, '2025-01-09 11:56:27', '2025-01-09 11:56:27'),
+(73, 'fca4ce90-2cf5-41e0-9989-bdadc5570ba1', 22, 38, 1, 0, '2025-01-09 11:56:27', '2025-01-09 11:56:27'),
+(74, '410188db-928c-4f24-8805-33ef4f6574fa', 22, 24, 1, 0, '2025-01-09 11:56:56', '2025-01-09 11:56:56'),
+(75, 'bf923764-effd-4f6b-9558-c30f436af8ce', 22, 32, 2, 0, '2025-01-09 11:56:56', '2025-01-09 11:56:56'),
+(76, '3a8861c1-41a2-470a-b982-8c9866bacd90', 22, 38, 2, 0, '2025-01-09 11:56:56', '2025-01-09 11:56:56'),
+(77, '6ae628d2-b175-4ab5-9ca9-ed72f5a535c2', 22, 24, 1, 0, '2025-01-09 11:57:48', '2025-01-09 11:57:48'),
+(78, '0bd94562-5d50-40a1-9d93-eda4930d4e56', 22, 32, 2, 0, '2025-01-09 11:57:48', '2025-01-09 11:57:48'),
+(79, '9bea5ed4-5457-49d1-9e75-ce9212fcbf59', 22, 38, 2, 0, '2025-01-09 11:57:48', '2025-01-09 11:57:48'),
+(80, 'f159c0cd-9e02-4950-b216-95d35b4730a3', 23, 21, 1, 0, '2025-01-09 12:37:09', '2025-01-09 12:37:09'),
+(81, '1e641608-ea6b-4dd8-adc5-c2f5bedb6a9e', 23, 22, 1, 0, '2025-01-09 12:37:09', '2025-01-09 12:37:09'),
+(82, '29b74734-8403-494f-9456-33a30ce4716d', 23, 27, 1, 0, '2025-01-09 12:37:09', '2025-01-09 12:37:09');
 
 -- --------------------------------------------------------
 
@@ -548,7 +564,11 @@ CREATE TABLE `QR` (
 --
 
 INSERT INTO `QR` (`id`, `booking_id`, `url`, `status`, `created_at`, `updated_at`) VALUES
-(1, 1, 'http://localhost:8090/spring/api/qr/validate?data=iUEJUNjwupNpvVpXeOjIh%2BR8rDDG8AASs0v98kVC5zdaylyHR53V9%2BouYoK6VnVFXFC1jYcAvkKXpENHn9uN6%2BrWTsDREw7VARgUzvbgqd%2FI7EZWHUkh20SMMU%2Fjqi%2BdJROBsjuWA7cME%2BwNJJQSrhmvVNdWrm4tMpk9ymT1QQF89o0BNkmt4d3%2BEPCtBZ5GDH7NSkRCfBGC90rmZbgbmFYX64CJEDj%2Fqwp4XLlG6gNQP6zgvyYoAOMVU3JriCNdVp5reBqZ58ZVsMVd3N9ZwdwBF7%2Fg2NJt4jhJJfJKUL8zXCGzciucwCtorxsoqebL', 'Generated', '2024-12-24 01:20:56', '2024-12-24 01:20:56');
+(2, 21, 'http://localhost:8085/qr?data=iUEJUNjwupNpvVpXeOjIh-R8rDDG8AASs0v98kVC5zdaylyHR53V9-ouYoK6VnVFXFC1jYcAvkKXpENHn9uN6x91GAmDcprBhLVwNGn5wl1hhQynsW-m7ffdKPv-JL-oTW8UaG3D9Pt2rBFN9LpWfthagbX7HMA0xDlyV5YoxsS2HLpTUX1BEWUCJxQgxL-5G6Udj50Gl5lOgTsYpJIl-MivPO0zUk9p2KFsG5Jk7u7_G13g5euzAWGRHOsyY0FQq3m__yg75fZZT92IRYNNnyHvFlQjleFIVvfqXdrGcOc=', 'Generated', '2025-01-09 11:31:42', '2025-01-09 11:31:42'),
+(3, 22, 'http://localhost:8085/qr?data=iUEJUNjwupNpvVpXeOjIh-R8rDDG8AASs0v98kVC5zdaylyHR53V9-ouYoK6VnVFXFC1jYcAvkKXpENHn9uN6x91GAmDcprBhLVwNGn5wl1hhQynsW-m7ffdKPv-JL-oXvibBWo51IvPZbe9BEKxxNhagbX7HMA0xDlyV5YoxsSwhmF5bnphFs8oxOeqNh_o_SlkQaxmUbKuBThhphpHSWOXSOmGJTDa_We8AUJeejzu7JCoG7knqgYW60R2kc2QPDhzKDtCeJdJEuPvouHXSCHvFlQjleFIVvfqXdrGcOc=', 'Generated', '2025-01-09 11:34:15', '2025-01-09 11:34:15'),
+(4, 23, 'http://localhost:8085/qr?data=iUEJUNjwupNpvVpXeOjIh-R8rDDG8AASs0v98kVC5zdaylyHR53V9-ouYoK6VnVFXFC1jYcAvkKXpENHn9uN6x91GAmDcprBhLVwNGn5wl1hhQynsW-m7ffdKPv-JL-oeimIfYHpgY_oCiCXK60mithagbX7HMA0xDlyV5YoxsRK7EjVzZLWsxPEQrfPsEyUkidiXOCDy-DG1qeVaqfvvqRQHwnemhHYrn0yNo4-PZnoghOMUWAE_jL4EiBedbBV1TUdFi1m0qsnHBnxD4OEaCHvFlQjleFIVvfqXdrGcOc=', 'Generated', '2025-01-09 11:37:32', '2025-01-09 11:37:32'),
+(5, 24, 'http://localhost:8085/qr?data=iUEJUNjwupNpvVpXeOjIh-R8rDDG8AASs0v98kVC5zdaylyHR53V9-ouYoK6VnVFXFC1jYcAvkKXpENHn9uN6x91GAmDcprBhLVwNGn5wl1hhQynsW-m7ffdKPv-JL-ooLI1-CdchYr9zm74ncpzHNhagbX7HMA0xDlyV5YoxsRAHpLApI2WOZ78s4yhuoB2XNobUxyXvouLid_1isj3aVPcuq866FxTXZGu_pbPtI8uBx0RY9Kl5NZiGYaYhCbltCharUR1VYSRdUE4TC6IsiHvFlQjleFIVvfqXdrGcOc=', 'Generated', '2025-01-09 11:38:14', '2025-01-09 11:38:14'),
+(6, 25, 'http://localhost:8085/qr?data=iUEJUNjwupNpvVpXeOjIh-R8rDDG8AASs0v98kVC5zdaylyHR53V9-ouYoK6VnVFXFC1jYcAvkKXpENHn9uN6x91GAmDcprBhLVwNGn5wl1hhQynsW-m7ffdKPv-JL-ooGD5YY1eK3PWMlJGeuuX1HgZyIdlK9aQQDM_q1vV6mjcqZCE4Q8cTFtKRVI7uVrArxkAo_lD9IOGlQBkrGWgLeqYjNgleKhcT9olK0RqtkcUnN_E4ezGwzAOFZ1CcTx9WxaeAJiSkNc4f7ste-ZxQSHvFlQjleFIVvfqXdrGcOc=', 'In_progress', '2025-01-09 11:40:28', '2025-01-09 12:36:57');
 
 -- --------------------------------------------------------
 
@@ -578,7 +598,7 @@ CREATE TABLE `Room` (
 --
 
 INSERT INTO `Room` (`room_id`, `room_uuid`, `room_name`, `room_slug`, `description`, `theme`, `max_capacity`, `total_bookings`, `average_rating`, `image_url`, `is_active`, `created_at`, `updated_at`, `ngo_id`) VALUES
-(1, '0abbb126-a39b-11ef-a437-0242ac140002', 'Jardín de los Cerezos', 'Jardin_de_los_Cerezos_781230', 'Una sala inspirada en los paisajes japoneses, con decoración de cerezos en flor y detalles tradicionales.', 'Japón', 30, 0, 0.00, '/src/assets/rooms/japan.webp', 1, '2024-11-15 21:46:16', '2024-11-15 21:46:16', 1),
+(1, '0abbb126-a39b-11ef-a437-0242ac140002', 'Jardín de los Cerezos', 'Jardin_de_los_Cerezos_781230', 'Una sala inspirada en los paisajes japoneses, con decoración de cerezos en flor y detalles tradicionales.', 'Japón', 30, 0, 0.00, '/src/assets/rooms/japan.webp', 1, '2024-11-15 21:46:16', '2025-01-09 11:11:53', 1),
 (2, '0abbbfde-a39b-11ef-a437-0242ac140002', 'Palacio de los Maharajás', 'Palacio_de_los_Maharajas_871237', 'Una sala con elementos decorativos indios, desde alfombras hasta lámparas tradicionales.', 'India', 30, 0, 0.00, '/src/assets/rooms/india.webp', 1, '2024-11-15 21:46:16', '2024-11-15 21:46:16', 2),
 (3, '0abbc1b6-a39b-11ef-a437-0242ac140002', 'Taberna Española', 'Taberna_Espanola_612342', 'Un espacio acogedor con motivos tradicionales españoles, como azulejos y jamones colgados.', 'España', 30, 0, 0.00, '/src/assets/rooms/spain.webp', 1, '2024-11-15 21:46:16', '2024-11-15 21:46:16', 3),
 (4, '0abbc27b-a39b-11ef-a437-0242ac140002', 'Villa Toscana', 'Villa_Toscana_891243', 'Sala que evoca la tranquilidad y belleza de los viñedos italianos, con una decoración elegante.', 'Italia', 30, 0, 0.00, '/src/assets/rooms/italy.webp', 1, '2024-11-15 21:46:16', '2024-11-15 21:46:16', 4),
@@ -998,12 +1018,12 @@ INSERT INTO `Room_Shift` (`room_shift_id`, `room_shift_uuid`, `room_id`, `shift_
 (387, '55cab232-ad9e-48a0-82d3-ecb73fbaff59', 1, 77, 0, 0.00, 'Pending', 1, '2025-01-08 00:00:00', '2025-01-08 00:00:00'),
 (388, '72528c6c-1b98-425b-ab56-ba31229b2858', 1, 78, 0, 0.00, 'Pending', 1, '2025-01-08 00:00:00', '2025-01-08 00:00:00'),
 (389, '85c4cec9-8cd0-4037-b91b-900a21dc5ffc', 1, 79, 0, 0.00, 'Pending', 1, '2025-01-09 00:00:00', '2025-01-09 00:00:00'),
-(390, 'd53eefec-2ea7-4206-9564-aacf2fd08857', 1, 80, 0, 0.00, 'Pending', 1, '2025-01-09 00:00:00', '2025-01-09 00:00:00'),
+(390, 'd53eefec-2ea7-4206-9564-aacf2fd08857', 1, 80, 2, 0.00, 'Pending', 1, '2025-01-09 00:00:00', '2025-01-09 11:40:28'),
 (391, 'd0d0627d-07c7-47db-bfa9-2334b6ad2e2f', 1, 81, 0, 0.00, 'Pending', 1, '2025-01-10 00:00:00', '2025-01-10 00:00:00'),
 (392, '9c97743c-c916-4fb3-b0f9-a2d25a52e065', 1, 82, 0, 0.00, 'Pending', 1, '2025-01-10 00:00:00', '2025-01-10 00:00:00'),
 (393, 'f39dec0a-68ef-484a-9662-53dae05d35dd', 1, 83, 0, 0.00, 'Pending', 1, '2025-01-11 00:00:00', '2025-01-11 00:00:00'),
 (394, '31f375b0-59f7-43ea-acaf-07abc5550311', 1, 84, 0, 0.00, 'Pending', 1, '2025-01-11 00:00:00', '2025-01-11 00:00:00'),
-(395, 'dd5250bf-aa1f-4b96-9b1c-2f1a032583c5', 1, 85, 0, 0.00, 'Pending', 1, '2025-01-12 00:00:00', '2025-01-12 00:00:00'),
+(395, 'dd5250bf-aa1f-4b96-9b1c-2f1a032583c5', 1, 85, 2, 0.00, 'Pending', 1, '2025-01-12 00:00:00', '2025-01-09 11:31:42'),
 (396, '285cd761-c86a-4beb-aa82-8fd298367d08', 1, 86, 0, 0.00, 'Pending', 1, '2025-01-12 00:00:00', '2025-01-12 00:00:00'),
 (397, 'dd947f4c-4ea8-4526-bf0f-809e089c070e', 1, 87, 0, 0.00, 'Pending', 1, '2025-01-13 00:00:00', '2025-01-13 00:00:00'),
 (398, '728faf6e-f4cf-443f-8dcb-810ced79f3c4', 1, 88, 0, 0.00, 'Pending', 1, '2025-01-13 00:00:00', '2025-01-13 00:00:00'),
@@ -1059,7 +1079,7 @@ INSERT INTO `Room_Shift` (`room_shift_id`, `room_shift_uuid`, `room_id`, `shift_
 (447, '2d815ec7-93ca-4b35-a319-9e2a03cac8cf', 2, 75, 0, 0.00, 'Pending', 1, '2025-01-07 00:00:00', '2025-01-07 00:00:00'),
 (448, 'f137c948-429b-4b90-9276-6e8bc1b7254d', 2, 76, 0, 0.00, 'Pending', 1, '2025-01-07 00:00:00', '2025-01-07 00:00:00'),
 (449, '83b6d4b5-4c33-484c-89e8-0e0862f652cc', 2, 77, 0, 0.00, 'Pending', 1, '2025-01-08 00:00:00', '2025-01-08 00:00:00'),
-(450, '2f6aa62e-a87e-423b-9c7c-836c45de57d6', 2, 78, 0, 0.00, 'Pending', 1, '2025-01-08 00:00:00', '2025-01-08 00:00:00'),
+(450, '2f6aa62e-a87e-423b-9c7c-836c45de57d6', 2, 78, 2, 0.00, 'Pending', 1, '2025-01-08 00:00:00', '2025-01-09 11:34:15'),
 (451, 'f9d66e30-08a1-4626-8277-25a7609af0cd', 2, 79, 0, 0.00, 'Pending', 1, '2025-01-09 00:00:00', '2025-01-09 00:00:00'),
 (452, 'a9d62c61-dadf-40c9-b7d9-9962f24b2bef', 2, 80, 0, 0.00, 'Pending', 1, '2025-01-09 00:00:00', '2025-01-09 00:00:00'),
 (453, '87dce58f-5245-43f4-95b0-95af43c278eb', 2, 81, 0, 0.00, 'Pending', 1, '2025-01-10 00:00:00', '2025-01-10 00:00:00'),
@@ -1136,7 +1156,7 @@ INSERT INTO `Room_Shift` (`room_shift_id`, `room_shift_uuid`, `room_id`, `shift_
 (524, 'f18e8fd2-8fc5-4296-a8d9-ca8544519bbb', 3, 90, 0, 0.00, 'Pending', 1, '2025-01-14 00:00:00', '2025-01-14 00:00:00'),
 (525, 'a28d92ef-2701-4e8c-b65e-8d0cab451d94', 3, 91, 0, 0.00, 'Pending', 1, '2025-01-15 00:00:00', '2025-01-15 00:00:00'),
 (526, 'da41845c-d4fc-4408-9ec7-535a47bd0d81', 3, 92, 0, 0.00, 'Pending', 1, '2025-01-15 00:00:00', '2025-01-15 00:00:00'),
-(527, 'fa60bfdc-b950-455e-8ac1-15b4b13a4425', 3, 93, 0, 0.00, 'Pending', 1, '2025-01-16 00:00:00', '2025-01-16 00:00:00'),
+(527, 'fa60bfdc-b950-455e-8ac1-15b4b13a4425', 3, 93, 2, 0.00, 'Pending', 1, '2025-01-16 00:00:00', '2025-01-09 11:37:32'),
 (528, 'b5722d6e-3a46-47f8-b047-818b1ae9a285', 3, 94, 0, 0.00, 'Pending', 1, '2025-01-16 00:00:00', '2025-01-16 00:00:00'),
 (529, '76427a0b-149a-4f49-9320-fd04beabc11a', 3, 95, 0, 0.00, 'Pending', 1, '2025-01-17 00:00:00', '2025-01-17 00:00:00'),
 (530, '1e01d1d9-f37a-48c8-8f26-9da3b738a413', 3, 96, 0, 0.00, 'Pending', 1, '2025-01-17 00:00:00', '2025-01-17 00:00:00'),
@@ -1211,7 +1231,7 @@ INSERT INTO `Room_Shift` (`room_shift_id`, `room_shift_uuid`, `room_id`, `shift_
 (599, 'fede85ef-30d0-48c5-9b4a-c1c00e28dd12', 4, 103, 0, 0.00, 'Pending', 1, '2025-01-21 00:00:00', '2025-01-21 00:00:00'),
 (600, 'd68a9e52-addb-4381-98f5-f045b1d92b61', 4, 104, 0, 0.00, 'Pending', 1, '2025-01-21 00:00:00', '2025-01-21 00:00:00'),
 (601, '741a7515-c5b5-4d71-9926-9fd573157383', 4, 105, 0, 0.00, 'Pending', 1, '2025-01-22 00:00:00', '2025-01-22 00:00:00'),
-(602, 'c5fc6ccf-7c74-40e1-8e98-b0f9fa38abdb', 4, 106, 0, 0.00, 'Pending', 1, '2025-01-22 00:00:00', '2025-01-22 00:00:00'),
+(602, 'c5fc6ccf-7c74-40e1-8e98-b0f9fa38abdb', 4, 106, 2, 0.00, 'Pending', 1, '2025-01-22 00:00:00', '2025-01-09 11:38:14'),
 (603, 'fe0507fa-22a7-4e95-bfe7-764e1cfdb977', 4, 107, 0, 0.00, 'Pending', 1, '2025-01-23 00:00:00', '2025-01-23 00:00:00'),
 (604, 'e90f63d4-4995-4471-94f9-6d99e8c46a5c', 4, 108, 0, 0.00, 'Pending', 1, '2025-01-23 00:00:00', '2025-01-23 00:00:00'),
 (605, 'c04ceb4e-df6c-4315-8bbc-4a63f00f5da1', 4, 109, 0, 0.00, 'Pending', 1, '2025-01-24 00:00:00', '2025-01-24 00:00:00'),
@@ -1523,12 +1543,7 @@ CREATE TABLE `Tickets` (
 --
 
 INSERT INTO `Tickets` (`ticket_id`, `ticket_uuid`, `booking_id`, `total_amount`, `amount_to_pay`, `donated_amount`, `payment_status`, `created_at`, `updated_at`) VALUES
-(1, '84e9a868-c908-4126-b404-7221e819298d', 1, 47.00, 0.00, 2.35, 'Paid', '2024-12-24 02:24:37', '2024-12-24 01:27:15'),
-(2, 'f3b141b4-0b3b-4b1b-8b1b-4b1b1b1b1b1b', 2, 50.00, 0.00, 2.50, 'Paid', '2024-12-24 02:24:37', '2024-12-24 01:27:15'),
-(3, 'f341b1b4-0b3b-4b1b-8b1b-4b1b1b1b1b1b', 3, 20.00, 0.00, 1.00, 'Paid', '2024-12-24 02:24:37', '2024-12-24 01:27:15'),
-(4, 'f7b1b1b4-0b3b-4b1b-8b1b-4b1b1b1b1b1b', 4, 210.00, 0.00, 10.50, 'Paid', '2024-12-24 02:24:37', '2024-12-24 01:27:15'),
-(5, 'f3b131b4-0b3b-4b1b-8b1b-4b1b1b1b1b1b', 5, 100.00, 0.00, 5.00, 'Pending', '2024-12-24 02:24:37', '2024-12-24 01:27:15'),
-(6, 'f3b1b1b4-0b3b-4b1b-8b1b-4b1b1b1b1b1b', 6, 150.00, 0.00, 7.50, 'Pending', '2024-12-24 02:24:37', '2024-12-24 01:27:15');
+(7, '5da9b0cf-bf41-4c1c-8590-ed27d816cdbe', 25, 23.00, 23.00, 0.00, 'Paid', '2025-01-09 12:37:38', '2025-01-09 12:37:44');
 
 -- --------------------------------------------------------
 
@@ -1713,13 +1728,13 @@ ALTER TABLE `Waiter`
 -- AUTO_INCREMENT de la tabla `Blacklist`
 --
 ALTER TABLE `Blacklist`
-  MODIFY `id` bigint NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` bigint NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `Booking`
 --
 ALTER TABLE `Booking`
-  MODIFY `booking_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `booking_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- AUTO_INCREMENT de la tabla `Booking_Waiter`
@@ -1737,7 +1752,7 @@ ALTER TABLE `Customer`
 -- AUTO_INCREMENT de la tabla `Donations`
 --
 ALTER TABLE `Donations`
-  MODIFY `donation_id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `donation_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `Feedback`
@@ -1761,13 +1776,13 @@ ALTER TABLE `NGO`
 -- AUTO_INCREMENT de la tabla `Orders`
 --
 ALTER TABLE `Orders`
-  MODIFY `order_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `order_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
 -- AUTO_INCREMENT de la tabla `Orders_Products`
 --
 ALTER TABLE `Orders_Products`
-  MODIFY `order_product_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `order_product_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=83;
 
 --
 -- AUTO_INCREMENT de la tabla `Products`
@@ -1779,7 +1794,7 @@ ALTER TABLE `Products`
 -- AUTO_INCREMENT de la tabla `QR`
 --
 ALTER TABLE `QR`
-  MODIFY `id` bigint NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` bigint NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de la tabla `Room`
@@ -1803,7 +1818,7 @@ ALTER TABLE `Shift`
 -- AUTO_INCREMENT de la tabla `Tickets`
 --
 ALTER TABLE `Tickets`
-  MODIFY `ticket_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `ticket_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT de la tabla `Waiter`
