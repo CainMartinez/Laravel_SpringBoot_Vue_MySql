@@ -3,8 +3,8 @@
     <div class="menu">
       <router-link to="/home">Inicio</router-link>
       <router-link to="/rooms">Carta</router-link>
-      <router-link to="/reservation">Reserva</router-link>
-      <router-link to="/donations">Donaciones</router-link>
+      <router-link v-if="userType === 'client'" to="/reservation">Reserva</router-link>
+      <router-link v-if="userType === 'client'" to="/donations">Donaciones</router-link>
     </div>
 
     <div class="logo">

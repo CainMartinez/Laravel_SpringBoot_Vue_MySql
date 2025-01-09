@@ -1,12 +1,12 @@
 <template>
     <div class="people-select">
         <label for="people">¿Cuántos sois?</label>
-        <InputNumber v-model="people" inputId="horizontal-buttons" showButtons buttonLayout="horizontal" :step="1" fluid
-            @change="updatePeople">
-            <template #incrementbuttonicon>
+        <InputNumber v-model="people" inputId="horizontal-buttons" showButtons buttonLayout="horizontal" :step="1"
+            :min="2" :max="10" fluid @change="updatePeople">
+            <template #incrementicon>
                 <span class="pi pi-plus" />
             </template>
-            <template #decrementbuttonicon>
+            <template #decrementicon>
                 <span class="pi pi-minus" />
             </template>
         </InputNumber>

@@ -89,7 +89,7 @@ const redirectToLogin = () => {
     window.location.href = '/login';
 };
 const redirectToProfile = () => {
-    window.location.href = '/profile';
+    // window.location.href = '/profile';
 };
 
 // Cambiar sala, turno, personas
