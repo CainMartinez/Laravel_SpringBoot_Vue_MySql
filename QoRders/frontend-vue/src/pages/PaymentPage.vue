@@ -85,7 +85,10 @@ const handlePayment = async () => {
         modalMessage.value = "El pago se ha realizado con éxito. ¡Gracias por tu compra!";
         modalTitle.value = 'Éxito';
         isModalVisible.value = true;
-        redirectToHome();
+        const logout = await store.dispatch('storeAuth/logout');
+        if (logout) {
+            router.push({ name: 'Home' });
+        }
     } catch (error) {
         console.error("Error al procesar el pago:", error);
         modalMessage.value = 'Ha ocurrido un error al procesar el pago. Por favor, inténtalo de nuevo.';
@@ -94,10 +97,6 @@ const handlePayment = async () => {
     } finally {
         isProcessing.value = false;
     }
-};
-
-const redirectToHome = () => {
-    window.location.href = '/';
 };
 
 </script>

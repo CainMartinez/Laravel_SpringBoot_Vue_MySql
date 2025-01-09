@@ -59,25 +59,28 @@
                         </ul>
                     </div>
                     <div v-if="reservation.ticket" class="ticket-section">
-                        <h4>Ticket</h4><hr>
+                        <h4>Ticket</h4>
+                        <hr>
                         <p><strong>Total:</strong> {{ reservation.ticket.total_amount }}</p>
                         <p><strong>Donación:</strong> {{ reservation.ticket.donated_amount }}</p>
-                        <p><strong>Estado de pago:</strong> {{ reservation.ticket.payment_status }}</p><hr>
+                        <p><strong>Estado de pago:</strong> {{ reservation.ticket.payment_status }}</p>
+                        <hr>
 
                         <h5>Pedidos Realizados</h5>
                         <ul>
                             <li v-for="order in reservation.ticketOrders" :key="order.order_id">
                                 <p><strong>Orden Nº:</strong> {{ order.order_id }}</p>
-                                <p><strong>Total:</strong> {{ order.total_amount }}</p><hr>
+                                <p><strong>Total:</strong> {{ order.total_amount }}</p>
+                                <hr>
 
                                 <h3>Productos</h3>
                                 <ul>
-                                    <li v-for="product in order.products" :key="product.product_name">
-                                        <p><strong>Producto:</strong> {{ product.product_name }}</p>
-                                        <p><strong>Cantidad:</strong> {{ product.product_quantity }}</p>
-                                        <p><strong>Precio unitario:</strong> {{ product.unit_price }}</p>
-                                        <p><strong>Subtotal:</strong> {{ product.subtotal }}</p>
-                                    </li>
+                                    <DataTable :value="reservation.ticketOrders" responsiveLayout="scroll">
+                                        <Column field="product_name" header="Producto" />
+                                        <Column field="product_quantity" header="Cantidad" />
+                                        <Column field="unit_price" header="Precio Unitario" />
+                                        <Column field="subtotal" header="Subtotal" />
+                                    </DataTable>
                                 </ul>
                             </li>
                         </ul>
@@ -384,7 +387,7 @@ ul {
 }
 
 .btn-view-ticket {
-    background-color:rgb(166, 153, 67);
+    background-color: rgb(166, 153, 67);
     color: white;
     padding: 0.6rem 1rem;
     font-size: 1rem;
@@ -396,7 +399,7 @@ ul {
 }
 
 .btn-view-ticket:hover {
-    background-color:rgb(179, 170, 0);
+    background-color: rgb(179, 170, 0);
 }
 
 .ticket-section {
