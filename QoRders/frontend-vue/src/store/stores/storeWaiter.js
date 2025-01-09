@@ -1,8 +1,8 @@
 import WaiterService from '../../services/waiter/WaiterService';
 
 const state = {
-    reservations: [], // Almacena las reservas cargadas
-    qrUrl: null, // URL del QR generado
+    reservations: [],
+    qrUrl: null,
 };
 
 const mutations = {
@@ -39,7 +39,7 @@ const actions = {
         try {
             const authToken = localStorage.getItem("token");
             const response = await WaiterService.getOrders(authToken, bookingId);
-    
+
             // Mapea las órdenes y sus productos
             const mappedOrders = response.data.map((order) => ({
                 id: order.order_id,
@@ -49,19 +49,17 @@ const actions = {
                     quantity: product.quantity,
                 })),
             }));
-    
-            return mappedOrders; // Devuelve las órdenes mapeadas
+
+            return mappedOrders;
         } catch (error) {
             console.error("Error al obtener las órdenes:", error);
             throw error;
         }
     },
     async fetchGenerateQr({ commit }, bookingId) {
-        console.log("Action fetchGenerateQr ejecutado con ID:", bookingId);
         try {
             const authToken = localStorage.getItem('token');
             const response = await WaiterService.generateQr(authToken, bookingId);
-            console.log("Respuesta del servicio para el QR:", response);
             commit('setQrUrl', response.data.url);
         } catch (error) {
             console.error("Error al generar el QR en el store:", error);
@@ -72,8 +70,7 @@ const actions = {
         try {
             const authToken = localStorage.getItem("token");
             const response = await WaiterService.changeOrderStatus(authToken, endpoint, orderId);
-    
-            console.log("Respuesta del backend en Vuex:", response); // Log de la respuesta
+
             return response.data;
         } catch (error) {
             console.error("Error al cambiar el estado de la orden:", error);
@@ -84,8 +81,7 @@ const actions = {
         try {
             const authToken = localStorage.getItem("token");
             const response = await WaiterService.getTicket(authToken, bookingId);
-    
-            // Retorna los datos del ticket
+
             return response.data;
         } catch (error) {
             console.error("Error al obtener el ticket:", error);

@@ -64,8 +64,6 @@ const { makePayment } = useOrders();
 const fetchOrderData = async () => {
     const order = store.getters['storeOrders/getOrderData'];
     const ticket = store.getters['storeOrders/getTicketData'];
-    console.log('order', order);
-    console.log('ticket', ticket);
     ticketData.value = ticket;
     orderData.value = order;
 };

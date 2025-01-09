@@ -87,7 +87,6 @@ const adjustQuantity = ({ productId, quantity }) => {
 const handleSubmitOrder = async () => {
     try {
         const response = await fetchOrder();
-        console.log('response', response);
         if (response.orderProducts.length === 0) {
             const order = await submitOrder();
             modalMessage.value = order.message;
@@ -116,7 +115,6 @@ const handlePayOrder = async () => {
         const response = await fetchOrder();
         if (response.orderStatus === 'Delivered') {
             router.push('/payment');
-            console.log('Pagando la orden...');
         } else {
             modalMessage.value = 'Espere hasta recibir todos los productos';
             modalTitle.value = 'Información';

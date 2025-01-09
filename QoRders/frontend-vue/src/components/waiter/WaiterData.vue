@@ -26,7 +26,6 @@ import { useStore } from 'vuex';
 const store = useStore();
 
 const userData = computed(() => store.getters['storeAuth/getUserData']);
-console.log(userData.value);
 </script>
 
 <style scoped>

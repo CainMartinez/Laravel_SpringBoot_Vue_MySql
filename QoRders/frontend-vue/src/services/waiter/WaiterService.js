@@ -8,7 +8,7 @@ const WaiterService = {
                     'Authorization': `Bearer ${token}`,
                 },
             });
-            return response.data; // Retorna las reservas
+            return response.data;
         } catch (error) {
             console.error("Error al obtener las reservas:", error);
             throw error;
@@ -16,16 +16,13 @@ const WaiterService = {
     },
     async generateQr(token, bookingId) {
         try {
-            console.log("Enviando solicitud al backend para QR con ID:", bookingId); // Log inicial
-            console.log("Token:", token); // Log del token
-            const response = await api_laravel.put(`/auth/waiter/send-qr/${bookingId}`,{}, {
+            const response = await api_laravel.put(`/auth/waiter/send-qr/${bookingId}`, {}, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json',
                 },
             });
-            console.log("Respuesta del backend para QR:", response.data); // Log de la respuesta del backend
-            return response.data; // Retorna la URL del QR
+            return response.data;
         } catch (error) {
             console.error("Error en WaiterService.generateQr:", error);
             throw error;
@@ -38,7 +35,7 @@ const WaiterService = {
                     Authorization: `Bearer ${token}`,
                 },
             });
-            return response.data; // Retorna las órdenes
+            return response.data;
         } catch (error) {
             console.error("Error al obtener los pedidos:", error);
             throw error;
@@ -51,9 +48,8 @@ const WaiterService = {
                     Authorization: `Bearer ${token}`,
                 },
             });
-    
-            console.log("Respuesta del backend en WaiterService:", response.data); // Log de la respuesta
-            return response.data; // Retorna la respuesta completa
+
+            return response.data;
         } catch (error) {
             console.error(`Error al cambiar el estado de la orden ${orderId}:`, error);
             throw error;
@@ -66,8 +62,8 @@ const WaiterService = {
                     Authorization: `Bearer ${token}`,
                 },
             });
-    
-            return response.data; // Retorna el ticket y las órdenes
+
+            return response.data;
         } catch (error) {
             console.error(`Error al obtener el ticket de la reserva ${bookingId}:`, error);
             throw error;

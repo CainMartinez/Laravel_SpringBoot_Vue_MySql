@@ -42,12 +42,12 @@
                                 <hr>
 
                                 <!-- Productos dentro de la orden -->
-                                <h3>Productos</h3>
+                                <h3>Comanda</h3>
                                 <ul class="products-list">
-                                    <li v-for="product in order.products" :key="product.name">
-                                        <p><strong>Producto:</strong> {{ product.name }}</p>
-                                        <p><strong>Cantidad:</strong> {{ product.quantity }}</p>
-                                    </li>
+                                    <DataTable :value="order.products">
+                                        <Column field="name" header="Producto" />
+                                        <Column field="quantity" header="Cantidad" />
+                                    </DataTable>
                                 </ul>
 
                                 <!-- Botón para cambiar el estado -->
@@ -73,11 +73,11 @@
                                 <p><strong>Total:</strong> {{ order.total_amount }}</p>
                                 <hr>
 
-                                <h3>Productos</h3>
+                                <h3>Comanda</h3>
                                 <ul>
-                                    <DataTable :value="reservation.ticketOrders" responsiveLayout="scroll">
-                                        <Column field="product_name" header="Producto" />
-                                        <Column field="product_quantity" header="Cantidad" />
+                                    <DataTable :value="order.products">
+                                        <Column field="product_name" header="Orden" />
+                                        <Column field="product_quantity" header="Total" />
                                         <Column field="unit_price" header="Precio Unitario" />
                                         <Column field="subtotal" header="Subtotal" />
                                     </DataTable>
@@ -104,12 +104,12 @@ export default {
     },
     data() {
         return {
-            showQr: false, // Controla la visualización del QR
-            qrUrl: null, // URL del QR
+            showQr: false,
+            qrUrl: null,
         };
     },
     computed: {
-        ...mapState("storeWaiter", ["reservations"]), // Mapea las reservas desde Vuex
+        ...mapState("storeWaiter", ["reservations"]),
     },
     methods: {
         ...mapActions("storeWaiter", ["fetchGenerateQr", "fetchReservations"]),
@@ -125,7 +125,7 @@ export default {
         async fetchOrders(reservation) {
             try {
                 const response = await this.$store.dispatch("storeWaiter/fetchOrders", reservation.id);
-                reservation.orders = response; // Añade las órdenes al objeto `reservation`
+                reservation.orders = response;
             } catch (error) {
                 console.error("Error al obtener las órdenes:", error);
             }
@@ -146,9 +146,6 @@ export default {
                     orderId: order.id,
                 });
 
-                console.log("Respuesta del backend en componente:", response); // Log de la respuesta
-
-                // Ajusta el acceso a la propiedad según la estructura real
                 const updatedStatus = response.data?.order_status || response.order_status;
                 order.status = updatedStatus;
             } catch (error) {
@@ -165,18 +162,15 @@ export default {
             try {
                 const response = await this.fetchTicketFromStore(reservation.id);
 
-                // Almacena el ticket y las órdenes en la reserva
                 reservation.ticket = response.ticket;
                 reservation.ticketOrders = response.orders;
 
-                console.log("Ticket obtenido:", response); // Log para depuración
             } catch (error) {
                 console.error("Error al obtener el ticket:", error);
             }
         },
     },
     async mounted() {
-        // Carga las reservas desde la base de datos al montar el componente
         try {
             await this.fetchReservations();
         } catch (error) {
@@ -187,7 +181,6 @@ export default {
 </script>
 
 <style scoped>
-/* General container styling */
 .reservations-waiter {
     padding: 2rem;
     background-color: #f9f9f9;
@@ -202,15 +195,22 @@ export default {
     color: #333;
 }
 
-/* Reservations list styling */
+.reservations-list,
+.orders-section ul,
+.ticket-section ul {
+    list-style: none;
+    padding: 0;
+}
+
 .reservations-list {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
-    padding: 0;
 }
 
-.reservation-card {
+.reservation-card,
+.orders-section,
+.ticket-section {
     background-color: white;
     border: 1px solid #ddd;
     border-radius: 10px;
@@ -224,15 +224,18 @@ export default {
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
 }
 
-/* Header section */
-.reservation-header {
+.reservation-header,
+.reservation-footer {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 1rem;
 }
 
-.reservation-header h3 {
+.reservation-header h3,
+.orders-section h4,
+.ticket-section h4,
+.ticket-section h5 {
     font-size: 1.5rem;
     font-weight: bold;
     color: #47515b;
@@ -248,36 +251,15 @@ export default {
     text-transform: uppercase;
 }
 
-/* Body section */
-.reservation-body {
+.reservation-body,
+.orders-section,
+.ticket-section {
     margin-bottom: 1rem;
     color: #555;
     font-size: 1rem;
     line-height: 1.5;
 }
 
-/* Footer section */
-.reservation-footer {
-    text-align: right;
-}
-
-.btn-generate-qr {
-    background-color: #28a745;
-    color: white;
-    padding: 0.6rem 1rem;
-    font-size: 1rem;
-    font-weight: bold;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-}
-
-.btn-generate-qr:hover {
-    background-color: #218838;
-}
-
-/* No reservations styling */
 .no-reservations {
     text-align: center;
     font-size: 1.2rem;
@@ -285,80 +267,14 @@ export default {
     margin-top: 2rem;
 }
 
-ul {
-    list-style-type: none;
-    padding: 0;
-}
-
-.orders-section {
-    margin-top: 1rem;
-    background-color: #f9f9f9;
-    padding: 1rem;
-    border-radius: 5px;
-    border: 1px solid #ddd;
-}
-
-.orders-section h4 {
-    font-size: 1.2rem;
-    color: #333;
-    margin-bottom: 0.5rem;
-}
-
-.orders-section ul {
-    list-style: none;
-    padding: 0;
-}
-
-.orders-section li {
-    border-bottom: 1px solid #ddd;
-    padding: 0.5rem 0;
-}
-
-.orders-section li:last-child {
-    border-bottom: none;
-}
-
-.btn-view-orders {
-    background-color: #0d40a6;
-    color: white;
-    padding: 0.6rem 1rem;
-    font-size: 1rem;
-    font-weight: bold;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-}
-
-.btn-view-orders:hover {
-    background-color: #0056b3;
-}
-
-.orders-section {
-    margin-top: 1rem;
-    background-color: #f9f9f9;
-    padding: 1rem;
-    border-radius: 5px;
-    border: 1px solid #ddd;
-}
-
-.orders-section h4 {
-    font-size: 1.2rem;
-    color: #333;
-    margin-bottom: 0.5rem;
-}
-
-.orders-section ul {
-    list-style: none;
-    padding: 0;
-}
-
-.order-item {
+.order-item,
+.products-list li {
     border-bottom: 1px solid #ddd;
     padding: 1rem 0;
 }
 
-.order-item:last-child {
+.order-item:last-child,
+.products-list li:last-child {
     border-bottom: none;
 }
 
@@ -368,18 +284,27 @@ ul {
     list-style: disc;
 }
 
-.products-list li {
-    margin-bottom: 0.5rem;
-}
-
-.btn-view-orders {
-    background-color: #007bff;
-    color: white;
+button {
     padding: 0.6rem 1rem;
+    font-size: 1rem;
+    font-weight: bold;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    color: white;
+}
+
+.btn-generate-qr {
+    background-color: #28a745;
+}
+
+.btn-generate-qr:hover {
+    background-color: #218838;
+}
+
+.btn-view-orders {
+    background-color: #007bff;
 }
 
 .btn-view-orders:hover {
@@ -388,55 +313,15 @@ ul {
 
 .btn-view-ticket {
     background-color: rgb(166, 153, 67);
-    color: white;
-    padding: 0.6rem 1rem;
-    font-size: 1rem;
-    font-weight: bold;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
 }
 
 .btn-view-ticket:hover {
     background-color: rgb(179, 170, 0);
 }
 
-.ticket-section {
-    margin-top: 1rem;
-    background-color: #f9f9f9;
-    padding: 1rem;
-    border-radius: 5px;
-    border: 1px solid #ddd;
-}
-
-.ticket-section h4 {
-    font-size: 1.5rem;
-    color: #333;
-    margin-bottom: 0.5rem;
-}
-
-.ticket-section h5 {
-    font-size: 1.2rem;
-    margin-top: 1rem;
-}
-
-.ticket-section ul {
-    list-style: none;
-    padding: 0;
-}
-
 .btn-change-status {
-    margin-top: 1rem;
+    margin-top: 10px;
     background-color: #ffc107;
-    color: white;
-    padding: 0.5rem 1rem;
-    border: none;
-    border-radius: 5px;
-    font-size: 1rem;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
 }
 
 .btn-change-status:hover {

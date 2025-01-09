@@ -3,7 +3,6 @@ import { api_spring } from "../api";
 const OrderService = {
     async createOrder(bookingId, token) {
         try {
-            console.log(bookingId);
             const response = await api_spring.post('/orders', { bookingId }, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
