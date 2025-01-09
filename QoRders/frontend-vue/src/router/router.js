@@ -45,6 +45,28 @@ const loadWaiterData = (userType) => async (to, from, next) => {
     }
 }
 
+const loadPaymentData = (userType) => async (to, from, next) => {
+    const store = useStore();
+    const isAuthenticated = store.getters['storeAuth/getIsAuthenticated'];
+    const currentUserType = store.getters['storeAuth/getUserType'];
+    const bookingId = store.getters['storeOrders/getBookingId'];
+    const orderId = store.getters['storeOrders/getOrderId'];
+    const token = store.getters['storeAuth/getToken'];
+
+    if (isAuthenticated && currentUserType === userType) {
+        try {
+            await store.dispatch('storeOrders/fetchTicketData', { bookingId, token });
+            await store.dispatch('storeOrders/fetchOrder', { orderId, token });
+            next();
+        } catch (error) {
+            console.error("Error fetching payment data:", error);
+            next('/');
+        }
+    } else {
+        next('/');
+    }
+};
+
 // Función para cargar varios tipos de datos
 const loadRoomData = async (to, from, next) => {
     const store = useStore();
@@ -158,6 +180,12 @@ const routes = [
                 console.error("El parámetro 'data' no está definido en la ruta.");
             }
         }
+    },
+    {
+        path: '/payment',
+        name: 'Payment',
+        component: () => import('../pages/PaymentPage.vue'),
+        beforeEnter: loadPaymentData('client'),
     },
 ];
 

@@ -2,13 +2,10 @@ import OrderService from "../../services/client/OrderService";
 
 const state = {
     orderId: parseInt(localStorage.getItem('orderId')) || 0,
-    bookingId: null,
+    bookingId: parseInt(localStorage.getItem('bookingId')) || 0,
     products: [],
-    orderData: {
-        orderId: null,
-        orderStatus: null,
-        products: [],
-    },
+    orderData: {},
+    ticketData: {},
 };
 
 const mutations = {
@@ -38,6 +35,9 @@ const mutations = {
             orderStatus: null,
             products: [],
         };
+    },
+    setTicketData(state, ticketData) {
+        state.ticketData = ticketData;
     },
 };
 
@@ -76,6 +76,39 @@ const actions = {
             throw error;
         }
     },
+
+    async fetchOrder({ commit }, { orderId, token }) {
+        try {
+            const response = await OrderService.fetchOrder(orderId, token);
+            commit('setOrderData', response);
+            return response;
+        } catch (error) {
+            console.error("Error fetching order:", error);
+            throw error;
+        }
+    },
+
+    async fetchTicketData({ commit, state }, { bookingId, token }) {
+        try {
+            const response = await OrderService.getTicket(bookingId, token);
+            commit('setTicketData', response);
+            return response;
+        } catch (error) {
+            console.error("Error al obtener el ticket:", error);
+            throw error;
+        }
+    },
+
+    async submitPayment({ commit }, { paymentData, token }) {
+        try {
+            const response = await OrderService.makePayment(paymentData, token);
+            commit('setTicketData', response.data);
+            return response;
+        } catch (error) {
+            console.error("Error al procesar el pago:", error);
+            throw error;
+        }
+    },
 };
 
 const getters = {
@@ -93,6 +126,9 @@ const getters = {
     },
     getOrderData(state) {
         return state.orderData;
+    },
+    getTicketData(state) {
+        return state.ticketData;
     },
 };
 

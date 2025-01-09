@@ -43,7 +43,7 @@ export default function useOrders() {
         try {
             const orderId = store.getters['storeOrders/getOrderId'];
             const token = store.getters['storeAuth/getToken'];
-            const response = await OrderService.fetchOrder(orderId, token);
+            const response = await store.dispatch('storeOrders/fetchOrder', { orderId, token });
             return response;
         } catch (error) {
             console.error("Error fetching order:", error);
@@ -51,10 +51,36 @@ export default function useOrders() {
         }
     };
 
+    const getTicketData = async (bookingId) => {
+        const token = store.getters['storeAuth/getToken'];
+        try {
+            const response = await store.dispatch('storeOrders/fetchTicketData', { bookingId, token });
+            return response;
+        } catch (error) {
+            console.error("Error al obtener el ticket:", error);
+            throw error;
+        }
+    };
+
+    const makePayment = async (paymentData) => {
+        const token = store.getters['storeAuth/getToken'];
+
+        try {
+            const response = await store.dispatch('storeOrders/submitPayment', { paymentData, token });
+            return response.data;
+        } catch (error) {
+            console.error("Error al realizar el pago:", error);
+            throw error;
+        }
+    };
+
+
     return {
         createOrder,
         addProductsToExistingOrder,
         submitOrder,
-        fetchOrder
+        fetchOrder,
+        getTicketData,
+        makePayment,
     };
 }

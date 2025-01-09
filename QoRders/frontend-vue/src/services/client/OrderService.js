@@ -48,7 +48,35 @@ const OrderService = {
             console.error("OrderService.js: Error fetching order:", error);
             throw error;
         }
-    }
+    },
+
+    async getTicket(bookingId, token) {
+        try {
+            const response = await api_spring.post(`/booking/${bookingId}/ticket`, {}, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                }
+            });
+            return response.data;
+        } catch (error) {
+            console.error("Error al obtener el ticket:", error);
+            throw error;
+        }
+    },
+
+    async makePayment(paymentData, token) {
+        try {
+            const response = await api_spring.post('/booking/pay', paymentData, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                }
+            });
+            return response.data;
+        } catch (error) {
+            console.error("Error al realizar el pago:", error);
+            throw error;
+        }
+    },
 };
 
 export default OrderService;

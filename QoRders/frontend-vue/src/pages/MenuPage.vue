@@ -17,7 +17,8 @@
             @page="onPageChange" />
 
         <div v-if="userData && userData.is_seated === true" class="order-buttons">
-            <Button label="Crear un Pedido" icon="pi pi-check" @click="handleSubmitOrder" class="order-button" />
+            <Button v-if="isButtonVisible" label="Crear un Pedido" icon="pi pi-check" @click="handleSubmitOrder"
+                class="order-button" />
             <Button label="Pagar" icon="pi pi-dollar" @click="handlePayOrder" class="order-button" />
         </div>
 
@@ -30,9 +31,9 @@
 </template>
 
 <script setup>
-import { computed, watch, ref } from 'vue';
+import { computed, watch, ref, onMounted } from 'vue';
 import { useStore } from 'vuex';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import Filters from '../components/Filters.vue';
 import ProductCard from '../components/ProductCard.vue';
 import useFilters from '../composables/useFilters';
@@ -44,12 +45,14 @@ const route = useRoute();
 const room_slug = computed(() => route.params.slug);
 
 const store = useStore();
+const router = useRouter();
 const products = computed(() => store.getters['storeProducts/getProductsByRoom']);
 const totalProducts = computed(() => store.getters['storeProducts/getTotalProducts']);
 const room = computed(() => store.getters['storeRooms/getRoomBySlug']);
 const userData = computed(() => store.getters['storeAuth/getUserData']?.client);
 const { createOrder, addProductsToExistingOrder, submitOrder, fetchOrder } = useOrders();
 const isModalVisible = ref(false);
+const isButtonVisible = ref(true); // Inicialmente visible
 const modalMessage = ref('');
 const modalTitle = ref('');
 
@@ -84,18 +87,22 @@ const adjustQuantity = ({ productId, quantity }) => {
 const handleSubmitOrder = async () => {
     try {
         const response = await fetchOrder();
-        if (response.orderStatus === 'Delivered' || response.orderProducts.length === 0) {
-            const response = await submitOrder();
-            modalMessage.value = response.message;
+        console.log('response', response);
+        if (response.orderProducts.length === 0) {
+            const order = await submitOrder();
+            modalMessage.value = order.message;
             modalTitle.value = 'Éxito';
+            isModalVisible.value = true;
+            isButtonVisible.value = false; // Ocultar el botón después de la primera llamada
+        } else if (response.orderStatus === 'Delivered') {
+            modalMessage.value = 'Ya ha recibido todos los productos';
+            modalTitle.value = 'Información';
             isModalVisible.value = true;
         } else {
             modalMessage.value = 'Espere hasta recibir todos los productos';
             modalTitle.value = 'Información';
             isModalVisible.value = true;
         }
-
-
     } catch (error) {
         console.error("Error al crear la orden:", error);
         modalMessage.value = 'Error al crear la orden';
@@ -108,7 +115,7 @@ const handlePayOrder = async () => {
     try {
         const response = await fetchOrder();
         if (response.orderStatus === 'Delivered') {
-            // router.push('/payment');
+            router.push('/payment');
             console.log('Pagando la orden...');
         } else {
             modalMessage.value = 'Espere hasta recibir todos los productos';
