@@ -84,7 +84,7 @@ const adjustQuantity = ({ productId, quantity }) => {
 const handleSubmitOrder = async () => {
     try {
         const response = await fetchOrder();
-        if (response.orderStatus === 'Delivered') {
+        if (response.orderStatus === 'Delivered' || response.orderProducts.length === 0) {
             const response = await submitOrder();
             modalMessage.value = response.message;
             modalTitle.value = 'Éxito';

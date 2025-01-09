@@ -54,6 +54,7 @@ onMounted(async () => {
 const redirectToCard = async () => {
     console.log(bookingData.value.data.bookingId);
     const orderData = await createOrder(bookingData.value.data.bookingId);
+    localStorage.setItem('bookingId', bookingData.value.data.bookingId);
     console.log(orderData);
     window.location.href = `/room/${roomSlug.value}`;
 };
