@@ -16,6 +16,21 @@ const ProductsService = {
         }
     },
 
+    async getProductsByRoom(token, room) {
+        try {
+            const response = await api_laravel.get(`/auth/manager/products/room/${room}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+            return response.data;
+        } catch (error) {
+            console.error(`Error al obtener los productos`, error);
+            throw error;
+        }
+    },
+
     async createProduct(token, product) {
         try {
             const response = await api_laravel.post(`/auth/manager/products`, product, {

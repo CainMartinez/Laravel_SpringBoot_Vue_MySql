@@ -10,12 +10,10 @@
                     @click="changeView('ReservationsHistory')">Historial de Reservas</li>
                 <li v-if="props.userType === 'waiter'" :class="{ active: activeView === 'ReservationsWaiter' }"
                     @click="changeView('ReservationsWaiter')">Reservas a atender</li>
-                <li v-if="props.userType === 'client'" :class="{ active: activeView === 'OrdersHistory' }"
-                    @click="changeView('OrdersHistory')">Historial de Pedidos</li>
-                <li v-if="props.userType === 'manager'" :class="{ active: activeView === 'RoomManagement' }"
-                    @click="changeView('RoomManagement')">Gestion de Salas</li>
                 <li v-if="props.userType === 'manager'" :class="{ active: activeView === 'OngsManagement' }"
                     @click="changeView('OngsManagement')">Gestion de Ongs</li>
+                <li v-if="props.userType === 'manager'" :class="{ active: activeView === 'RoomManagement' }"
+                    @click="changeView('RoomManagement')">Gestion de Salas</li>
                 <li v-if="props.userType === 'manager'" :class="{ active: activeView === 'MenuManagement' }"
                     @click="changeView('MenuManagement')">Gestion de Carta</li>
                 <li v-if="props.userType === 'manager'" :class="{ active: activeView === 'ReservationManagement' }"

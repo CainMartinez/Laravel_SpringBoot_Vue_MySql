@@ -29,6 +29,10 @@ import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import FloatLabel from 'primevue/floatlabel';
 import ToggleButton from 'primevue/togglebutton';
+import Textarea from 'primevue/textarea';
+import Tabs from 'primevue/tabs';
+import TabList from 'primevue/tablist';
+import Tab from 'primevue/tab';
 
 // PrimeVue Directives
 import Tooltip from 'primevue/tooltip';
@@ -68,6 +72,10 @@ app.component('DataTable', DataTable);
 app.component('Column', Column);
 app.component('FloatLabel', FloatLabel);
 app.component('ToggleButton', ToggleButton);
+app.component('Textarea', Textarea);
+app.component('Tabs', Tabs);
+app.component('TabList', TabList);
+app.component('Tab', Tab);
 
 app.directive('tooltip', Tooltip);
 

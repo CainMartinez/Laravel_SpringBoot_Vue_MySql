@@ -4,8 +4,12 @@
 <script setup>
 import { ref, computed } from 'vue';
 
+const rooms = computed(() => store.getters['storeAdmin/getAllRooms'].data);
 const products = computed(() => store.getters['adminStore/getAllProducts']);
+console.log("Products");
+console.log(products.value);
+console.log("Rooms");
+console.log(rooms.value);
 
-console.log("Products" + products.value);
 </script>
 <style scoped></style>

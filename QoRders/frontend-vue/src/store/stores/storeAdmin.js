@@ -2,7 +2,6 @@ import AdminService from '../../services/admin/AdminService';
 import ProductsService from '../../services/admin/ProductsService';
 import RoomsService from '../../services/admin/RoomsService';
 import NgosService from '../../services/admin/OngsService';
-import { all } from 'axios';
 
 const state = {
     generalMetrics: {},
@@ -45,6 +44,18 @@ const actions = {
             let authToken = localStorage.getItem('token');
             response = await ProductsService.getAllProducts(authToken);
             commit('setGeneralMetrics', response);
+        } catch (error) {
+            console.error("Error al obtener las métricas generales:", error);
+            throw error;
+        }
+    },
+
+    async fetchGetProductsByRoom({ commit, state }, room) {
+        try {
+            let response;
+            let authToken = localStorage.getItem('token');
+            response = await ProductsService.getProductsByRoom(authToken, room);
+            commit('setProducts', response);
         } catch (error) {
             console.error("Error al obtener las métricas generales:", error);
             throw error;
@@ -200,7 +211,6 @@ const actions = {
             let authToken = localStorage.getItem('token');
             response = await NgosService.updateNgos(authToken, ngo);
             if (response.data) {
-                toast.add({ severity: 'success', summary: 'Sala actualizada', life: 3000 });
                 dispatch('fetchGetAllNgos');
             }
         } catch (error) {

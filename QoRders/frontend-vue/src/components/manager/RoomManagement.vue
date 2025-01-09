@@ -46,8 +46,8 @@
                 <InputText id="img" v-model="roomToEdit.image_url" class="w-full" />
                 <label for="img">Imagen</label>
             </FloatLabel>
-            <FloatLabel class="w-full">
-                <Select id="img" v-model="roomToEdit.ngo" :options="ongs" optionLabel="ngo_name" class="w-full" />
+            <FloatLabel class="w-full" v-if="selectNgoVisible">
+                <Select id="img" v-model="ongSelected" :options="ongs" optionLabel="ngo_name" class="w-full" />
                 <label for="img">Ong</label>
             </FloatLabel>
             <div class="modal-footer">
@@ -70,9 +70,16 @@ const store = useStore();
 
 const rooms = computed(() => store.getters['storeAdmin/getAllRooms'].data);
 const ongs = computed(() => store.getters['storeAdmin/getAllNgos'].data);
+const ongSelected = ref(null);
+
 console.log(rooms.value)
 console.log(ongs.value)
+
+const selectNgoVisible = ref(false);
+
 const editRoom = (room) => {
+    selectNgoVisible.value = false;
+    ongSelected.value = ongs.value.find(ong => ong.ngo_id === room.ngo_id);
     roomToEdit.value = room;
     modalRoomVisible.value = true;
 }
@@ -82,6 +89,8 @@ const modalRoomVisible = ref(false);
 const roomToEdit = ref(null);
 
 const crearRoom = () => {
+    selectNgoVisible.value = true;
+    ongSelected.value = undefined;
     roomToEdit.value = {
         room_name: '',
         description: '',
@@ -89,15 +98,15 @@ const crearRoom = () => {
         image_url: '',
         theme: '',
         is_active: false,
-        ngo: null,
         ngo_id: 0
     };
+
     modalRoomVisible.value = true;
 }
 
 const guardarSala = () => {
     roomToEdit.value.is_active = roomToEdit.value.is_active ? 1 : 0;
-    roomToEdit.value.ngo_id = roomToEdit.value.ngo.ngo_id;
+    roomToEdit.value.ngo_id = ongSelected.value.ngo_id;
     if (roomToEdit.value.room_id) {
         store.dispatch('storeAdmin/updateRoom', roomToEdit.value);
     } else {
