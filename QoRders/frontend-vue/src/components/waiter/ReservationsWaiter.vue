@@ -129,7 +129,7 @@ export default {
         getOrderButtonLabel(status) {
             if (status === "Waiting") return "Asignar";
             if (status === "Assigned") return "Entregado";
-            return "Entregado";
+            return "Finalizado";
         },
     },
     async mounted() {
