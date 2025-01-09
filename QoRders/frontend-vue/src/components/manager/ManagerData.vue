@@ -1,6 +1,6 @@
 <template>
     <div class="personal-data">
-        <h1>Datos del Camarero</h1>
+        <h1>Datos del Manager</h1>
 
         <div class="data-container">
             <p><strong>Nombre:</strong> {{ userData.firstName }} {{ userData.lastName }}</p>
