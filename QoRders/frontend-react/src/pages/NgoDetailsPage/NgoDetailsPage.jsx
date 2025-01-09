@@ -56,15 +56,6 @@ const NgoDetailsPage = () => {
                     <img src={ngo.description_img_url} alt="Secundaria" className="secondary-image" />
                 </div>
             </section>
-            <hr />
-            <br />
-            {/* Sección "Donar" */}
-            <section className="ngo-section donate-section">
-                <p className="donate-text">"Haz una diferencia, dona hoy."</p>
-                <Link to={`/donaciones?ngo=${ngo.ngo_slug}`} className="ngo-donate-button">
-                    Donar
-                </Link>
-            </section>
         </div>
     );
 };

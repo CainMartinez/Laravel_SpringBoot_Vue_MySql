@@ -105,5 +105,9 @@ Route::group(['prefix' => 'auth'], function () {
     });
 });
 
+// ruta para obtener ngos React
+Route::get('/ngos', [NgoController::class, 'index']);
+Route::get('/ngos/{slug}', [NgoController::class, 'indexBySlug']);
+
 // Ruta para crear una donación
 Route::post('/donations', [DonationController::class, 'store']);
