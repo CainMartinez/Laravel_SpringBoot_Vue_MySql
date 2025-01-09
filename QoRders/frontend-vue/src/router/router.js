@@ -127,6 +127,14 @@ const routes = [
         name: 'WaiterDashboard',
         component: () => import('../pages/WaiterDashboardPage.vue'),
         beforeEnter: loadWaiterData('waiter'),
+        children: [
+            {
+                path: 'qr/:bookingId',
+                name: 'GenerateQR',
+                component: () => import('../components/waiter/GenerateQR.vue'),
+                props: true,
+            },
+        ],
     },
     {
         path: '/dashboard-manager',

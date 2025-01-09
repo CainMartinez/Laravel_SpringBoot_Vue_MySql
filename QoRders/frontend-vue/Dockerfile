@@ -1,21 +1,23 @@
 # Etapa de construcción
 FROM node:20-alpine
+
+# Establece el directorio de trabajo en el contenedor
 WORKDIR /app
 
 # Configurar un registro de npm confiable
 RUN npm config set registry http://registry.npmjs.org/
 
-# Limpiar la caché de npm para evitar problemas
-RUN npm cache clean --force
-
-# Copiar archivos necesarios para instalar dependencias
+# Copiar los archivos package.json y package-lock.json
 COPY package*.json ./
 
-# Copiar el resto del proyecto
+# Instalar las dependencias
+RUN npm install
+
+# Copiar el resto del proyecto al contenedor
 COPY . .
 
-# Exponer el puerto 8085
+# Exponer el puerto que usa Vite
 EXPOSE 8085
 
-# Comando para iniciar la aplicación en el puerto especificado
+# Comando para iniciar la aplicación
 CMD ["npm", "run", "dev"]
