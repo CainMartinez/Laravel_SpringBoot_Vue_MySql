@@ -8,8 +8,9 @@
                 <div v-tooltip.top="'Hay disponibilidad en otras salas'" v-else-if="checkYellowDay(slotProps.date)"
                     class="otherRoom" @click="selectDay('', true)">
                     {{ slotProps.date.day }}</div>
-                <div v-else-if="checkRedDay(slotProps.date)" class="unavailable" @click="selectDay('', true)">{{
-                    slotProps.date.day }}</div>
+                <div v-tooltip.top="'No hay disponibilidad para hoy'" v-else-if="checkRedDay(slotProps.date)"
+                    class="unavailable" @click="selectDay('', true)">{{
+                        slotProps.date.day }}</div>
                 <div v-else>{{ slotProps.date.day }}</div>
             </template>
         </DatePicker>

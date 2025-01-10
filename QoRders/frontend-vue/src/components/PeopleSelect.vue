@@ -2,7 +2,7 @@
     <div class="people-select">
         <label for="people">¿Cuántos sois?</label>
         <InputNumber v-model="people" inputId="horizontal-buttons" showButtons buttonLayout="horizontal" :step="1"
-            :min="2" :max="10" fluid @change="updatePeople">
+            :min="2" :max="10" fluid>
             <template #incrementicon>
                 <span class="pi pi-plus" />
             </template>
@@ -14,9 +14,13 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 
 const people = ref(2);
+
+watch(people, (newValue) => {
+    updatePeople({ value: newValue });
+});
 
 const emit = defineEmits(['update:selectedPeople']);
 const updatePeople = (event) => {
