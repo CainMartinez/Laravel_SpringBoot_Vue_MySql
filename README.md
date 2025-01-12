@@ -1,4 +1,3 @@
-
 ![Logo de QoRders](QoRders/images/logo.png)
 
 # Introducción
@@ -42,10 +41,10 @@ El Frontend está desarrollado con ***Vue*** y la parte de donaciones y ONG con 
 ---
 
 ### 🔐 Login y Registro
-La plataforma permite a los usuarios registrarse y acceder seleccionando el tipo de usuario correspondiente: Cliente, Camarero o Manager desde el mismo formulario.
+La plataforma permite a los usuarios registrarse y acceder con cualquier tipo de usuario desde el mismo formulario.
 
 - **Registro de Usuarios**:
-  - Los usuarios pueden registrarse seleccionando el tipo de usuario (Cliente, Camarero, Manager) mediante un radio button.
+  - Los usuarios pueden registrarse seleccionando el tipo de usuario (`Cliente`, `Camarero`, `Manager`) mediante un radio button.
   - Cada tipo de usuario tiene su propio formulario de registro con validaciones específicas.
   - Se permite el uso del mismo email para diferentes tipos de cuentas ya que se almacenan en tablas distintas.
 
