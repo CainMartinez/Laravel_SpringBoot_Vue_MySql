@@ -1,5 +1,5 @@
 
-![Logo de QoRders](QoRders/frontend-react/src/assets/logo.png)
+![Logo de QoRders](QoRders/images/logo.png)
 
 # Introducción
 
@@ -177,7 +177,7 @@ En cada venta del restaurante que gestione **QoRders** el 5% del monto total de 
   
   - Posibilidad de donación a las ONG sin estar registrado.
 
-![ONG](QoRders/images/ong.png)
+![ONG](QoRders/images/ONG.png)
 
 ![Donaciones](QoRders/images/donaciones.png)
 
