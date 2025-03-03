@@ -89,6 +89,15 @@ services:
       bash -c "/app/wait-for-it.sh mysql_container 3306 root root QoRders --
             java -jar app.jar"
 
+  springboot_payment:
+    build:
+      context: ./backend-spring_boot
+    container_name: spring_boot_container
+    ports:
+      - "8079:8079"
+    command: >
+      bash -c "java -jar app.jar"
+
   resend:
     build:
       context: ./resend-express
