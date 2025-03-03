@@ -1,6 +1,7 @@
 import Fastify from 'fastify';
 import dotenv from 'dotenv';
 import otpRoutes from './src/routes/otpRoutes.js';
+import paymentNotificationRoutes from './src/routes/paymentNotificationRoutes.js';
 
 dotenv.config();
 
@@ -8,6 +9,7 @@ const fastify = Fastify({ logger: true });
 
 // Registrar rutas
 fastify.register(otpRoutes, { prefix: '/api' });
+fastify.register(paymentNotificationRoutes, { prefix: '/api' });
 
 const PORT = process.env.PORT || 3001;
 
