@@ -332,4 +332,38 @@ button {
     background-color: #6c757d;
     cursor: not-allowed;
 }
+
+@media (max-width: 768px) {
+    .reservations-waiter {
+        padding: 1rem;
+    }
+
+    .reservation-card,
+    .orders-section,
+    .ticket-section {
+        padding: 1rem;
+    }
+
+    .reservation-header,
+    .reservation-footer {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .reservation-header h3,
+    .orders-section h4,
+    .ticket-section h4,
+    .ticket-section h5 {
+        font-size: 1.2rem;
+    }
+
+    .badge {
+        margin-top: 0.5rem;
+    }
+
+    button {
+        width: 100%;
+        margin-top: 0.5rem;
+    }
+}
 </style>

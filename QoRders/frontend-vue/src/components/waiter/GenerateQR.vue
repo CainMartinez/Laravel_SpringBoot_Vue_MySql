@@ -118,4 +118,21 @@ export default {
 .btn-close:active {
     transform: scale(0.95);
 }
+
+@media (max-width: 768px) {
+    .generate-qr {
+        padding: 1rem;
+        max-width: 90%;
+    }
+
+    .qr-image {
+        max-width: 200px;
+        max-height: 200px;
+    }
+
+    .btn-close {
+        padding: 0.6rem 1.2rem;
+        font-size: 0.9rem;
+    }
+}
 </style>

@@ -157,4 +157,32 @@ const redirectToHome = () => {
     font-weight: bold;
     margin-bottom: 10px;
 }
+
+@media (max-width: 768px) {
+    .ticket-card {
+        padding: 10px;
+        margin-top: 40px;
+    }
+
+    .ticket-header h2 {
+        font-size: 1.2rem;
+    }
+
+    .ticket-body {
+        padding: 10px 0;
+    }
+
+    .product-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .product-item p {
+        margin: 5px 0;
+    }
+
+    .total h3 {
+        font-size: 1rem;
+    }
+}
 </style>

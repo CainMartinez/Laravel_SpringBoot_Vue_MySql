@@ -16,10 +16,6 @@
                     @click="changeView('RoomManagement')">Gestion de Salas</li>
                 <li v-if="props.userType === 'manager'" :class="{ active: activeView === 'MenuManagement' }"
                     @click="changeView('MenuManagement')">Gestion de Carta</li>
-                <!-- <li v-if="props.userType === 'manager'" :class="{ active: activeView === 'ReservationManagement' }"
-                    @click="changeView('ReservationManagement')">Gestion de Reserva</li>
-                <li v-if="props.userType === 'manager'" :class="{ active: activeView === 'StaffManagement' }"
-                    @click="changeView('StaffManagement')">Gestion de Personal</li> -->
                 <li :class="{ active: activeView === 'Settings' }" @click="changeView('Settings')">Ajustes</li>
             </ul>
         </nav>
@@ -55,6 +51,10 @@ const changeView = (view) => {
     display: flex;
     flex-direction: column;
     align-items: center;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .user-avatar {
@@ -67,20 +67,53 @@ const changeView = (view) => {
 nav ul {
     list-style: none;
     padding: 0;
+    width: 100%;
 }
 
 nav ul li {
     margin-bottom: 10px;
     cursor: pointer;
     font-weight: bold;
+    text-align: center;
+    padding: 10px;
+    border-radius: 4px;
+    transition: background-color 0.3s;
 }
 
 nav ul li:hover {
-    color: #007bff;
+    background-color: #e9ecef;
 }
 
 nav ul li.active {
-    color: #007bff;
-    font-weight: bold;
+    background-color: #007bff;
+    color: white;
+}
+
+@media (max-width: 768px) {
+    .profile-menu-container {
+        flex-direction: column;
+        align-items: center;
+        padding: 10px;
+    }
+
+    .user-avatar {
+        width: 80px;
+        height: 80px;
+        margin-bottom: 15px;
+    }
+
+    nav ul {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    nav ul li {
+        font-size: 14px;
+        padding: 8px;
+        margin: 5px;
+        flex: 1 1 auto;
+    }
 }
 </style>

@@ -7,9 +7,9 @@
       <router-link v-if="!isAuthenticated || userType === 'client'" to="/donations">Donaciones</router-link>
     </div>
 
-    <div class="logo">
+    <!-- <div class="logo">
       <img src="/src/assets/logo.png" alt="Logo" />
-    </div>
+    </div> -->
 
     <div class="user-info" v-if="isAuthenticated && userData">
       <UserHeaderInfo :user="userData" :userClient="userClient" :userType="userType" />
@@ -39,13 +39,10 @@ const userClient = computed(() => {
 <style scoped>
 .header {
   display: flex;
-  position: absolute;
-  z-index: 1;
-  width: 99%;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   padding: 10px 20px;
-  margin: 10px 20px 10px 10px;
   background-color: #f8f9fa;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   border-radius: 5px;
@@ -64,6 +61,7 @@ const userClient = computed(() => {
   flex-grow: 1;
   display: flex;
   justify-content: flex-start;
+  flex-wrap: wrap;
 }
 
 .login-button {
@@ -89,5 +87,27 @@ a {
 
 a:hover {
   background-color: #e9ecef;
+}
+
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .menu {
+    justify-content: center;
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  .logo {
+    margin-bottom: 10px;
+  }
+
+  .login-button, .user-info {
+    justify-content: center;
+    width: 100%;
+  }
 }
 </style>

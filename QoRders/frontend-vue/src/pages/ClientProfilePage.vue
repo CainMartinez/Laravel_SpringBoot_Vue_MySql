@@ -61,4 +61,23 @@ onMounted(async () => {
     overflow-y: auto;
     margin-bottom: 20px;
 }
+
+@media (max-width: 768px) {
+    .client-profile {
+        flex-direction: column;
+        height: auto;
+    }
+
+    .profile-menu {
+        width: 100%;
+        padding: 10px;
+        margin-top: 0;
+    }
+
+    .profile-content {
+        padding: 10px;
+        margin-top: 20px;
+        margin-bottom: 0;
+    }
+}
 </style>
