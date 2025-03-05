@@ -1,22 +1,22 @@
-package com.spring_boot.hexagonal.Payment.Domain.Entity;
+package com.spring_boot.hexagonal.Payment.Application.DTO.Response;
 
 import java.time.LocalDateTime;
 
-public class Payment {
+public class PaymentResponseDTO {
     private String transactionId;
     private Double amount;
     private LocalDateTime date;
     private String status;
-    private String method; // "stripe" o "paypal"
+    private String message; // Mensaje personalizado
 
-    public Payment() { }
+    public PaymentResponseDTO() { }
 
-    public Payment(String transactionId, Double amount, LocalDateTime date, String status, String method) {
+    public PaymentResponseDTO(String transactionId, Double amount, LocalDateTime date, String status, String message) {
         this.transactionId = transactionId;
         this.amount = amount;
         this.date = date;
         this.status = status;
-        this.method = method;
+        this.message = message;
     }
 
     // Getters y setters
@@ -44,10 +44,10 @@ public class Payment {
     public void setStatus(String status) {
         this.status = status;
     }
-    public String getMethod() {
-        return method;
+    public String getMessage() {
+        return message;
     }
-    public void setMethod(String method) {
-        this.method = method;
+    public void setMessage(String message) {
+        this.message = message;
     }
 }
