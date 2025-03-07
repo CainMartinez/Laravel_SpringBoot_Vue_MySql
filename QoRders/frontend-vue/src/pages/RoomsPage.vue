@@ -39,4 +39,26 @@ const rooms = computed(() => allRooms.value);
     margin-top: 10px;
     width: 100%;
 }
+
+@media (max-width: 1024px) {
+    .rooms-cards {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .carta-page {
+        padding: 10px;
+    }
+
+    .carta-page h1 {
+        font-size: 1.5em;
+        margin-top: 30px;
+    }
+
+    .rooms-cards {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+}
 </style>

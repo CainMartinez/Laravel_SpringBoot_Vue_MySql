@@ -130,4 +130,30 @@ const resetFilters = () => {
 .reset-button:hover {
     background-color: #ff6666;
 }
+
+@media (max-width: 768px) {
+    .filters {
+        flex-direction: column;
+        gap: 20px;
+        padding: 10px;
+    }
+
+    .filters .filters-orderby,
+    .filters .filters-radio {
+        flex-direction: column;
+        gap: 10px;
+        width: 100%;
+    }
+
+    .filter-buttons {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .filter-buttons button,
+    .filter-buttons .reset-button {
+        width: 100%;
+        padding: 10px;
+    }
+}
 </style>

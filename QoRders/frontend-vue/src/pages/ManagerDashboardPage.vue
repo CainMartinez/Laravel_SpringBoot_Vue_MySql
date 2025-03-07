@@ -57,4 +57,23 @@ const setCurrentView = (view) => {
     overflow-y: auto;
     margin-bottom: 20px;
 }
+
+@media (max-width: 768px) {
+    .dashboard-container {
+        flex-direction: column;
+        height: auto;
+    }
+
+    .dashboard-menu {
+        width: 100%;
+        padding: 10px;
+        margin-top: 0;
+    }
+
+    .dashboard-content {
+        padding: 10px;
+        margin-top: 20px;
+        margin-bottom: 0;
+    }
+}
 </style>

@@ -106,4 +106,23 @@ onMounted(() => {
     font-size: 16px;
     color: #666;
 }
+
+@media (max-width: 768px) {
+    .separator {
+        flex-direction: column;
+        gap: 20px;
+        font-size: 18px;
+    }
+
+    .rooms-cards {
+        gap: 20px;
+        margin-top: 10px;
+        margin-bottom: 20px;
+    }
+
+    .loading-indicator {
+        font-size: 14px;
+        margin: 10px;
+    }
+}
 </style>

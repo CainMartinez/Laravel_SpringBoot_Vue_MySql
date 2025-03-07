@@ -212,4 +212,27 @@ button:disabled {
     background-color: #ccc;
     cursor: not-allowed;
 }
+
+@media (max-width: 768px) {
+    h1 {
+        font-size: 2em;
+        margin-top: 50px;
+    }
+
+    .reservation-container {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .form-container,
+    .user-info {
+        padding: 10px;
+        max-width: 100%;
+    }
+
+    button {
+        width: 100%;
+        padding: 10px;
+    }
+}
 </style>

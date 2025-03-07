@@ -39,4 +39,16 @@ select {
     width: 100%;
     max-width: 400px;
 }
+
+@media (max-width: 768px) {
+    .room-select {
+        font-size: 16px;
+        gap: 8px;
+    }
+
+    select {
+        font-size: 14px;
+        padding: 6px;
+    }
+}
 </style>

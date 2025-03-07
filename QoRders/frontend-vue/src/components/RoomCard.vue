@@ -101,4 +101,25 @@ const sizeClass = computed(() => {
     text-decoration: none;
     color: inherit;
 }
+
+@media (max-width: 768px) {
+    .room-card-small {
+        width: 100%;
+        height: auto;
+    }
+
+    .room-card-medium {
+        width: 100%;
+        height: auto;
+    }
+
+    .room-card-large {
+        width: 100%;
+        height: auto;
+    }
+
+    .room-card-overlay h3 {
+        font-size: 24px;
+    }
+}
 </style>

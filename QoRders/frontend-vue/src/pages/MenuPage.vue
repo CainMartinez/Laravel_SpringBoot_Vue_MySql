@@ -173,4 +173,32 @@ watch([selectedType, orderBy, currentPage], updateStore);
     color: #333;
     border: none;
 }
+
+@media (max-width: 768px) {
+    .menu-page {
+        padding: 10px;
+        gap: 10px;
+    }
+
+    .menu-page h1 {
+        margin-top: 30px;
+        font-size: 1.5rem;
+    }
+
+    .product-list {
+        width: 100%;
+        padding: 10px;
+        gap: 20px;
+    }
+
+    .order-buttons {
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .order-button {
+        width: 100%;
+        padding: 10px;
+    }
+}
 </style>
