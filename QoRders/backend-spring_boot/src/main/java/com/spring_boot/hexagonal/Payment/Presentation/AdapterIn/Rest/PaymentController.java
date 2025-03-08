@@ -1,15 +1,11 @@
 package com.spring_boot.hexagonal.Payment.Presentation.AdapterIn.Rest;
 
-import com.spring_boot.hexagonal.Payment.Application.DTO.Request.ProcessPaymentRequestDTO;
-import com.spring_boot.hexagonal.Payment.Application.DTO.Request.ProcessRefundRequestDTO;
-import com.spring_boot.hexagonal.Payment.Application.DTO.Response.PaymentResponseDTO;
-import com.spring_boot.hexagonal.Payment.Application.UseCase.Command.ProcessPaymentCommand;
-import com.spring_boot.hexagonal.Payment.Application.UseCase.Command.ProcessRefundCommand;
 import com.spring_boot.hexagonal.Payment.Application.UseCase.PortIn.PaymentUseCase;
-import com.spring_boot.hexagonal.Payment.Domain.Entity.Payment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/payment")
@@ -22,45 +18,22 @@ public class PaymentController {
         this.paymentUseCase = paymentUseCase;
     }
 
-    @PostMapping("/process")
-    public ResponseEntity<PaymentResponseDTO> processPayment(@RequestBody ProcessPaymentRequestDTO requestDTO) {
-        Payment payment = paymentUseCase.processPayment(
-                new ProcessPaymentCommand(
-                        requestDTO.getAmount(),
-                        requestDTO.getMethod(),
-                        requestDTO.getTransactionData(),
-                        requestDTO.getCustomerName(),
-                        requestDTO.getCustomerEmail(),
-                        requestDTO.getCustomerPhone()
-                )
-        );
-        PaymentResponseDTO responseDTO = new PaymentResponseDTO(
-                payment.getTransactionId(),
-                payment.getAmount(),
-                payment.getDate(),
-                payment.getStatus(),
-                "Pago procesado exitosamente."
-        );
-        return ResponseEntity.ok(responseDTO);
-    }
+    /**
+     * Nuevo endpoint para confirmar el pago después de que Vue haya completado la transacción en Stripe.
+     */
+    @PostMapping("/confirm")
+    public ResponseEntity<String> confirmPayment(@RequestBody Map<String, Object> paymentData) {
+        String paymentIntentId = (String) paymentData.get("paymentIntentId");
+        String customerEmail = (String) paymentData.get("customerEmail");
+        String customerPhone = (String) paymentData.get("customerPhone");
 
-    @PostMapping("/refund")
-    public ResponseEntity<PaymentResponseDTO> processRefund(@RequestBody ProcessRefundRequestDTO requestDTO) {
-        Payment payment = paymentUseCase.processRefund(
-                new ProcessRefundCommand(
-                        requestDTO.getTransactionId(),
-                        requestDTO.getRefundAmount(),
-                        requestDTO.getCustomerEmail(),
-                        requestDTO.getCustomerPhone()
-                )
-        );
-        PaymentResponseDTO responseDTO = new PaymentResponseDTO(
-                payment.getTransactionId(),
-                payment.getAmount(),
-                payment.getDate(),
-                payment.getStatus(),
-                "Devolución procesada exitosamente."
-        );
-        return ResponseEntity.ok(responseDTO);
+        if (paymentIntentId == null || customerEmail == null || customerPhone == null) {
+            return ResponseEntity.badRequest().body("Datos incompletos en la confirmación de pago.");
+        }
+
+        // Enviar notificaciones tras la confirmación del pago
+        paymentUseCase.confirmPayment(paymentIntentId, customerEmail, customerPhone);
+
+        return ResponseEntity.ok("Pago confirmado y notificación enviada con éxito.");
     }
 }
