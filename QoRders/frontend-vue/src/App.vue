@@ -1,6 +1,12 @@
 <template>
   <Header></Header>
-  <router-view></router-view>
+  <div class="font-switcher">
+    <button @click="toggleAccessibilityFont" :class="{ active: isAccessibilityFontActive }">
+      <span class="accessibility-icon">Aa</span>
+      {{ isAccessibilityFontActive ? 'On' : 'Off' }}
+    </button>
+  </div>
+  <router-view :class="{ 'accessibility-font': isAccessibilityFontActive }"></router-view>
   <Footer>
   </Footer>
 </template>
@@ -8,6 +14,26 @@
 <script setup>
 import Header from './layouts/Header.vue';
 import Footer from './layouts/Footer.vue';
+import { ref } from 'vue';
+
+// Estado para controlar si la fuente de accesibilidad está activa
+const isAccessibilityFontActive = ref(false);
+
+// Función para alternar entre fuente temática y fuente accesible
+const toggleAccessibilityFont = () => {
+  isAccessibilityFontActive.value = !isAccessibilityFontActive.value;
+  
+  // Opcional: Guardar la preferencia en localStorage para mantenerla entre sesiones
+  localStorage.setItem('accessibilityFont', isAccessibilityFontActive.value);
+};
+
+// Al cargar el componente, verificar si hay una preferencia guardada
+if (typeof window !== 'undefined') {
+  const savedPreference = localStorage.getItem('accessibilityFont');
+  if (savedPreference !== null) {
+    isAccessibilityFontActive.value = savedPreference === 'true';
+  }
+}
 </script>
 
 <style>
@@ -19,6 +45,7 @@ import Footer from './layouts/Footer.vue';
   --font-spain: 'Dancing Script', cursive;
   --font-india: 'Mukta', sans-serif;
   --font-turkey: 'Cinzel Decorative', serif;
+  --font-accessibility: Arial, Helvetica, sans-serif;
 }
 
 /* Estilo base de la página */
@@ -66,6 +93,55 @@ body {
   font-family: var(--font-turkey);
   font-weight: normal;
   letter-spacing: 1px;
+}
+
+/* Clase para aplicar la fuente accesible que anula las fuentes temáticas */
+.accessibility-font,
+.accessibility-font .japón,
+.accessibility-font .italia,
+.accessibility-font .méxico,
+.accessibility-font .españa,
+.accessibility-font .india,
+.accessibility-font .turquía {
+  font-family: var(--font-accessibility) !important;
+  letter-spacing: normal !important;
+}
+
+/* Estilos para el botón de cambio de fuente */
+.font-switcher {
+  position: fixed;
+  top: 100px;
+  right: 20px;
+  z-index: 1000;
+}
+
+.font-switcher button {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
+}
+
+.font-switcher button:hover {
+  background-color: #f9f9f9;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+.font-switcher button.active {
+  background-color: #e6f7ff;
+  border-color: #91d5ff;
+}
+
+.accessibility-icon {
+  margin-right: 8px;
+  font-weight: bold;
+  font-size: 16px;
 }
 
 .highcharts-credits {
