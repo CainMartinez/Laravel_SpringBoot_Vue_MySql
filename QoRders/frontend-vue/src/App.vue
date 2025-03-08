@@ -2,7 +2,9 @@
   <Header></Header>
   <div class="font-switcher">
     <button @click="toggleAccessibilityFont" :class="{ active: isAccessibilityFontActive }">
-      <span class="accessibility-icon">Aa</span>
+      <span class="accessibility-icon">
+        <i class="pi pi-eye"></i>
+      </span> 
       {{ isAccessibilityFontActive ? 'On' : 'Off' }}
     </button>
   </div>
