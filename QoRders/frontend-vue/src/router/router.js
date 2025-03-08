@@ -187,6 +187,11 @@ const routes = [
         component: () => import('../pages/PaymentPage.vue'),
         beforeEnter: loadPaymentData('client'),
     },
+    {
+        path: '/confirm-payment',
+        name: 'StripePaymentPage',
+        component: () => import('../pages/StripePaymentPage.vue'),
+    },      
 ];
 
 const router = createRouter({

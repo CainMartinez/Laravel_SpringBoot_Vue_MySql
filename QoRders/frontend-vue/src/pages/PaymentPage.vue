@@ -30,7 +30,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed } from 'vue';
 import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
 import useOrders from '../composables/useOrders';
@@ -71,30 +71,35 @@ const fetchOrderData = async () => {
 fetchOrderData();
 
 const handlePayment = async () => {
-    isProcessing.value = true;
-
     try {
-        const paymentData = {
-            bookingId: store.getters['storeOrders/getBookingId'],
-            paymentMethod: 'card',
-        };
+        console.log(orderData.value.orderId);
+        console.log(totalAmount.value);
+        
+        const response = await fetch('http://localhost:3002/api/payment', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                orderId: orderData.value.orderId,       // usa tu campo real para el ID de la orden
+                totalAmount: totalAmount.value    // usa el valor real del total
+            })
+        });
 
-        const response = await makePayment(paymentData);
-        modalMessage.value = "El pago se ha realizado con éxito. ¡Gracias por tu compra!";
-        modalTitle.value = 'Éxito';
-        isModalVisible.value = true;
+        const data = await response.json();
+
+        if (data.clientSecret) {
+            // Redirigir a StripePaymentPage pasando clientSecret como parámetro
+            router.push({
+                name: 'StripePaymentPage',
+                query: { clientSecret: data.clientSecret }
+            });
+        } else {
+            throw new Error("No se recibió el clientSecret desde Stripe");
+        }
     } catch (error) {
-        console.error("Error al procesar el pago:", error);
-        modalMessage.value = 'Ha ocurrido un error al procesar el pago. Por favor, inténtalo de nuevo.';
-        modalTitle.value = 'Información';
+        modalMessage.value = "Error iniciando pago: " + error.message;
+        modalTitle.value = 'Error';
         isModalVisible.value = true;
-    } finally {
-        isProcessing.value = false;
     }
-};
-
-const redirectToHome = () => {
-    window.location.href = '/';
 };
 
 </script>
