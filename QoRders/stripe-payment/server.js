@@ -2,10 +2,16 @@ require('dotenv').config();
 const express = require('express');
 const Stripe = require('stripe');
 const bodyParser = require('body-parser');
+const cors = require('cors');
 
 const app = express();
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
+app.use(cors({
+    origin: 'http://localhost:8085',
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+  }));
 app.use(bodyParser.json());
 
 // Ruta para crear un Intent de Pago
