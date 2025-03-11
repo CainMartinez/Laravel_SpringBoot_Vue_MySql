@@ -8,6 +8,8 @@ import com.QoRders.client.booking.domain.entity.*;
 import com.QoRders.client.booking.domain.repository.*;
 import com.QoRders.client.client.domain.entity.ClientEntity;
 import com.QoRders.client.client.domain.repository.ClientRepository;
+import com.QoRders.client.home.domain.entity.RoomEntity;
+import com.QoRders.client.home.domain.repository.RoomRepository;
 import com.QoRders.client.order.domain.entity.OrderEntity;
 import com.QoRders.client.order.domain.repository.OrderRepository;
 
@@ -47,40 +49,93 @@ public class BookingServiceImpl implements BookingService {
     private final QRCodeRepository qrCodeRepository;
     private final TicketRepository ticketRepository;
     private final OrderRepository orderRepository;
+    private final RoomRepository roomRepository;
+    private final ShiftRepository shiftRepository;
+    
     
     @Value("${aes.encryption.key}")
     private String secretKey;
-
-    @Override
+        @Override
     @Transactional
     public BookingResponse createBooking(BookingRequest request, String token) {
         // Obtener el email del token
         String tokenEmail = jwtProvider.parseAccessToken(token);
-
+    
         // Validar que el email del token coincida con el email del request
         if (!tokenEmail.equals(request.getEmail())) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "El email introducido no es el de tu cuenta, si lo has olvidado accede a tu perfil para verlo.");
         }
-
-        // Verificar si ya existe una reserva para el mismo día
-        boolean existsBooking = bookingRepository.existsByClientEmailAndRoomShiftShiftShiftDate(
-            tokenEmail,
-            LocalDate.parse(request.getDate())
+        
+        // Verificar si el cliente ya tiene una reserva para este día
+        LocalDate requestDate = LocalDate.parse(request.getDate());
+        
+        boolean existsBookingForSameDay = bookingRepository.existsByClientEmailAndRoomShiftShiftShiftDate(
+            tokenEmail, 
+            requestDate
         );
-
-        if (existsBooking) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Ya tienes una reserva para este día.");
+        
+        if (existsBookingForSameDay) {
+            throw new ResponseStatusException(
+                HttpStatus.CONFLICT, 
+                "Ya tienes una reserva para este día. Solo se permite una reserva por día."
+            );
         }
-        // Buscar el turno solicitado usando room_slug
-        RoomShiftEntity roomShift = roomShiftRepository.findByRoomRoomSlugAndShiftShiftTypeAndShiftShiftDate(
-        request.getRoom_slug(),
-        ShiftEntity.ShiftType.valueOf(request.getShift()),
-        LocalDate.parse(request.getDate()))
-        .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "No hay turnos disponibles para este día."));
-
-
-        if (roomShift.getReservedCapacity() + request.getGuest_count() > roomShift.getRoom().getMaxCapacity()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No hay capacidad disponible para este turno.");
+        
+        // El resto del código permanece igual...
+        // Buscar la sala y el turno
+        RoomEntity room = roomRepository.findByRoomSlug(request.getRoom_slug())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "La sala no existe."));
+                
+        ShiftEntity shift;
+        try {
+            ShiftEntity.ShiftType shiftType = ShiftEntity.ShiftType.valueOf(request.getShift());
+            LocalDate shiftDate = LocalDate.parse(request.getDate());
+            
+            shift = shiftRepository.findByShiftDateAndShiftType(shiftDate, shiftType)
+                    .stream()
+                    .findFirst()
+                    .orElseGet(() -> {
+                        // Si el turno no existe, lo creamos automáticamente
+                        ShiftEntity newShift = new ShiftEntity();
+                        newShift.setShiftDate(shiftDate);
+                        newShift.setShiftType(shiftType);
+                        newShift.setIsActive(true);
+                        // Generar UUID para shift_uuid
+                        newShift.setShiftUuid(UUID.randomUUID().toString());
+                        // Inicializar totalRevenue si es necesario
+                        newShift.setTotalRevenue(BigDecimal.ZERO);
+                        return shiftRepository.save(newShift);
+                    });
+        } catch (Exception e) {
+            log.error("Error al procesar la fecha o el tipo de turno: {}", e.getMessage(), e);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error al procesar la fecha o el tipo de turno: " + e.getMessage());
+        }
+        
+        // Buscar o crear el RoomShift
+        RoomShiftEntity roomShift = roomShiftRepository
+                .findByRoomRoomSlugAndShiftShiftTypeAndShiftShiftDate(
+                        request.getRoom_slug(),
+                        ShiftEntity.ShiftType.valueOf(request.getShift()),
+                        LocalDate.parse(request.getDate()))
+                .orElseGet(() -> {
+                    // Si no existe el RoomShift, lo creamos automáticamente
+                    RoomShiftEntity newRoomShift = new RoomShiftEntity();
+                    newRoomShift.setRoom(room);
+                    newRoomShift.setShift(shift);
+                    newRoomShift.setReservedCapacity(0);
+                    newRoomShift.setIsActive(true);
+                    // Generar UUID para room_shift_uuid - Este era el campo que faltaba
+                    newRoomShift.setRoomShiftUuid(UUID.randomUUID().toString());
+                    newRoomShift.setStatus(RoomShiftEntity.RoomShiftStatus.Active);
+                    // Inicializar total_revenue si es necesario
+                    newRoomShift.setTotalRevenue(BigDecimal.ZERO);
+                    return roomShiftRepository.save(newRoomShift);
+                });
+        
+        // Verificar capacidad disponible
+        int capacidadDisponible = room.getMaxCapacity() - roomShift.getReservedCapacity();
+        if (capacidadDisponible < request.getGuest_count()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No hay suficientes plazas disponibles.");
         }
         
         // Crear la reserva
@@ -135,15 +190,15 @@ public class BookingServiceImpl implements BookingService {
         qrEntity.setStatus(QREntity.Status.Generated);
         qrCodeRepository.save(qrEntity);
         // Nueva lógica para enviar OTP cuando la reserva está confirmada
-        String shift = request.getShift();
+        String shiftOtp = request.getShift();
         String translatedShift;
         
-        if ("Dinner".equals(shift)) {
+        if ("Dinner".equals(shiftOtp)) {
             translatedShift = "cena";
-        } else if ("Lunch".equals(shift)) {
+        } else if ("Lunch".equals(shiftOtp)) {
             translatedShift = "comida";
         } else {
-            translatedShift = shift;
+            translatedShift = shiftOtp;
         }
         
         String otpMessage = request.getDate() + " turno de " + translatedShift;

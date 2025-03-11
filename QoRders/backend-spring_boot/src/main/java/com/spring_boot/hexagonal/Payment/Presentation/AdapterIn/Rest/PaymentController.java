@@ -9,6 +9,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/payment")
+@CrossOrigin(origins = "*")
 public class PaymentController {
 
     private final PaymentUseCase paymentUseCase;
