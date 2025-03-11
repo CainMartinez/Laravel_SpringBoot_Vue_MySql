@@ -16,7 +16,10 @@
 <script setup>
 import Header from './layouts/Header.vue';
 import Footer from './layouts/Footer.vue';
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue'; // Añadido onMounted
+import { useStore } from 'vuex'; // Añadido useStore
+
+const store = useStore(); // Añadido store
 
 // Estado para controlar si la fuente de accesibilidad está activa
 const isAccessibilityFontActive = ref(false);
@@ -36,8 +39,12 @@ if (typeof window !== 'undefined') {
     isAccessibilityFontActive.value = savedPreference === 'true';
   }
 }
-</script>
 
+// Añadido: Inicializar el estado de la orden desde localStorage
+onMounted(() => {
+  store.dispatch('storeOrders/initializeFromLocalStorage');
+});
+</script>
 <style>
 :root {
   --font-default: 'Roboto', sans-serif;

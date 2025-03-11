@@ -11,7 +11,7 @@
 
                 <div class="quantity" v-if="userData && userData.is_seated === true">
                     <button @click="adjustQuantity(product.productId, -1)">-</button>
-                    <span>{{ quantity }}</span>
+                    <span>{{ getProductQuantity }}</span>
                     <button @click="adjustQuantity(product.productId, 1)">+</button>
                 </div>
             </div>
@@ -34,7 +34,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { computed } from 'vue';
 import { useStore } from 'vuex';
 
 const store = useStore();
@@ -43,15 +43,21 @@ const props = defineProps({
     product: Object
 });
 
-const quantity = ref(0);
-
 const emit = defineEmits(['adjustQuantity']);
 
+// Obtener la cantidad del producto desde Vuex
+const getProductQuantity = computed(() => {
+    return store.getters['storeOrders/getProductQuantity'](props.product.productId) || 0;
+});
+
 const adjustQuantity = (productId, delta) => {
-    if (quantity.value + delta >= 0) {
-        quantity.value += delta;
-        emit('adjustQuantity', { productId, quantity: quantity.value });
-        store.dispatch('storeOrders/addProductsToExistingOrder', { productId, quantity: quantity.value });
+    const newQuantity = getProductQuantity.value + delta;
+    if (newQuantity >= 0) {
+        store.dispatch('storeOrders/addProductsToExistingOrder', { 
+            productId, 
+            quantity: newQuantity 
+        });
+        emit('adjustQuantity', { productId, quantity: newQuantity });
     }
 };
 </script>
