@@ -4,6 +4,8 @@
     max-height: 300px;
     border-radius: 10px;
     overflow: hidden;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .ngo-carousel {
@@ -18,4 +20,90 @@
     object-fit: cover;
     border-radius: 10px;
     max-height: 290px;
+}
+
+/* Controles del carrusel */
+.carousel .control-arrow {
+    opacity: 0.5;
+    transition: opacity 0.2s;
+}
+
+.carousel .control-arrow:hover {
+    opacity: 1;
+}
+
+.carousel .control-dots {
+    bottom: 10px;
+}
+
+.carousel .control-dots .dot {
+    width: 10px;
+    height: 10px;
+    margin: 0 5px;
+}
+
+/* Media queries para responsividad */
+@media screen and (max-width: 768px) {
+    .ngo-carousel-container {
+        height: 250px;
+        max-height: 250px;
+    }
+    
+    .ngo-carousel {
+        max-height: 250px;
+    }
+    
+    .carousel-image {
+        max-height: 240px;
+    }
+    
+    .carousel .control-dots .dot {
+        width: 8px;
+        height: 8px;
+        margin: 0 4px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .ngo-carousel-container {
+        height: 200px;
+        max-height: 200px;
+    }
+    
+    .ngo-carousel {
+        max-height: 200px;
+    }
+    
+    .carousel-image {
+        max-height: 190px;
+    }
+    
+    .carousel .control-arrow {
+        padding: 10px;
+    }
+    
+    .carousel .control-dots {
+        bottom: 5px;
+    }
+    
+    .carousel .control-dots .dot {
+        width: 6px;
+        height: 6px;
+        margin: 0 3px;
+    }
+}
+
+@media screen and (max-width: 320px) {
+    .ngo-carousel-container {
+        height: 180px;
+        max-height: 180px;
+    }
+    
+    .ngo-carousel {
+        max-height: 180px;
+    }
+    
+    .carousel-image {
+        max-height: 170px;
+    }
 }

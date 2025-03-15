@@ -4,6 +4,7 @@
     border: none;
     border-radius: 10px;
     overflow: hidden;
+    box-sizing: border-box;
 }
 
 .ngo-card-content {
@@ -11,6 +12,7 @@
     flex-direction: row;
     gap: 3.5rem;
     align-items: center;
+    padding: 1.5rem;
 }
 
 .ngo-info {
@@ -56,4 +58,97 @@
     font-size: 16px;
     text-decoration: none;
     margin-top: 16px;
+    display: inline-block;
+}
+
+/* Media queries para responsividad */
+@media screen and (max-width: 992px) {
+    .ngo-card {
+        width: 90%;
+    }
+    
+    .ngo-card-content {
+        gap: 2.5rem;
+        padding: 1.25rem;
+    }
+    
+    .ngo-header h2 {
+        font-size: 24px;
+    }
+    
+    .ngo-description {
+        font-size: 16px;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .ngo-card {
+        width: 95%;
+    }
+    
+    .ngo-card-content {
+        gap: 1.5rem;
+        padding: 1rem;
+    }
+    
+    .ngo-logo {
+        width: 80px;
+        height: 80px;
+    }
+}
+
+@media screen and (max-width: 576px) {
+    .ngo-card-content {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .ngo-info {
+        width: 100%;
+    }
+    
+    .ngo-header {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 1rem;
+    }
+    
+    .ngo-header h2 {
+        font-size: 22px;
+        text-align: center;
+    }
+    
+    .ngo-description {
+        text-align: center;
+        font-size: 16px;
+    }
+    
+    .ngo-info {
+        align-items: center;
+        text-align: center;
+    }
+}
+
+@media screen and (max-width: 320px) {
+    .ngo-card {
+        width: 100%;
+    }
+    
+    .ngo-logo {
+        width: 70px;
+        height: 70px;
+    }
+    
+    .ngo-header h2 {
+        font-size: 20px;
+    }
+    
+    .ngo-description {
+        font-size: 14px;
+    }
+    
+    .ngo-view-more {
+        font-size: 14px;
+    }
 }

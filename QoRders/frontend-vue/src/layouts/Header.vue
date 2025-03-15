@@ -3,13 +3,13 @@
     <div class="menu">
       <router-link to="/home">Inicio</router-link>
       <router-link to="/rooms">Carta</router-link>
-      <router-link v-if="!isAuthenticated || userType === 'client'" to="/reservation">Reserva</router-link>
-      <router-link v-if="!isAuthenticated || userType === 'client'" to="/donations">Donaciones</router-link>
+      <router-link v-if="!isAuthenticated || userType === 'client'" to="/reservation">Reservar</router-link>
+      <router-link v-if="!isAuthenticated || userType === 'client'" to="/donations">ONGs</router-link>
     </div>
-
-    <!-- <div class="logo">
-      <img src="/src/assets/logo.png" alt="Logo" />
-    </div> -->
+    
+    <router-link to="/home" class="logo-container">
+      <img class="logo" src="/src/assets/logo.png" alt="Logo" />
+    </router-link>
 
     <div class="user-info" v-if="isAuthenticated && userData">
       <UserHeaderInfo :user="userData" :userClient="userClient" :userType="userType" />
@@ -49,12 +49,26 @@ const userClient = computed(() => {
   color: #333;
 }
 
-.logo {
+.logo-container {
   flex-grow: 1;
   display: flex;
   justify-content: center;
-  width: 2rem;
-  height: 2rem;
+  align-items: center;
+  text-decoration: none;
+  background-color: transparent;
+  padding: 0;
+  transition: transform 0.3s ease;
+}
+
+.logo-container:hover {
+  transform: scale(1.05);
+  background-color: transparent;
+}
+
+.logo {
+  width: auto;
+  height: 4rem;
+  object-fit: contain;
 }
 
 .menu {
@@ -89,25 +103,40 @@ a:hover {
   background-color: #e9ecef;
 }
 
+@media (max-width: 992px) {
+  .logo {
+    height: 3.5rem;
+  }
+}
+
 @media (max-width: 768px) {
   .header {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: center;
+    padding: 15px;
   }
 
   .menu {
     justify-content: center;
     width: 100%;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
+    gap: 5px;
   }
 
+  .logo-container {
+    margin: 10px 0;
+    order: -1;
+  }
+  
   .logo {
-    margin-bottom: 10px;
+    height: 3rem;
   }
 
   .login-button, .user-info {
     justify-content: center;
     width: 100%;
+    margin-top: 10px;
   }
 }
+
 </style>

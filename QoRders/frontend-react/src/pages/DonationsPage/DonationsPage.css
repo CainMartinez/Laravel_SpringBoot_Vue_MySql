@@ -13,3 +13,28 @@
     color: #333;
     margin-bottom: 2rem;
 }
+
+/* Media queries para responsividad */
+@media screen and (max-width: 768px) {
+    .donations-page {
+        padding: 3rem 1rem;
+        width: 100%; /* Asegurarse de que ocupe todo el ancho en tablets */
+    }
+    
+    .donations-page h1 {
+        font-size: 2rem;
+        margin-bottom: 1.5rem;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .donations-page {
+        padding: 2rem 0.75rem;
+        width: 100%; /* Asegurarse de que ocupe todo el ancho en móviles */
+    }
+    
+    .donations-page h1 {
+        font-size: 1.75rem;
+        margin-bottom: 1.25rem;
+    }
+}

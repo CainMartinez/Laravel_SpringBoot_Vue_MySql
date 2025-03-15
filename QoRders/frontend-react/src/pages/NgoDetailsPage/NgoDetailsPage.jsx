@@ -8,6 +8,10 @@ const NgoDetailsPage = () => {
     const { ngo, loading, error } = useFetchNgoDetails(ngo_slug);
     const [isDataLoaded, setIsDataLoaded] = useState(false);
 
+    const handleBackButton = () => {
+        window.location.href = 'http://localhost:8086';
+    };
+    
     useEffect(() => {
         if (ngo) {
             setIsDataLoaded(true);
@@ -56,6 +60,14 @@ const NgoDetailsPage = () => {
                     <img src={ngo.description_img_url} alt="Secundaria" className="secondary-image" />
                 </div>
             </section>
+            <div className="back-button-container">
+                <button 
+                    className="back-button" 
+                    onClick={handleBackButton}
+                >
+                    ← Volver
+                </button>
+            </div>
         </div>
     );
 };

@@ -25,12 +25,17 @@ const DonationsPage = () => {
             setModalState({ open: true, success: false, message: errorMessage });
         }
     };
+    
+    const handleBackButton = () => {
+        window.location.href = 'http://localhost:8086';
+    };
 
     if (loadingNgos) return <p>Cargando ONG...</p>;
     if (errorNgos) return <p>Error al cargar las ONG: {errorNgos}</p>;
 
     return (
         <div className="donations-page">
+            
             <h1>Realiza una donación</h1>
             <DonationsForm ngos={ngos} onSubmit={handleFormSubmit} loading={loadingDonation} />
             <Modal
@@ -39,6 +44,14 @@ const DonationsPage = () => {
                 message={modalState.message}
                 onClose={() => setModalState({ open: false })}
             />
+            <div className="back-button-container">
+                <button 
+                    className="back-button" 
+                    onClick={handleBackButton}
+                >
+                    ← Volver
+                </button>
+            </div>
         </div>
     );
 };

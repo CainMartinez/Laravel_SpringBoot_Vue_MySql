@@ -24,13 +24,6 @@ const Header = () => {
                     Donaciones
                 </NavLink>
             </div>
-
-            <div className="login-button">
-                <a
-                    href="http://localhost:8085/login"
-                    className="link"
-                >Iniciar sesión</a>
-            </div>
         </div>
     );
 };

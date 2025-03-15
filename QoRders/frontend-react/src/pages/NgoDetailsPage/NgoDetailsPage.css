@@ -2,11 +2,16 @@
     padding: 2rem;
     color: #333;
     margin-top: 40px;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .ngo-header {
     text-align: center;
-    margin: 2rem;
+    margin: 2rem 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .ngo-logo {
@@ -14,19 +19,23 @@
     height: 100px;
     object-fit: contain;
     border-radius: 50%;
-    margin-right: 5rem;
+    margin-bottom: 1rem;
 }
 
 .ngo-section {
     display: flex;
     gap: 2rem;
-    margin: 3rem;
+    margin: 3rem 0;
     align-items: center;
+    flex-direction: row;
+    width: 100%;
 }
 
 .function-section .image-container,
 .about-section .image-container {
     flex: 1;
+    display: flex;
+    justify-content: center;
     align-items: center;
 }
 
@@ -39,14 +48,18 @@
 
 .main-image,
 .secondary-image {
-    width: 80%;
+    width: 100%;
+    max-width: 500px;
     border-radius: 8px;
     object-fit: cover;
 }
 
 .donate-section {
     text-align: center;
-    justify-content: space-between;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 3rem 0;
 }
 
 .donate-text {
@@ -56,16 +69,103 @@
 }
 
 .ngo-donate-button {
-    padding: 10px 20px;
+    padding: 0.75rem 1.5rem;
     background-color: #333;
     color: #fff;
     border: none;
     border-radius: 5px;
     text-decoration: none;
     font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
 }
 
 .ngo-donate-button:hover {
     background-color: #555;
     color: #fff;
+}
+
+/* Media queries para responsividad */
+@media screen and (max-width: 1024px) {
+    .ngo-section {
+        margin: 2rem 0;
+    }
+    
+    .main-image, 
+    .secondary-image {
+        max-width: 400px;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .ngo-details-page {
+        padding: 1.5rem;
+    }
+    
+    .ngo-section {
+        flex-direction: column;
+        gap: 1.5rem;
+        margin: 2rem 0;
+    }
+    
+    .ngo-section.reverse-mobile {
+        flex-direction: column-reverse;
+    }
+    
+    .function-section .image-container,
+    .about-section .image-container,
+    .text-container {
+        flex: none;
+        width: 100%;
+    }
+    
+    .main-image,
+    .secondary-image {
+        width: 100%;
+        max-width: 100%;
+    }
+    
+    .ngo-logo {
+        margin-right: 0;
+    }
+    
+    .donate-text {
+        font-size: 1.25rem;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .ngo-details-page {
+        padding: 1rem;
+        margin-top: 20px;
+    }
+    
+    .ngo-header {
+        margin: 1rem 0;
+    }
+    
+    .ngo-logo {
+        width: 80px;
+        height: 80px;
+    }
+    
+    .ngo-section {
+        gap: 1rem;
+        margin: 1.5rem 0;
+    }
+    
+    .text-container {
+        gap: 0.75rem;
+    }
+    
+    .donate-section {
+        margin: 2rem 0;
+    }
+    
+    .ngo-donate-button {
+        padding: 0.6rem 1.2rem;
+        font-size: 0.9rem;
+        width: 100%;
+        max-width: 250px;
+    }
 }
