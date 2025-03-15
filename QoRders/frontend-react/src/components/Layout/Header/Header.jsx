@@ -17,9 +17,15 @@ const Header = () => {
                 >
                     Restaurante
                 </a>
+                <a
+                    href="http://localhost:8086"
+                    className="link"
+                >
+                    ONGs
+                </a>
                 <NavLink
                     to="/donations"
-                    className={({ isActive }) => (isActive ? 'active-link' : 'link')}
+                    className="link"
                 >
                     Donaciones
                 </NavLink>

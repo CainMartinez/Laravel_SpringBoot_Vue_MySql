@@ -9,30 +9,25 @@
     </button>
   </div>
   <router-view :class="{ 'accessibility-font': isAccessibilityFontActive }"></router-view>
-  <Footer>
-  </Footer>
+  <Footer></Footer>
 </template>
 
 <script setup>
 import Header from './layouts/Header.vue';
 import Footer from './layouts/Footer.vue';
-import { ref, onMounted } from 'vue'; // Añadido onMounted
-import { useStore } from 'vuex'; // Añadido useStore
+import { ref, onMounted } from 'vue';
+import { useStore } from 'vuex';
 
-const store = useStore(); // Añadido store
+const store = useStore();
 
 // Estado para controlar si la fuente de accesibilidad está activa
 const isAccessibilityFontActive = ref(false);
 
-// Función para alternar entre fuente temática y fuente accesible
 const toggleAccessibilityFont = () => {
   isAccessibilityFontActive.value = !isAccessibilityFontActive.value;
-  
-  // Opcional: Guardar la preferencia en localStorage para mantenerla entre sesiones
   localStorage.setItem('accessibilityFont', isAccessibilityFontActive.value);
 };
 
-// Al cargar el componente, verificar si hay una preferencia guardada
 if (typeof window !== 'undefined') {
   const savedPreference = localStorage.getItem('accessibilityFont');
   if (savedPreference !== null) {
@@ -40,11 +35,11 @@ if (typeof window !== 'undefined') {
   }
 }
 
-// Añadido: Inicializar el estado de la orden desde localStorage
 onMounted(() => {
   store.dispatch('storeOrders/initializeFromLocalStorage');
 });
 </script>
+
 <style>
 :root {
   --font-default: 'Roboto', sans-serif;
@@ -57,7 +52,7 @@ onMounted(() => {
   --font-accessibility: Arial, Helvetica, sans-serif;
 }
 
-/* Estilo base de la página */
+/* Estilos base */
 body {
   margin: 0;
   padding: 0;
@@ -67,44 +62,15 @@ body {
   color: #333;
 }
 
-/* Aplicar la tipografía según el país */
-.japón {
-  font-family: var(--font-japan);
-  font-weight: normal;
-  letter-spacing: 1px;
-}
+/* Estilos para tipografías según país */
+.japón { font-family: var(--font-japan); letter-spacing: 1px; }
+.italia { font-family: var(--font-italy); letter-spacing: 1px; }
+.méxico { font-family: var(--font-mexico); letter-spacing: 2px; }
+.españa { font-family: var(--font-spain); letter-spacing: 2px; }
+.india { font-family: var(--font-india); letter-spacing: 1px; }
+.turquía { font-family: var(--font-turkey); letter-spacing: 1px; }
 
-.italia {
-  font-family: var(--font-italy);
-  font-weight: normal;
-  letter-spacing: 1px;
-}
-
-.méxico {
-  font-family: var(--font-mexico);
-  font-weight: normal;
-  letter-spacing: 2px;
-}
-
-.españa {
-  font-family: var(--font-spain);
-  font-weight: normal;
-  letter-spacing: 2px;
-}
-
-.india {
-  font-family: var(--font-india);
-  font-weight: normal;
-  letter-spacing: 1px;
-}
-
-.turquía {
-  font-family: var(--font-turkey);
-  font-weight: normal;
-  letter-spacing: 1px;
-}
-
-/* Clase para aplicar la fuente accesible que anula las fuentes temáticas */
+/* Anula las fuentes temáticas en modo accesible */
 .accessibility-font,
 .accessibility-font .japón,
 .accessibility-font .italia,
@@ -116,7 +82,7 @@ body {
   letter-spacing: normal !important;
 }
 
-/* Estilos para el botón de cambio de fuente */
+/* Estilos del botón de cambio de fuente en modo claro */
 .font-switcher {
   position: fixed;
   top: 100px;
@@ -129,6 +95,7 @@ body {
   align-items: center;
   padding: 8px 12px;
   background-color: #fff;
+  color: #333;
   border: 1px solid #ddd;
   border-radius: 4px;
   cursor: pointer;
@@ -145,6 +112,26 @@ body {
 .font-switcher button.active {
   background-color: #e6f7ff;
   border-color: #91d5ff;
+}
+
+/* Sobrescribir estilos para modo oscuro: botón en negro sin tono azulado */
+@media (prefers-color-scheme: dark) {
+  .font-switcher button {
+    background-color: #ffffff81 !important;
+    color: #000000 !important;
+    border: 1px solid #000 !important;
+    box-shadow: 0 2px 5px rgba(255,255,255,0.1) !important;
+  }
+  .font-switcher button:hover {
+    background-color: #ffffff !important;
+    box-shadow: 0 2px 8px rgba(116, 115, 115, 0.15) !important;
+  }
+  .font-switcher button.active {
+    background-color: #ffffff !important;
+    border-color: #000 !important;
+    font-weight: bold !important;
+
+  }
 }
 
 .accessibility-icon {

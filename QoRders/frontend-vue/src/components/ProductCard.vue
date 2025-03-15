@@ -134,26 +134,42 @@ const adjustQuantity = (productId, delta) => {
     color: #333;
 }
 
-.product-card .p-accordion {
+/* Sobrescritura de estilos del Accordion para forzar fondo blanco y texto negro */
+::v-deep .p-accordion {
     width: 100%;
     margin-top: 10px;
-    background-color: #ffffff;
+    background-color: #ffffff !important;
 }
 
-.p-accordionheader,
-.p-accordioncontent,
-.p-accordionpanel {
+::v-deep .p-accordionheader,
+::v-deep .p-accordioncontent,
+::v-deep .p-accordionpanel {
     font-size: 14px;
     padding: 10px;
-    background-color: #ffffff;
+    background-color: #ffffff !important;
+    color: #333 !important;
 }
 
-.p-accordioncontent-content {
-    padding: 0px !important;
+/* Override para el hover y el header activo */
+::v-deep .p-accordionheader:hover,
+::v-deep .p-accordionheader.p-highlight {
+    background-color: #e3e2e2 !important;
+    color: #333 !important;
 }
 
-.p-accordion p {
+/* Forzamos que el contenido y su contenedor interno tengan fondo blanco */
+::v-deep .p-accordioncontent {
+    background-color: #ffffff !important;
+    color: #333 !important;
+}
+
+::v-deep .p-accordioncontent-content {
+    background-color: #ffffff !important;
+}
+
+::v-deep .p-accordion p {
     margin: 0;
-    background-color: #ffffff;
+    background-color: #ffffff !important;
+    color: #333 !important;
 }
 </style>
