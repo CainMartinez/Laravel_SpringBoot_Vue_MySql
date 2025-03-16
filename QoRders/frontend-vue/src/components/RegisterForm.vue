@@ -2,33 +2,35 @@
     <form @submit.prevent="handleRegister">
         <div>
             <label for="firstName">Nombre:</label>
-            <input type="text" id="firstName" v-model="firstName" required />
+            <input type="text" id="firstName" v-model="firstName" required :disabled="isDisabled" />
         </div>
 
         <div>
             <label for="lastName">Apellidos:</label>
-            <input type="text" id="lastName" v-model="lastName" required />
+            <input type="text" id="lastName" v-model="lastName" required :disabled="isDisabled" />
         </div>
 
         <div>
             <label for="email">Correo electrónico:</label>
-            <input type="text" id="email" v-model="email" required />
+            <input type="text" id="email" v-model="email" required :disabled="isDisabled" />
             <p v-if="emailError" class="error">{{ emailError }}</p>
         </div>
 
         <div>
             <label for="password">Contraseña:</label>
-            <input type="password" id="password" v-model="password" required />
+            <input type="password" id="password" v-model="password" required :disabled="isDisabled" />
             <p v-if="passwordError" class="error">{{ passwordError }}</p>
         </div>
 
         <div>
             <label for="repeatPassword">Repetir Contraseña:</label>
-            <input type="password" id="repeatPassword" v-model="repeatPassword" required />
+            <input type="password" id="repeatPassword" v-model="repeatPassword" required :disabled="isDisabled" />
             <p v-if="repeatPasswordError" class="error">{{ repeatPasswordError }}</p>
         </div>
 
-        <button type="submit">Registrarse</button>
+        <button type="submit" :disabled="isDisabled" :class="{ disabled: isDisabled }">
+            Registrarse
+        </button>
 
         <p v-if="generalError" class="error">{{ generalError }}</p>
     </form>
@@ -43,6 +45,10 @@ const props = defineProps({
     selectedType: {
         type: String,
         required: true
+    },
+    isDisabled: {
+        type: Boolean,
+        default: false
     }
 });
 
@@ -55,6 +61,10 @@ const { register } = useAuth();
 const { emailError, passwordError, repeatPasswordError, generalError, validateRegisterForm } = useValidation();
 
 const handleRegister = async () => {
+    if (props.isDisabled) {
+        return;
+    }
+    
     if (validateRegisterForm(email.value, password.value, repeatPassword.value)) {
         try {
             await register(firstName.value, lastName.value, email.value, password.value, repeatPassword.value, props.selectedType);
@@ -118,15 +128,28 @@ button {
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    transition: background-color 0.3s;
+    transition: all 0.3s ease;
 }
 
-button:hover {
+button:hover:not(.disabled) {
     background-color: #555;
 }
 
 button:focus {
     outline: none;
+}
+
+button.disabled {
+    background-color: #cccccc;
+    color: #666666;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+input:disabled {
+    background-color: #f2f2f2 !important;
+    cursor: not-allowed;
+    opacity: 0.7;
 }
 
 form input,
