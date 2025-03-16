@@ -38,10 +38,20 @@ const updatePeople = (event) => {
     font-size: 18px;
 }
 
-input {
-    padding: 8px;
-    font-size: 16px;
-    width: 100%;
-    max-width: 400px;
+/* Forzar que el input interno de InputNumber tenga fondo blanco y texto negro */
+::v-deep .p-inputnumber input {
+    background-color: #ffffff !important;
+    color: #333 !important;
+}
+
+/* Forzar que los botones internos (incrementar/decrementar) tengan fondo blanco y texto negro */
+::v-deep .p-inputnumber button {
+    background-color: #ffffff !important;
+    color: #333 !important;
+}
+form input,
+form input:focus {
+  background-color: #ffffff !important;
+  color: #333 !important;
 }
 </style>

@@ -158,4 +158,10 @@ button:focus {
 .modal-content button:hover {
     background-color: #c9302c;
 }
+
+form input,
+form input:focus {
+  background-color: #ffffff !important;
+  color: #333 !important;
+}
 </style>

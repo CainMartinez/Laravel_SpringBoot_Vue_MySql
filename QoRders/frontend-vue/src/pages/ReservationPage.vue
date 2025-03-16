@@ -26,15 +26,15 @@
         <!-- Observaciones -->
         <p>*Si desea trona o viene con carrito, debe incluirlo como 1 persona más.</p>
         <div v-if="selectedDay">
-            <div class="user-info">
+            <div class="user-info light-theme-inputs">
                 <label for="name">Nombre:</label>
-                <InputText id="name" v-model="userFirstName" placeholder="Introduce tu nombre" disabled />
+                <InputText id="name" v-model="userFirstName" placeholder="Introduce tu nombre" disabled class="light-input" />
 
                 <label for="email">Email:</label>
-                <InputText id="email" v-model="userEmail" placeholder="Introduce tu email" disabled />
+                <InputText id="email" v-model="userEmail" placeholder="Introduce tu email" disabled class="light-input" />
 
                 <label for="phone">Teléfono:</label>
-                <InputText id="phone" v-model="userPhone" placeholder="Introduce tu teléfono" />
+                <InputText id="phone" v-model="userPhone" placeholder="Introduce tu teléfono" class="light-input" />
             </div>
         </div>
 
@@ -48,7 +48,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useStore } from 'vuex';
 import RoomSelect from '../components/RoomSelect.vue';
 import PeopleSelect from '../components/PeopleSelect.vue';
@@ -84,6 +84,67 @@ if (!isAuthenticated.value) {
     authModalVisible.value = true;
 }
 
+// Función para aplicar estilos a los inputs
+const applyInputStyles = () => {
+    setTimeout(() => {
+        const inputs = document.querySelectorAll('.p-inputtext');
+        inputs.forEach(input => {
+            input.style.backgroundColor = '#ffffff';
+            input.style.color = '#000000';
+        });
+    }, 50);
+};
+
+onMounted(() => {
+    // Aplicar estilos a los inputs cuando se monte el componente
+    applyInputStyles();
+    
+    // Inyectar estilos globales para los inputs de PrimeVue
+    const style = document.createElement('style');
+    style.textContent = `
+        /* Estilos para inputs de PrimeVue */
+        .p-inputtext,
+        .p-inputtextarea,
+        .p-inputnumber input {
+            background-color: #ffffff !important;
+            color: #000000 !important;
+            border-color: #ced4da !important;
+        }
+        
+        .p-inputtext:focus,
+        .p-inputtextarea:focus,
+        .p-inputnumber input:focus {
+            background-color: #ffffff !important;
+            color: #000000 !important;
+            border-color: #80bdff !important;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25) !important;
+        }
+        
+        .p-inputtext::placeholder {
+            color: #6c757d !important;
+        }
+        
+        .p-inputtext:disabled {
+            background-color: #e9ecef !important;
+            color: #6c757d !important;
+        }
+    `;
+    document.head.appendChild(style);
+    
+    // Añadir un observer para aplicar estilos cuando cambien elementos del DOM
+    const observer = new MutationObserver(() => {
+        applyInputStyles();
+    });
+    
+    observer.observe(document.body, { 
+        childList: true, 
+        subtree: true 
+    });
+    
+    // Limpiar al desmontar
+    return () => observer.disconnect();
+});
+
 // Redirigir al login cuando se cierre el modal
 const redirectToLogin = () => {
     window.location.href = '/login';
@@ -111,6 +172,9 @@ const changeSelectedPeople = (people) => {
 const changeSelectedDay = (dayInfo) => {
     selectedDay.value = dayInfo.day;
     isDisabled.value = dayInfo.isDisabled;
+    
+    // Aplicar estilos a los inputs cuando se seleccione un día
+    setTimeout(applyInputStyles, 50);
 };
 
 // Realizar la reserva
@@ -138,6 +202,35 @@ const handleReservation = () => {
     reservationModalVisible.value = true;
 };
 </script>
+
+<style>
+/* Estilos globales para los inputs de PrimeVue */
+.p-inputtext,
+.p-inputtextarea,
+.p-inputnumber input {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+    border-color: #ced4da !important;
+}
+
+.p-inputtext:focus,
+.p-inputtextarea:focus,
+.p-inputnumber input:focus {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+    border-color: #80bdff !important;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25) !important;
+}
+
+.p-inputtext::placeholder {
+    color: #6c757d !important;
+}
+
+.p-inputtext:disabled {
+    background-color: #e9ecef !important;
+    color: #6c757d !important;
+}
+</style>
 
 <style scoped>
 .reservation-page {
@@ -193,6 +286,33 @@ h1 {
     gap: 10px;
 }
 
+/* Estilos específicos para inputs */
+.user-info input,
+.light-input,
+.user-info .p-inputtext {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+    padding: 0.5rem;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+}
+
+.user-info input:focus,
+.light-input:focus,
+.user-info .p-inputtext:focus {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+    border-color: #80bdff !important;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25) !important;
+}
+
+.user-info input:disabled,
+.light-input:disabled,
+.user-info .p-inputtext:disabled {
+    background-color: #e9ecef !important;
+    color: #6c757d !important;
+}
+
 button {
     padding: 10px 20px;
     font-size: 16px;
@@ -233,6 +353,33 @@ button:disabled {
     button {
         width: 100%;
         padding: 10px;
+    }
+}
+
+/* Estos estilos se aplicarán a todos los inputs en el componente */
+:deep(.p-inputtext),
+:deep(input),
+:deep(textarea) {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+}
+
+:deep(.p-inputtext:focus),
+:deep(input:focus),
+:deep(textarea:focus) {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+}
+
+/* Para asegurar que los inputs en modo oscuro se vean bien */
+@media (prefers-color-scheme: dark) {
+    :deep(.p-inputtext),
+    :deep(input),
+    :deep(textarea),
+    .user-info input,
+    .light-input {
+        background-color: #ffffff !important;
+        color: #000000 !important;
     }
 }
 </style>

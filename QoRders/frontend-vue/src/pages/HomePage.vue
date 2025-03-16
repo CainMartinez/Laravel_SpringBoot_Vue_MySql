@@ -1,6 +1,6 @@
 <template>
-    <div class="home" @scroll.passive="onScroll" ref="homeContainer">
-        <Carousel :rooms="allRooms" />
+    <div class="home">
+        <Carousel :rooms="rooms" />
 
         <!-- Separador y Flecha -->
         <div class="separator">
@@ -9,44 +9,36 @@
             <i class="pi pi-angle-double-down"></i>
         </div>
 
-        <!-- Cards de las salas -->
+        <!-- Cards de todas las salas cargadas desde el inicio -->
         <div class="rooms-cards">
-            <RoomCard v-for="room in visibleRooms" :key="room.uuid" :room="room" size="large" />
-        </div>
-
-        <!-- Cargando -->
-        <div v-if="loading" class="loading-indicator">
-            <i class="pi pi-spin pi-spinner"></i> Cargando más salas...
+            <RoomCard v-for="room in rooms" :key="room.uuid" :room="room" size="large" />
         </div>
     </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
-import { useRooms } from '../composables/useRooms';
-import useScroll from '../composables/useScroll';
+import { onMounted, ref } from 'vue';
+import { useStore } from 'vuex';
 import Carousel from '../components/Carousel.vue';
 import RoomCard from '../components/RoomCard.vue';
 
-const { allRooms } = useRooms();
-const { visibleItems, loadMoreItems, loading } = useScroll({ totalItems: allRooms, pageSize: 1 });
+// Usar Vuex directamente en lugar del composable que está dando error
+const store = useStore();
+const rooms = ref([]);
 
-const visibleRooms = ref([]);
-visibleRooms.value = visibleItems.value;
-
-const onScroll = () => {
-    const container = document.documentElement || document.body;
-    const scrollTop = container.scrollTop;
-    const scrollHeight = container.scrollHeight;
-    const clientHeight = container.clientHeight;
-
-    if (scrollTop + clientHeight >= scrollHeight - 100 && !loading.value) {
-        loadMoreItems();
+// Función para cargar las salas
+const fetchRooms = async () => {
+    try {
+        await store.dispatch('storeRooms/fetchRooms');
+        rooms.value = store.getters['storeRooms/getRooms'];
+    } catch (error) {
+        console.error('Error al cargar las salas:', error);
     }
 };
 
+// Cargar todas las salas al montar el componente
 onMounted(() => {
-    loadMoreItems();
+    fetchRooms();
 });
 </script>
 
@@ -57,8 +49,7 @@ onMounted(() => {
     align-items: center;
     background-color: #f3f3f3;
     color: #333;
-    height: 100vh;
-    overflow-y: auto;
+    min-height: 100vh;
 }
 
 .separator {
@@ -70,6 +61,7 @@ onMounted(() => {
     align-items: center;
     gap: 100px;
     color: #333;
+    margin: 20px 0;
 }
 
 .separator .pi {
@@ -98,13 +90,7 @@ onMounted(() => {
     margin-top: 20px;
     margin-bottom: 40px;
     gap: 40px;
-}
-
-.loading-indicator {
-    text-align: center;
-    margin: 20px;
-    font-size: 16px;
-    color: #666;
+    padding: 0 20px;
 }
 
 @media (max-width: 768px) {
@@ -118,11 +104,6 @@ onMounted(() => {
         gap: 20px;
         margin-top: 10px;
         margin-bottom: 20px;
-    }
-
-    .loading-indicator {
-        font-size: 14px;
-        margin: 10px;
     }
 }
 </style>

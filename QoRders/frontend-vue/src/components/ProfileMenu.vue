@@ -23,7 +23,7 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue';
+import { computed, ref, onMounted } from 'vue';
 import { useStore } from 'vuex';
 
 const props = defineProps({
@@ -44,6 +44,155 @@ const changeView = (view) => {
     activeView.value = view;
     emit('change-view', view);
 };
+
+// Aplicar estilos globales para inputs cuando se monta el componente
+onMounted(() => {
+    // Crear una etiqueta de estilo global
+    const styleElement = document.createElement('style');
+    
+    // Añadir reglas CSS para inputs en toda la aplicación
+    styleElement.textContent = `
+        /* Estilos para formularios */
+        form, 
+        .p-card,
+        .form-container,
+        .profile-container,
+        .form-section,
+        .p-panel-content {
+            background-color: #ffffff !important;
+            color: #000000 !important;
+            border-radius: 8px !important;
+            padding: 20px !important;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
+            margin-bottom: 20px !important;
+        }
+        
+        /* Estilos para grupos de campos en formularios */
+        .form-group,
+        .p-field,
+        .form-row,
+        .field-group {
+            margin-bottom: 16px !important;
+        }
+        
+        /* Estilos para etiquetas de formularios */
+        form label,
+        .p-field > label,
+        .form-label {
+            display: block !important;
+            margin-bottom: 6px !important;
+            font-weight: 500 !important;
+            color: #000000 !important;
+        }
+
+        /* Estilos globales para inputs y elementos de formulario */
+        input, 
+        textarea, 
+        select,
+        .p-inputtext,
+        .p-password input,
+        .p-inputnumber input,
+        .p-inputmask,
+        .p-dropdown,
+        .p-multiselect,
+        .p-calendar input,
+        .p-chips input,
+        .p-autocomplete input,
+        .p-float-label input {
+            background-color: #ffffff !important;
+            color: #000000 !important;
+            border: 1px solid #ced4da !important;
+            padding: 8px 12px !important;
+            border-radius: 4px !important;
+            width: 100% !important;
+            box-sizing: border-box !important;
+            margin-top: 4px !important;
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out !important;
+        }
+
+        /* Estilos para dropdown panels */
+        .p-dropdown-panel,
+        .p-multiselect-panel,
+        .p-autocomplete-panel,
+        .p-calendar-panel {
+            background-color: #ffffff !important;
+            color: #000000 !important;
+            border: 1px solid #ced4da !important;
+            border-radius: 4px !important;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1) !important;
+        }
+
+        /* Estilos para items dentro de paneles */
+        .p-dropdown-item,
+        .p-multiselect-item,
+        .p-autocomplete-item {
+            background-color: #ffffff !important;
+            color: #000000 !important;
+            padding: 8px 12px !important;
+            border-bottom: 1px solid #f2f2f2 !important;
+        }
+
+        /* Item seleccionado o activo */
+        .p-dropdown-item.p-highlight,
+        .p-multiselect-item.p-highlight,
+        .p-autocomplete-item.p-highlight {
+            background-color: #e6f7ff !important;
+            color: #000000 !important;
+        }
+
+        /* Estilo para placeholders */
+        input::placeholder,
+        textarea::placeholder,
+        .p-inputtext::placeholder {
+            color: #6c757d !important;
+            opacity: 0.7 !important;
+        }
+
+        /* Estilo para cuando el input está en focus */
+        input:focus,
+        textarea:focus,
+        select:focus,
+        .p-inputtext:focus,
+        .p-dropdown:focus,
+        .p-multiselect:focus {
+            border-color: #007bff !important;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25) !important;
+            outline: none !important;
+        }
+        
+        /* Estilos para los botones dentro de formularios */
+        form button,
+        .form-container button,
+        .p-button {
+            margin-top: 16px !important;
+        }
+        
+        /* Separación entre elementos de formulario */
+        form > div,
+        .form-group,
+        .p-field {
+            margin-bottom: 16px !important;
+        }
+        
+        /* Estilos para headers de formulario */
+        form h2,
+        form h3,
+        .form-container h2,
+        .form-container h3 {
+            margin-bottom: 20px !important;
+            color: #000000 !important;
+            font-weight: 600 !important;
+        }
+    `;
+    
+    // Añadir la etiqueta de estilo al head del documento
+    document.head.appendChild(styleElement);
+    
+    // Limpieza al desmontar el componente (opcional)
+    return () => {
+        document.head.removeChild(styleElement);
+    };
+});
 </script>
 
 <style scoped>
@@ -62,6 +211,9 @@ const changeView = (view) => {
     height: 100px;
     border-radius: 50%;
     margin-bottom: 20px;
+    object-fit: cover;
+    border: 3px solid white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 nav ul {
@@ -77,16 +229,75 @@ nav ul li {
     text-align: center;
     padding: 10px;
     border-radius: 4px;
-    transition: background-color 0.3s;
+    transition: all 0.3s ease;
 }
 
 nav ul li:hover {
     background-color: #e9ecef;
+    transform: translateY(-2px);
 }
 
 nav ul li.active {
     background-color: #007bff;
     color: white;
+    box-shadow: 0 2px 4px rgba(0, 123, 255, 0.5);
+}
+
+/* Estilos específicos para componentes hijos */
+:deep(form),
+:deep(.form-container),
+:deep(.profile-container),
+:deep(.form-section),
+:deep(.p-card),
+:deep(.p-panel-content) {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+    border-radius: 8px !important;
+    padding: 20px !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
+    margin-bottom: 20px !important;
+}
+
+:deep(input),
+:deep(textarea),
+:deep(select),
+:deep(.p-inputtext),
+:deep(.p-password input),
+:deep(.p-dropdown),
+:deep(.p-multiselect),
+:deep(.p-calendar input) {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+    border: 1px solid #ced4da !important;
+    padding: 8px 12px !important;
+    border-radius: 4px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    margin-top: 4px !important;
+}
+
+:deep(.form-group),
+:deep(.p-field),
+:deep(.form-row) {
+    margin-bottom: 16px !important;
+}
+
+:deep(label),
+:deep(.p-field > label),
+:deep(.form-label) {
+    display: block !important;
+    margin-bottom: 6px !important;
+    font-weight: 500 !important;
+    color: #000000 !important;
+}
+
+:deep(form h2),
+:deep(form h3),
+:deep(.form-container h2),
+:deep(.form-container h3) {
+    margin-bottom: 20px !important;
+    color: #000000 !important;
+    font-weight: 600 !important;
 }
 
 @media (max-width: 768px) {
@@ -114,6 +325,13 @@ nav ul li.active {
         padding: 8px;
         margin: 5px;
         flex: 1 1 auto;
+    }
+    
+    :deep(form),
+    :deep(.form-container),
+    :deep(.profile-container),
+    :deep(.form-section) {
+        padding: 15px !important;
     }
 }
 </style>

@@ -128,4 +128,10 @@ button:hover {
 button:focus {
     outline: none;
 }
+
+form input,
+form input:focus {
+  background-color: #ffffff !important;
+  color: #333 !important;
+}
 </style>
