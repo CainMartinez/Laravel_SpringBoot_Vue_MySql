@@ -54,37 +54,45 @@ class DashboardController extends Controller
      // Obtener las reservas asociadas al camarero logueado
      public function indexBookings()
      {
-          try {
-               // Obtener email del camarero desde el payload del token
-               $payload = JWTAuth::getPayload();
-               $email = $payload->get('email');
-               
-               // Buscar el camarero por email
-               $waiter = Waiter::where('email', $email)->firstOrFail();
-
-               // Obtener las reservas asociadas a la sala del camarero
-               $bookings = Booking::whereHas('roomShift', function ($query) use ($waiter) {
-               $query->where('room_id', $waiter->room_id);
-               })->get();
-
-               if ($bookings->isEmpty()) {
-                    return response()->json([
-                         'message' => 'No bookings found for this waiter',
-                    ], 404);
-               }
-
-               return response()->json([
-                    'message' => 'Bookings retrieved successfully',
-                    'data' => $bookings
-               ], 200);
-
-          } catch (\Exception $e) {
-               return response()->json([
-                    'message' => 'An unexpected error occurred',
-                    'error' => $e->getMessage()
-               ], 500);
-          }
+         try {
+              // Obtener email del camarero desde el payload del token
+              $payload = JWTAuth::getPayload();
+              $email = $payload->get('email');
+              
+              // Buscar el camarero por email
+              $waiter = Waiter::where('email', $email)->firstOrFail();
+     
+              // Obtener la fecha actual
+              $today = \Carbon\Carbon::today()->toDateString();
+     
+              // Obtener las reservas asociadas a la sala del camarero y ordenarlas:
+              // Primero, las que tengan booking_date igual a hoy (true = 1) y luego orden descendente por booking_date
+              $bookings = Booking::whereHas('roomShift', function ($query) use ($waiter) {
+                   $query->where('room_id', $waiter->room_id);
+              })
+              ->orderByRaw("booking_date = '$today' DESC")
+              ->orderBy('booking_date', 'desc')
+              ->get();
+     
+              if ($bookings->isEmpty()) {
+                   return response()->json([
+                        'message' => 'No bookings found for this waiter',
+                   ], 404);
+              }
+     
+              return response()->json([
+                   'message' => 'Bookings retrieved successfully',
+                   'data' => $bookings
+              ], 200);
+     
+         } catch (\Exception $e) {
+              return response()->json([
+                   'message' => 'An unexpected error occurred',
+                   'error' => $e->getMessage()
+              ], 500);
+         }
      }
+     
 
      // Enviar QR de una reserva específica
      public function sendQR($booking_id)
