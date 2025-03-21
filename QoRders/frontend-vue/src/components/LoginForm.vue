@@ -1,25 +1,35 @@
 <template>
-    <form @submit.prevent="handleLogin">
-        <div>
+    <form @submit.prevent="handleLogin" class="auth-form">
+        <div class="form-group">
             <label for="email">Correo electrónico:</label>
-            <input type="text" id="email" v-model="email" required />
-            <p v-if="emailError" class="error">{{ emailError }}</p>
+            <div class="input-wrapper">
+                <i class="pi pi-envelope"></i>
+                <input type="text" id="email" v-model="email" required placeholder="su-email@ejemplo.com" />
+            </div>
+            <p v-if="emailError" class="error-message">{{ emailError }}</p>
         </div>
 
-        <div>
+        <div class="form-group">
             <label for="password">Contraseña:</label>
-            <input type="password" id="password" v-model="password" required />
-            <p v-if="passwordError" class="error">{{ passwordError }}</p>
+            <div class="input-wrapper">
+                <i class="pi pi-lock"></i>
+                <input type="password" id="password" v-model="password" required placeholder="Su contraseña" />
+            </div>
+            <p v-if="passwordError" class="error-message">{{ passwordError }}</p>
         </div>
 
-        <button type="submit">Iniciar sesión</button>
+        <button type="submit" class="submit-button">
+            <span>Iniciar sesión</span>
+            <i class="pi pi-sign-in"></i>
+        </button>
 
         <!-- Modal de error -->
         <div v-if="showModal" class="modal-overlay" @click="closeModal">
             <div class="modal-content" @click.stop>
-                <h2>Error</h2>
+                <i class="pi pi-exclamation-circle modal-icon"></i>
+                <h2>Error de autenticación</h2>
                 <p>{{ generalError }}</p>
-                <button @click="closeModal">Cerrar</button>
+                <button @click="closeModal" class="modal-button">Cerrar</button>
             </div>
         </div>
     </form>
@@ -39,7 +49,7 @@ const props = defineProps({
 
 const email = ref('');
 const password = ref('');
-const showModal = ref(false); // 🔹 Controla la visibilidad del modal
+const showModal = ref(false);
 const { login } = useAuth();
 const { emailError, passwordError, generalError, validateLoginForm } = useValidation();
 
@@ -50,14 +60,13 @@ const handleLogin = async () => {
         } catch (error) {
             console.error('Login failed:', error);
 
-            // 🔹 Capturar mensaje de error desde `response.data.message`
             if (error.response && error.response.data && error.response.data.message) {
                 generalError.value = error.response.data.message;
             } else {
                 generalError.value = "Email o contraseña incorrectos.";
             }
 
-            showModal.value = true; // 🔹 Mostrar el modal
+            showModal.value = true;
         }
     }
 };
@@ -68,53 +77,100 @@ const closeModal = () => {
 </script>
 
 <style scoped>
-form {
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Lora:ital,wght@0,400;0,500;0,600;1,400&display=swap');
+
+.auth-form {
     width: 100%;
-    max-width: 400px;
-    background-color: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    font-family: 'Lora', serif;
 }
 
-form input {
-    width: 100%;
-    padding: 12px;
-    margin: 10px 0;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 16px;
-}
-
-form .error {
-    color: red;
-    font-size: 14px;
+.form-group {
+    margin-bottom: 20px;
 }
 
 label {
-    font-size: 14px;
-    font-weight: bold;
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #6b4423;
+    margin-bottom: 8px;
 }
 
-button {
-    padding: 10px 20px;
-    background-color: #333;
+.input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    border: 1px solid #e8d9c5;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.input-wrapper:focus-within {
+    border-color: #8B4513;
+    box-shadow: 0 0 0 2px rgba(139, 69, 19, 0.1);
+}
+
+.input-wrapper i {
+    position: absolute;
+    left: 12px;
+    color: #8B4513;
+    font-size: 1rem;
+}
+
+input {
+    width: 100%;
+    padding: 14px 14px 14px 40px;
+    font-size: 1rem;
+    border: none;
+    outline: none;
+    background-color: #fff;
+    color: #4a3933;
+    font-family: 'Lora', serif;
+}
+
+input::placeholder {
+    color: #ccc;
+    font-style: italic;
+    font-size: 0.9rem;
+}
+
+.error-message {
+    margin-top: 6px;
+    color: #dc3545;
+    font-size: 0.85rem;
+}
+
+.submit-button {
+    width: 100%;
+    padding: 14px 20px;
+    background: linear-gradient(135deg, #d4b48f, #8B4513);
     color: white;
     border: none;
-    border-radius: 5px;
+    border-radius: 8px;
     cursor: pointer;
-    transition: background-color 0.3s;
+    font-weight: 600;
+    font-size: 1rem;
+    margin-top: 10px;
+    transition: all 0.3s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Lora', serif;
 }
 
-button:hover {
-    background-color: #555;
+.submit-button:hover {
+    background: linear-gradient(135deg, #c4a583, #7b3b0c);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(139, 69, 19, 0.2);
 }
 
-button:focus {
-    outline: none;
+.submit-button:active {
+    transform: translateY(0);
 }
 
-/* 🔹 Modal de error */
+/* Modal de error */
 .modal-overlay {
     position: fixed;
     top: 0;
@@ -122,6 +178,7 @@ button:focus {
     width: 100%;
     height: 100%;
     background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(3px);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -130,38 +187,65 @@ button:focus {
 
 .modal-content {
     background: white;
-    padding: 20px;
-    border-radius: 8px;
+    padding: 30px;
+    border-radius: 12px;
     text-align: center;
     width: 90%;
     max-width: 400px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    animation: modalFadeIn 0.3s ease;
+}
+
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
 }
 
 .modal-content h2 {
-    margin: 0 0 10px;
+    font-family: 'Playfair Display', serif;
+    margin: 10px 0;
+    color: #6b4423;
+    font-size: 1.5rem;
 }
 
 .modal-content p {
-    font-size: 16px;
+    font-size: 1rem;
+    margin-bottom: 20px;
+    color: #4a3933;
+    line-height: 1.5;
 }
 
-.modal-content button {
-    margin-top: 15px;
-    padding: 10px 15px;
-    background-color: #d9534f;
+.modal-icon {
+    font-size: 2.5rem;
+    color: #dc3545;
+    margin-bottom: 10px;
+}
+
+.modal-button {
+    padding: 10px 20px;
+    background-color: #dc3545;
     color: white;
     border: none;
-    border-radius: 5px;
+    border-radius: 6px;
     cursor: pointer;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
 }
 
-.modal-content button:hover {
-    background-color: #c9302c;
+.modal-button:hover {
+    background-color: #c82333;
 }
 
-form input,
-form input:focus {
-  background-color: #ffffff !important;
-  color: #333 !important;
+@media (max-width: 768px) {
+    .submit-button {
+        padding: 12px 16px;
+    }
 }
 </style>

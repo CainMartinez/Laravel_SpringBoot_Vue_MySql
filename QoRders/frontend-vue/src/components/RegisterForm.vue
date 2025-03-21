@@ -1,38 +1,61 @@
 <template>
-    <form @submit.prevent="handleRegister">
-        <div>
-            <label for="firstName">Nombre:</label>
-            <input type="text" id="firstName" v-model="firstName" required :disabled="isDisabled" />
+    <form @submit.prevent="handleRegister" class="auth-form">
+        <div class="form-row">
+            <div class="form-group">
+                <label for="firstName">Nombre:</label>
+                <div class="input-wrapper">
+                    <i class="pi pi-user"></i>
+                    <input type="text" id="firstName" v-model="firstName" required :disabled="isDisabled" placeholder="Su nombre" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="lastName">Apellidos:</label>
+                <div class="input-wrapper">
+                    <i class="pi pi-id-card"></i>
+                    <input type="text" id="lastName" v-model="lastName" required :disabled="isDisabled" placeholder="Sus apellidos" />
+                </div>
+            </div>
         </div>
 
-        <div>
-            <label for="lastName">Apellidos:</label>
-            <input type="text" id="lastName" v-model="lastName" required :disabled="isDisabled" />
-        </div>
-
-        <div>
+        <div class="form-group">
             <label for="email">Correo electrónico:</label>
-            <input type="text" id="email" v-model="email" required :disabled="isDisabled" />
-            <p v-if="emailError" class="error">{{ emailError }}</p>
+            <div class="input-wrapper">
+                <i class="pi pi-envelope"></i>
+                <input type="text" id="email" v-model="email" required :disabled="isDisabled" placeholder="su-email@ejemplo.com" />
+            </div>
+            <p v-if="emailError" class="error-message">{{ emailError }}</p>
         </div>
 
-        <div>
+        <div class="form-group">
             <label for="password">Contraseña:</label>
-            <input type="password" id="password" v-model="password" required :disabled="isDisabled" />
-            <p v-if="passwordError" class="error">{{ passwordError }}</p>
+            <div class="input-wrapper">
+                <i class="pi pi-lock"></i>
+                <input type="password" id="password" v-model="password" required :disabled="isDisabled" placeholder="Su contraseña" />
+            </div>
+            <p v-if="passwordError" class="error-message">{{ passwordError }}</p>
         </div>
 
-        <div>
+        <div class="form-group">
             <label for="repeatPassword">Repetir Contraseña:</label>
-            <input type="password" id="repeatPassword" v-model="repeatPassword" required :disabled="isDisabled" />
-            <p v-if="repeatPasswordError" class="error">{{ repeatPasswordError }}</p>
+            <div class="input-wrapper">
+                <i class="pi pi-lock"></i>
+                <input type="password" id="repeatPassword" v-model="repeatPassword" required :disabled="isDisabled" placeholder="Repita su contraseña" />
+            </div>
+            <p v-if="repeatPasswordError" class="error-message">{{ repeatPasswordError }}</p>
         </div>
 
-        <button type="submit" :disabled="isDisabled" :class="{ disabled: isDisabled }">
-            Registrarse
+        <button type="submit" :disabled="isDisabled" :class="['submit-button', { disabled: isDisabled }]">
+            <span>Crear su cuenta</span>
+            <i class="pi pi-user-plus"></i>
         </button>
 
-        <p v-if="generalError" class="error">{{ generalError }}</p>
+        <p v-if="generalError" class="error-message centered">{{ generalError }}</p>
+        
+        <p v-if="isDisabled" class="disclaimer">
+            <i class="pi pi-info-circle"></i> 
+            Este tipo de cuenta requiere permisos adicionales
+        </p>
     </form>
 </template>
 
@@ -76,85 +99,149 @@ const handleRegister = async () => {
 </script>
 
 <style scoped>
-form {
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Lora:ital,wght@0,400;0,500;0,600;1,400&display=swap');
+
+.auth-form {
     width: 100%;
-    max-width: 400px;
-    background-color: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    font-family: 'Lora', serif;
 }
 
-form input {
-    width: 100%;
-    padding: 12px;
-    margin: 10px 0;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 16px;
+.form-row {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 10px;
 }
 
-form input[type="email"],
-form input[type="password"] {
-    font-size: 16px;
-}
-
-form .error {
-    color: red;
-    font-size: 14px;
+.form-group {
+    margin-bottom: 20px;
+    flex: 1;
 }
 
 label {
-    font-size: 14px;
-    font-weight: bold;
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #6b4423;
+    margin-bottom: 8px;
 }
 
-form .reset-button {
-    margin-top: 20px;
-    background-color: transparent;
-    color: #007bff;
-    border: none;
-    cursor: pointer;
-}
-
-form .reset-button:hover {
-    text-decoration: underline;
-}
-
-button {
-    padding: 10px 20px;
-    background-color: #333;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+.input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    border: 1px solid #e8d9c5;
+    border-radius: 8px;
+    overflow: hidden;
     transition: all 0.3s ease;
 }
 
-button:hover:not(.disabled) {
-    background-color: #555;
+.input-wrapper:focus-within:not(.disabled) {
+    border-color: #8B4513;
+    box-shadow: 0 0 0 2px rgba(139, 69, 19, 0.1);
 }
 
-button:focus {
+.input-wrapper i {
+    position: absolute;
+    left: 12px;
+    color: #8B4513;
+    font-size: 1rem;
+}
+
+input {
+    width: 100%;
+    padding: 14px 14px 14px 40px;
+    font-size: 1rem;
+    border: none;
     outline: none;
+    background-color: #fff;
+    color: #4a3933;
+    font-family: 'Lora', serif;
 }
 
-button.disabled {
-    background-color: #cccccc;
-    color: #666666;
+input::placeholder {
+    color: #ccc;
+    font-style: italic;
+    font-size: 0.9rem;
+}
+
+.error-message {
+    margin-top: 6px;
+    color: #dc3545;
+    font-size: 0.85rem;
+}
+
+.error-message.centered {
+    text-align: center;
+    margin: 15px 0;
+}
+
+.submit-button {
+    width: 100%;
+    padding: 14px 20px;
+    background: linear-gradient(135deg, #d4b48f, #8B4513);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 1rem;
+    margin-top: 10px;
+    transition: all 0.3s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Lora', serif;
+}
+
+.submit-button:hover:not(.disabled) {
+    background: linear-gradient(135deg, #c4a583, #7b3b0c);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(139, 69, 19, 0.2);
+}
+
+.submit-button:active:not(.disabled) {
+    transform: translateY(0);
+}
+
+.submit-button.disabled {
+    background: linear-gradient(135deg, #d9d9d9, #b3b3b3);
+    color: #777;
     cursor: not-allowed;
-    opacity: 0.7;
+    opacity: 0.8;
 }
 
 input:disabled {
-    background-color: #f2f2f2 !important;
+    background-color: #f5f5f5;
     cursor: not-allowed;
     opacity: 0.7;
 }
 
-form input,
-form input:focus {
-  background-color: #ffffff !important;
-  color: #333 !important;
+.disclaimer {
+    margin-top: 15px;
+    font-size: 0.9rem;
+    color: #856404;
+    background-color: #fff3cd;
+    padding: 10px 15px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.disclaimer i {
+    font-size: 1rem;
+    color: #856404;
+}
+
+@media (max-width: 768px) {
+    .form-row {
+        flex-direction: column;
+        gap: 0;
+    }
+    
+    .submit-button {
+        padding: 12px 16px;
+    }
 }
 </style>
