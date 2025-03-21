@@ -85,7 +85,7 @@ body {
 /* Estilos del botón de cambio de fuente en modo claro */
 .font-switcher {
   position: fixed;
-  top: 100px;
+  top: 170px;
   right: 20px;
   z-index: 1000;
 }
@@ -112,6 +112,41 @@ body {
 .font-switcher button.active {
   background-color: #e6f7ff;
   border-color: #91d5ff;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+#app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  /* Añadir el mismo fondo que usan tus páginas principales */
+  /* background-color: #f9f6f0; */
+  /* background-image: url('data:image/svg+xml;utf8,<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><path d="M0 0L50 50L100 0L50 100L0 0Z" fill="%23f2e8dc" fill-opacity="0.3"/></svg>'); */
+  background-size: 300px;
+}
+
+/* El contenido principal debe tener flex-grow para expandirse y empujar el footer hacia abajo */
+main, .content-wrapper, .culinary-home, .gastronomy-showcase, .menu-page-wrapper {
+  flex: 1 0 auto;
+  /* Asegura que el fondo no se repita en componentes internos */
+  background-color: transparent;
+}
+
+/* Para páginas que definen su propio fondo, podríamos necesitar anularlo */
+.culinary-home, .gastronomy-showcase, .menu-page-wrapper {
+  background-image: none;
+}
+
+/* Ajuste adicional para asegurar que el Router View ocupe todo el espacio disponible */
+router-view {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 }
 
 /* Sobrescribir estilos para modo oscuro: botón en negro sin tono azulado */

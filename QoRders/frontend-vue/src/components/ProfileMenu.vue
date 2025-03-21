@@ -1,24 +1,77 @@
 <template>
-    <div class="profile-menu-container">
-        <img :src="userImageUrl" alt="User Avatar" class="user-avatar" />
-        <h2>{{ userName }}</h2>
+    <div class="profile-menu-container" :class="userTypeClass">
+        <!-- Elementos decorativos solo para clientes -->
+        <div v-if="props.userType === 'client'" class="menu-decoration top">
+            <div class="decoration-line"></div>
+            <div class="decoration-ornament">✦</div>
+            <div class="decoration-line"></div>
+        </div>
 
-        <nav>
+        <div class="avatar-container">
+            <img :src="userImageUrl" alt="User Avatar" class="user-avatar" />
+            
+            <!-- Badge distintivo según tipo de usuario -->
+            <div class="user-badge" v-if="props.userType !== 'client'">
+                <i :class="userBadgeIcon"></i>
+            </div>
+        </div>
+        
+        <h2 class="user-name">{{ userName }}</h2>
+        <div class="user-role" v-if="props.userType !== 'client'">{{ userRoleTitle }}</div>
+
+        <nav class="menu-nav">
             <ul>
-                <li :class="{ active: activeView === 'Data' }" @click="changeView('Data')">Datos Personales</li>
+                <li :class="{ active: activeView === 'Data' }" @click="changeView('Data')">
+                    <i :class="getIconClass('Data')"></i>
+                    <span>{{ props.userType === 'client' ? 'Carta Personal' : 'Datos Personales' }}</span>
+                </li>
+                
                 <li v-if="props.userType === 'client'" :class="{ active: activeView === 'ReservationsHistory' }"
-                    @click="changeView('ReservationsHistory')">Historial de Reservas</li>
+                    @click="changeView('ReservationsHistory')">
+                    <i class="pi pi-calendar-plus"></i>
+                    <span>Pasaporte Gastronómico</span>
+                </li>
+                
                 <li v-if="props.userType === 'waiter'" :class="{ active: activeView === 'ReservationsWaiter' }"
-                    @click="changeView('ReservationsWaiter')">Reservas a atender</li>
+                    @click="changeView('ReservationsWaiter')">
+                    <i class="pi pi-calendar-plus"></i>
+                    <span>Reservas a atender</span>
+                </li>
+                
                 <li v-if="props.userType === 'manager'" :class="{ active: activeView === 'OngsManagement' }"
-                    @click="changeView('OngsManagement')">Gestion de Ongs</li>
+                    @click="changeView('OngsManagement')">
+                    <i class="pi pi-heart"></i>
+                    <span>Gestión de ONGs</span>
+                </li>
+                
                 <li v-if="props.userType === 'manager'" :class="{ active: activeView === 'RoomManagement' }"
-                    @click="changeView('RoomManagement')">Gestion de Salas</li>
+                    @click="changeView('RoomManagement')">
+                    <i class="pi pi-th-large"></i>
+                    <span>Gestión de Salas</span>
+                </li>
+                
                 <li v-if="props.userType === 'manager'" :class="{ active: activeView === 'MenuManagement' }"
-                    @click="changeView('MenuManagement')">Gestion de Carta</li>
-                <li :class="{ active: activeView === 'Settings' }" @click="changeView('Settings')">Ajustes</li>
+                    @click="changeView('MenuManagement')">
+                    <i class="pi pi-list"></i>
+                    <span>Gestión de Carta</span>
+                </li>
+                
+                <li :class="{ active: activeView === 'Settings' }" @click="changeView('Settings')">
+                    <i class="pi pi-cog"></i>
+                    <span>{{ props.userType === 'client' ? 'Libro de Recetas' : 'Ajustes' }}</span>
+                </li>
             </ul>
         </nav>
+        
+        <!-- Elementos decorativos solo para clientes -->
+        <div v-if="props.userType === 'client'" class="menu-decoration bottom">
+            <div class="decoration-line"></div>
+            <div class="decoration-ornament">✦</div>
+            <div class="decoration-line"></div>
+        </div>
+        
+        <!-- Sello solo para clientes -->
+        <div v-if="props.userType === 'client'" class="client-stamp">Cliente Distinguido</div>
     </div>
 </template>
 
@@ -37,12 +90,51 @@ const store = useStore();
 const userName = computed(() => props.userType === 'client' ? store.getters['storeAuth/getUserData'].client.firstName : store.getters['storeAuth/getUserData'].firstName);
 const userImageUrl = computed(() => props.userType === 'client' ? store.getters['storeAuth/getUserData'].client.avatar_url : store.getters['storeAuth/getUserData'].avatar_url);
 
+// Clase CSS basada en tipo de usuario
+const userTypeClass = computed(() => {
+    return {
+        'client-theme': props.userType === 'client',
+        'waiter-theme': props.userType === 'waiter',
+        'manager-theme': props.userType === 'manager'
+    }
+});
+
+// Título del rol según tipo de usuario
+const userRoleTitle = computed(() => {
+    switch (props.userType) {
+        case 'waiter':
+            return 'Personal de Servicio';
+        case 'manager':
+            return 'Administrador';
+        default:
+            return '';
+    }
+});
+
+// Icono de badge según tipo de usuario
+const userBadgeIcon = computed(() => {
+    return {
+        'pi pi-user': props.userType === 'waiter',
+        'pi pi-briefcase': props.userType === 'manager'
+    }
+});
+
 const emit = defineEmits(['change-view']);
-const activeView = ref('ReservationsHistory');
+const activeView = ref('Data');
 
 const changeView = (view) => {
     activeView.value = view;
     emit('change-view', view);
+};
+
+// Obtener icono según la vista
+const getIconClass = (view) => {
+    const icons = {
+        'Data': props.userType === 'client' ? 'pi pi-user' : 'pi pi-id-card',
+        'Settings': 'pi pi-cog'
+    };
+    
+    return icons[view] || 'pi pi-circle';
 };
 
 // Aplicar estilos globales para inputs cuando se monta el componente
@@ -196,142 +288,330 @@ onMounted(() => {
 </script>
 
 <style scoped>
+/* Estilos base para todos los tipos de usuario */
 .profile-menu-container {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 20px;
-    background-color: #f8f9fa;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 30px 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+    height: 100%;
+}
+
+.avatar-container {
+    position: relative;
+    margin-bottom: 15px;
 }
 
 .user-avatar {
     width: 100px;
     height: 100px;
     border-radius: 50%;
-    margin-bottom: 20px;
     object-fit: cover;
     border: 3px solid white;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-nav ul {
-    list-style: none;
-    padding: 0;
+.user-name {
+    margin: 0 0 5px;
+    font-weight: 600;
+    text-align: center;
+}
+
+.user-role {
+    font-size: 0.85rem;
+    margin-bottom: 20px;
+    opacity: 0.8;
+    font-weight: 500;
+}
+
+.menu-nav {
     width: 100%;
 }
 
-nav ul li {
-    margin-bottom: 10px;
+.menu-nav ul {
+    list-style: none;
+    padding: 0;
+    width: 100%;
+    margin: 0;
+}
+
+.menu-nav ul li {
+    margin-bottom: 12px;
     cursor: pointer;
-    font-weight: bold;
-    text-align: center;
-    padding: 10px;
-    border-radius: 4px;
+    padding: 12px 15px;
+    border-radius: 8px;
     transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    font-weight: 500;
 }
 
-nav ul li:hover {
-    background-color: #e9ecef;
+.menu-nav ul li i {
+    margin-right: 10px;
+    font-size: 1.1rem;
+}
+
+/* ------ TEMA CLIENTE (GASTRONÓMICO) ------ */
+.client-theme {
+    background-color: #FFFCF5;
+    color: #5D4037;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="%23FFFCF5"/><path d="M0,0 L100,100 M100,0 L0,100" stroke="%23EFEBE9" stroke-width="0.5"/></svg>');
+    background-repeat: repeat;
+    border: 1px solid rgba(93, 64, 55, 0.2);
+    font-family: 'Playfair Display', serif;
+}
+
+.client-theme .user-avatar {
+    border: 4px solid #f1e3d3;
+}
+
+.client-theme .user-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    color: #8B4513;
+    margin-bottom: 10px;
+}
+
+.client-theme .menu-nav ul li {
+    border-bottom: 1px dashed #D7CCC8;
+    border-radius: 0;
+    padding: 14px 5px;
+    color: #5D4037;
+    font-weight: normal;
+    font-size: 1.05rem;
+}
+
+.client-theme .menu-nav ul li:hover {
+    background-color: rgba(255, 252, 245, 0.7);
     transform: translateY(-2px);
+    color: #8B4513;
 }
 
-nav ul li.active {
-    background-color: #007bff;
+.client-theme .menu-nav ul li.active {
+    background-color: rgba(215, 204, 200, 0.3);
+    color: #8B4513;
+    font-weight: bold;
+    border-left: 3px solid #8B4513;
+    box-shadow: none;
+}
+
+.client-theme .menu-nav ul li i {
+    color: #8D6E63;
+}
+
+.menu-decoration {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 15px 0;
+    width: 100%;
+}
+
+.decoration-line {
+    flex-grow: 1;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #8D6E63, transparent);
+}
+
+.decoration-ornament {
+    margin: 0 20px;
+    font-size: 20px;
+    color: #8D6E63;
+}
+
+.client-stamp {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    transform: rotate(-15deg);
+    font-family: 'Dancing Script', cursive;
+    font-size: 1.2rem;
+    color: rgba(139, 69, 19, 0.3);
+    border: 1px solid rgba(139, 69, 19, 0.3);
+    border-radius: 5px;
+    padding: 5px 10px;
+}
+
+/* ------ TEMA CAMARERO (PROFESIONAL) ------ */
+.waiter-theme {
+    background-color: #f8f9fa;
+    color: #333;
+    background-image: linear-gradient(135deg, rgba(0,0,0,0.01) 25%, transparent 25%, transparent 50%, rgba(0,0,0,0.01) 50%, rgba(0,0,0,0.01) 75%, transparent 75%, transparent);
+    background-size: 40px 40px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.waiter-theme .user-badge {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background-color: #17a2b8;
     color: white;
-    box-shadow: 0 2px 4px rgba(0, 123, 255, 0.5);
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid white;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
-/* Estilos específicos para componentes hijos */
-:deep(form),
-:deep(.form-container),
-:deep(.profile-container),
-:deep(.form-section),
-:deep(.p-card),
-:deep(.p-panel-content) {
-    background-color: #ffffff !important;
-    color: #000000 !important;
-    border-radius: 8px !important;
-    padding: 20px !important;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
-    margin-bottom: 20px !important;
+.waiter-theme .user-name {
+    color: #2c3e50;
 }
 
-:deep(input),
-:deep(textarea),
-:deep(select),
-:deep(.p-inputtext),
-:deep(.p-password input),
-:deep(.p-dropdown),
-:deep(.p-multiselect),
-:deep(.p-calendar input) {
-    background-color: #ffffff !important;
-    color: #000000 !important;
-    border: 1px solid #ced4da !important;
-    padding: 8px 12px !important;
-    border-radius: 4px !important;
-    width: 100% !important;
-    box-sizing: border-box !important;
-    margin-top: 4px !important;
+.waiter-theme .user-role {
+    color: #17a2b8;
+    font-weight: 600;
 }
 
-:deep(.form-group),
-:deep(.p-field),
-:deep(.form-row) {
-    margin-bottom: 16px !important;
+.waiter-theme .menu-nav ul li {
+    background-color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    border-left: 3px solid transparent;
 }
 
-:deep(label),
-:deep(.p-field > label),
-:deep(.form-label) {
-    display: block !important;
-    margin-bottom: 6px !important;
-    font-weight: 500 !important;
-    color: #000000 !important;
+.waiter-theme .menu-nav ul li:hover {
+    background-color: #fff;
+    transform: translateX(5px);
+    border-left: 3px solid #17a2b8;
 }
 
-:deep(form h2),
-:deep(form h3),
-:deep(.form-container h2),
-:deep(.form-container h3) {
-    margin-bottom: 20px !important;
-    color: #000000 !important;
-    font-weight: 600 !important;
+.waiter-theme .menu-nav ul li.active {
+    background-color: #17a2b8;
+    color: white;
+    border-left: 3px solid #117a8b;
 }
 
+.waiter-theme .menu-nav ul li.active i {
+    color: white;
+}
+
+.waiter-theme .menu-nav ul li i {
+    color: #17a2b8;
+}
+
+/* ------ TEMA MANAGER (CORPORATIVO) ------ */
+.manager-theme {
+    background-color: #f0f4f8;
+    color: #333;
+    background-image: linear-gradient(60deg, rgba(72, 126, 176, 0.05) 25%, transparent 25%, transparent 50%, rgba(72, 126, 176, 0.05) 50%, rgba(72, 126, 176, 0.05) 75%, transparent 75%, transparent);
+    background-size: 20px 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.manager-theme .user-avatar {
+    border-color: #e9ecef;
+}
+
+.manager-theme .user-badge {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background-color: #2c3e50;
+    color: white;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid white;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.manager-theme .user-name {
+    color: #2c3e50;
+}
+
+.manager-theme .user-role {
+    color: #2c3e50;
+    background-color: rgba(44, 62, 80, 0.1);
+    padding: 4px 12px;
+    border-radius: 15px;
+    font-size: 0.8rem;
+}
+
+.manager-theme .menu-nav ul li {
+    background-color: white;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    font-weight: 500;
+    border-left: 3px solid transparent;
+}
+
+.manager-theme .menu-nav ul li:hover {
+    background-color: #f8f9fa;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-left: 3px solid #3498db;
+}
+
+.manager-theme .menu-nav ul li.active {
+    background: linear-gradient(90deg, #2c3e50, #3498db);
+    color: white;
+    box-shadow: 0 4px 8px rgba(52, 152, 219, 0.3);
+    border-left: 3px solid #2c3e50;
+}
+
+.manager-theme .menu-nav ul li.active i {
+    color: white;
+}
+
+.manager-theme .menu-nav ul li i {
+    color: #3498db;
+}
+
+/* Responsive */
 @media (max-width: 768px) {
     .profile-menu-container {
-        flex-direction: column;
-        align-items: center;
-        padding: 10px;
+        padding: 20px 15px;
     }
 
     .user-avatar {
         width: 80px;
         height: 80px;
-        margin-bottom: 15px;
     }
 
-    nav ul {
+    .user-name {
+        font-size: 1.2rem;
+    }
+
+    .menu-nav ul {
         display: flex;
-        flex-direction: row;
         flex-wrap: wrap;
         justify-content: center;
     }
 
-    nav ul li {
-        font-size: 14px;
-        padding: 8px;
+    .menu-nav ul li {
         margin: 5px;
+        padding: 8px 15px;
+        font-size: 0.9rem;
         flex: 1 1 auto;
+        min-width: 120px;
+        text-align: center;
+        display: block;
     }
     
-    :deep(form),
-    :deep(.form-container),
-    :deep(.profile-container),
-    :deep(.form-section) {
-        padding: 15px !important;
+    .menu-nav ul li i {
+        display: block;
+        margin: 0 auto 5px;
+        font-size: 1.2rem;
+    }
+    
+    .client-stamp {
+        display: none;
+    }
+    
+    .client-theme .menu-nav ul li {
+        border-bottom: none;
+        padding: 10px;
     }
 }
 </style>

@@ -1,20 +1,76 @@
 <template>
-    <div class="personal-data">
-        <h1>Datos Personales</h1>
+    <div class="menu-card">
+        <!-- Decoración superior -->
+        <div class="menu-decoration top">
+            <div class="decoration-line"></div>
+            <div class="decoration-ornament">✦</div>
+            <div class="decoration-line"></div>
+        </div>
 
-        <div class="data-container">
-            <p><strong>Nombre:</strong> {{ userData.firstName }} {{ userData.lastName }}</p>
-            <p><strong>Email:</strong> {{ userData.email }}</p>
-            <p><strong>Edad:</strong> {{ userData.age }}</p>
-            <p><strong>Dirección:</strong> {{ userData.address }}</p>
-            <p><strong>Bio:</strong> {{ userData.bio }}</p>
+        <!-- Título principal -->
+        <div class="menu-title">
+            <h1>Carta del Cliente</h1>
+            <div class="subtitle">Experiencia Gastronómica Personal</div>
         </div>
-    </div>
-    <div class="metrics-data">
-        <div class="chartsContainer">
-            <div ref="donationsChart" class="chart"></div>
-            <div ref="reservationsChart" class="chart"></div>
+
+        <!-- Datos personales -->
+        <div class="menu-section personal-data">
+            <h2 class="section-title">Información del Comensal</h2>
+            
+            <div class="data-container">
+                <div class="menu-item">
+                    <span class="item-name">Nombre:</span>
+                    <span class="item-value">{{ userData.firstName }} {{ userData.lastName }}</span>
+                </div>
+                
+                <div class="menu-item">
+                    <span class="item-name">Email:</span>
+                    <span class="item-value">{{ userData.email }}</span>
+                </div>
+                
+                <div class="menu-item">
+                    <span class="item-name">Edad:</span>
+                    <span class="item-value">{{ userData.age }} años</span>
+                </div>
+                
+                <div class="menu-item">
+                    <span class="item-name">Dirección:</span>
+                    <span class="item-value">{{ userData.address }}</span>
+                </div>
+                
+                <div class="menu-item">
+                    <span class="item-name">Preferencias:</span>
+                    <span class="item-value">{{ userData.bio || 'Sin preferencias especiales' }}</span>
+                </div>
+            </div>
         </div>
+
+        <!-- Sección de métricas -->
+        <div class="menu-section metrics-data">
+            <h2 class="section-title">Degustación Estadística</h2>
+            
+            <div class="chartsContainer">
+                <div class="chart-wrapper">
+                    <h3 class="chart-title">Aportaciones Solidarias</h3>
+                    <div ref="donationsChart" class="chart"></div>
+                </div>
+                
+                <div class="chart-wrapper">
+                    <h3 class="chart-title">Historial de Visitas</h3>
+                    <div ref="reservationsChart" class="chart"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Decoración inferior -->
+        <div class="menu-decoration bottom">
+            <div class="decoration-line"></div>
+            <div class="decoration-ornament">✦</div>
+            <div class="decoration-line"></div>
+        </div>
+
+        <!-- Sello de cliente -->
+        <div class="client-stamp">Cliente Distinguido</div>
     </div>
 </template>
 
@@ -57,7 +113,8 @@ const reservationsChart = ref(null);
 const chartOptions = {
     chart: {
         type: "pie",
-        backgroundColor: 'none',
+        backgroundColor: 'rgba(255, 252, 245, 0.7)',
+        borderRadius: 5,
         events: {
             load: function () {
                 const chart = this;
@@ -68,30 +125,43 @@ const chartOptions = {
         }
     },
     title: {
-        text: "Dinero donado",
+        text: "",
+        style: {
+            fontFamily: "'Playfair Display', serif",
+            color: '#5D4037'
+        }
     },
-    xAxis: {
-        categories: ["Donado", "Restante"],
+    tooltip: {
+        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
     },
-    yAxis: {
-        title: {
-            text: "Valores",
-        },
+    plotOptions: {
+        pie: {
+            allowPointSelect: true,
+            cursor: 'pointer',
+            dataLabels: {
+                enabled: true,
+                format: '<b>{point.name}</b>',
+                style: {
+                    fontFamily: "'Playfair Display', serif",
+                    color: '#5D4037'
+                }
+            }
+        }
     },
     series: [
         {
-            name: 'Donado',
+            name: 'Donaciones',
             colorByPoint: true,
             data: [
                 {
-                    name: 'Donado: ' + donationsAmount.value + ' €',
+                    name: donationsAmount.value + ' €',
                     y: parseFloat(donationsAmount.value),
-                    color: '#28a745', // Verde
+                    color: '#8D6E63', // Marrón claro
                 },
                 {
                     name: 'Restante',
                     y: parseFloat(donationsRest.value),
-                    color: '#6c757d', // Gris oscuro
+                    color: '#D7CCC8', // Beige
                 },
             ]
         }
@@ -108,7 +178,8 @@ const reservationSeriesData = props.reservations?.map((reservation) => {
 const reservationsChartOptions = {
     chart: {
         type: "column",
-        backgroundColor: 'none',
+        backgroundColor: 'rgba(255, 252, 245, 0.7)',
+        borderRadius: 5,
         events: {
             load: function () {
                 const chart = this;
@@ -119,28 +190,57 @@ const reservationsChartOptions = {
         }
     },
     title: {
-        text: "Reservas realizadas",
+        text: "",
+        style: {
+            fontFamily: "'Playfair Display', serif",
+            color: '#5D4037'
+        }
     },
     xAxis: {
-        type: 'datetime', // Configura el eje X como fecha/hora
+        type: 'datetime',
         title: {
-            text: "Fecha de reserva",
+            text: "Fecha de visita",
+            style: {
+                fontFamily: "'Playfair Display', serif",
+                color: '#5D4037'
+            }
         },
         labels: {
-            format: '{value:%e %b}', // Formato del eje: "2 Dic"
+            format: '{value:%e %b}',
+            style: {
+                fontFamily: "'Playfair Display', serif",
+                color: '#5D4037'
+            }
         },
-        tickInterval: 24 * 3600 * 1000, // Un tick por día (en milisegundos)
+        tickInterval: 24 * 3600 * 1000,
     },
     yAxis: {
         title: {
-            text: "Número de personas",
+            text: "Comensales",
+            style: {
+                fontFamily: "'Playfair Display', serif",
+                color: '#5D4037'
+            }
         },
         min: 1,
-        max: 10
+        max: 10,
+        labels: {
+            style: {
+                fontFamily: "'Playfair Display', serif",
+                color: '#5D4037'
+            }
+        }
+    },
+    plotOptions: {
+        column: {
+            color: '#8D6E63',
+            borderColor: '#5D4037',
+            borderWidth: 1
+        }
     },
     series: [
         {
-            name: 'Reservas',
+            name: 'Comensales',
             data: reservationSeriesData
         }
     ]
@@ -164,49 +264,172 @@ watch([donationsAmount, donationsRest], () => {
 </script>
 
 <style scoped>
-.personal-data {
-    padding: 30px;
-    margin: 20px;
-    background-color: #ffffff;
+.menu-card {
+    max-width: 1200px;
+    margin: 40px auto;
+    background-color: #FFFCF5;
+    border: 1px solid #D7CCC8;
     border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    padding: 40px;
+    position: relative;
+    font-family: 'Playfair Display', serif;
+    color: #5D4037;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="%23FFFCF5"/><path d="M0,0 L100,100 M100,0 L0,100" stroke="%23EFEBE9" stroke-width="0.5"/></svg>');
+    background-repeat: repeat;
 }
 
-.data-container p {
+.menu-decoration {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.decoration-line {
+    flex-grow: 1;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #8D6E63, transparent);
+}
+
+.decoration-ornament {
+    margin: 0 20px;
+    font-size: 20px;
+    color: #8D6E63;
+}
+
+.menu-title {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.menu-title h1 {
+    font-size: 36px;
+    font-weight: 700;
+    margin: 0 0 10px;
+    color: #5D4037;
+    letter-spacing: 1px;
+}
+
+.subtitle {
+    font-size: 18px;
+    font-style: italic;
+    color: #8D6E63;
+}
+
+.menu-section {
+    margin-bottom: 40px;
+    padding: 30px;
+    background-color: rgba(255, 255, 255, 0.5);
+    border: 1px solid #EFEBE9;
+    border-radius: 5px;
+    position: relative;
+}
+
+.section-title {
+    text-align: center;
+    font-size: 24px;
+    font-weight: normal;
+    margin-top: 0;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #EFEBE9;
+    color: #5D4037;
+}
+
+.data-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.menu-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px dashed #D7CCC8;
+}
+
+.item-name {
+    font-weight: bold;
     font-size: 16px;
-    margin: 10px 0;
+    color: #5D4037;
 }
 
-.metrics-data {
-    padding: 30px;
-    margin: 20px;
-    background-color: #ffffff;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+.item-value {
+    font-size: 16px;
+    font-style: italic;
+    color: #795548;
 }
 
 .chartsContainer {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
-    margin-top: 20px;
+    gap: 30px;
+}
+
+.chart-wrapper {
+    flex: 1 1 45%;
+    min-width: 300px;
+    margin-bottom: 20px;
+}
+
+.chart-title {
+    text-align: center;
+    font-size: 20px;
+    font-weight: normal;
+    margin: 0 0 20px;
+    color: #5D4037;
 }
 
 .chart {
-    flex: 1 1 45%;
-    min-width: 300px;
-    margin: 20px;
+    height: 300px;
+    border: 1px solid #EFEBE9;
+    border-radius: 5px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
 }
 
+.client-stamp {
+    position: absolute;
+    bottom: 30px;
+    right: 40px;
+    transform: rotate(-15deg);
+    font-family: 'Dancing Script', cursive;
+    font-size: 24px;
+    color: rgba(139, 69, 19, 0.3);
+    border: 2px solid rgba(139, 69, 19, 0.3);
+    border-radius: 5px;
+    padding: 8px 20px;
+}
+
+/* Responsive */
 @media (max-width: 768px) {
+    .menu-card {
+        padding: 20px;
+        margin: 20px;
+    }
+    
     .chartsContainer {
         flex-direction: column;
-        align-items: center;
     }
-
-    .chart {
+    
+    .chart-wrapper {
         width: 100%;
-        max-width: 100%;
+    }
+    
+    .menu-title h1 {
+        font-size: 28px;
+    }
+    
+    .section-title {
+        font-size: 20px;
+    }
+    
+    .client-stamp {
+        font-size: 18px;
+        bottom: 20px;
+        right: 20px;
     }
 }
 </style>
