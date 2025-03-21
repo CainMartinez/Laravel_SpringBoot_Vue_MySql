@@ -148,6 +148,7 @@ watch([selectedType, orderBy, currentPage], updateStore);
 }
 
 .menu-page h1 {
+    color:white;
     margin-top: 60px;
 }
 

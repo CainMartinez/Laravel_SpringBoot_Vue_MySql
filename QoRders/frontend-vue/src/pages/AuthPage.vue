@@ -1,27 +1,44 @@
 <template>
-    <div class="login-register">
-        <h1>{{ isLoginView ? 'Iniciar sesión' : 'Registrar cuenta' }}</h1>
+    <div class="auth-experience">
+        <div class="auth-container">
+            <div class="auth-decoration left"></div>
+            
+            <div class="auth-content">
+                <h1>{{ isLoginView ? 'Bienvenido de Nuevo' : 'Únase a Nuestra Mesa' }}</h1>
+                <p class="auth-subtitle">
+                    {{ isLoginView ? 'Acceda a su cuenta para continuar su experiencia gastronómica' : 'Complete su información para comenzar su viaje culinario con nosotros' }}
+                </p>
+                
+                <!-- Selector de tipo de usuario -->
+                <UserTypeSelector @update:selectedType="handleTypeChange" />
 
-        <!-- Selector de tipo de usuario -->
-        <UserTypeSelector @update:selectedType="handleTypeChange" />
+                <!-- Mensaje de error para tipos restringidos -->
+                <div v-if="showRestrictionWarning" class="restriction-message">
+                    <i class="pi pi-exclamation-triangle"></i>
+                    <span>Se necesitan permisos de administrador para registrar a este usuario.</span>
+                </div>
 
-        <!-- Mensaje de error para tipos restringidos -->
-        <div v-if="showRestrictionWarning" class="error-message">
-            <i class="pi pi-exclamation-triangle"></i>
-            Se necesitan permisos de administrador para registrar a este usuario.
+                <!-- Formulario de login o registro -->
+                <LoginForm v-if="isLoginView" :selectedType="selectedType" @submit="login" />
+                <RegisterForm 
+                    v-else 
+                    :selectedType="selectedType" 
+                    :isDisabled="isTypeRestricted" 
+                    @submit="handleRegister" 
+                />
+
+                <!-- Alternar entre login y registro -->
+                <a @click="toggleForm" class="toggle-link">
+                    {{ isLoginView ? '¿Nuevo por aquí? Crear una cuenta' : '¿Ya tiene cuenta? Iniciar sesión' }}
+                </a>
+            </div>
+            
+            <div class="auth-decoration right"></div>
         </div>
-
-        <!-- Formulario de login o registro -->
-        <LoginForm v-if="isLoginView" :selectedType="selectedType" @submit="login" />
-        <RegisterForm 
-            v-else 
-            :selectedType="selectedType" 
-            :isDisabled="isTypeRestricted" 
-            @submit="handleRegister" 
-        />
-
-        <!-- Alternar entre login y registro -->
-        <a @click="toggleForm" class="toggle-link">{{ isLoginView ? 'Crear una cuenta' : 'Ya tengo cuenta' }}</a>
+        
+        <div class="auth-quote">
+            <p>"La gastronomía es el arte de utilizar la comida para crear felicidad."</p>
+        </div>
     </div>
 </template>
 
@@ -79,79 +96,128 @@ watch(isLoginView, (isLogin) => {
 </script>
 
 <style scoped>
-.login-register {
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Lora:ital,wght@0,400;0,500;0,600;1,400&display=swap');
+
+.auth-experience {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 20px;
-    background-color: #f7f7f7;
-    color: #333;
-    font-family: Arial, sans-serif;
+    padding: 40px 20px;
+    min-height: 100vh;
+    background-color: #f9f6f0;
+    color: #4a3933;
+    font-family: 'Lora', serif;
+    position: relative;
 }
 
-h1 {
-    font-size: 2.5em;
-    margin-bottom: 30px;
-    margin-top: 100px;
-}
-
-button {
-    padding: 10px 20px;
-    background-color: #333;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-button:hover {
-    background-color: #555;
-}
-
-button:focus {
-    outline: none;
-}
-
-button {
-    margin-top: 20px;
-}
-
-a.toggle-link {
-    margin-top: 20px;
-    color: #333;
-    cursor: pointer;
-    text-decoration: none;
-    transition: color 0.3s;
-}
-
-a.toggle-link:hover {
-    text-decoration: underline;
-}
-
-.login-register>* {
+.auth-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 1000px;
     margin-bottom: 20px;
 }
 
-/* Estilos para el mensaje de error */
-.error-message {
-    background-color: #f8d7da;
-    color: #721c24;
-    border: 1px solid #f5c6cb;
-    border-radius: 5px;
-    padding: 12px 20px;
-    margin: 10px 0;
+.auth-content {
+    background-color: white;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 600px;
+    position: relative;
+    border: 1px solid #e8d9c5;
+}
+
+.auth-decoration {
+    height: 80px;
+    width: 1px;
+    background: linear-gradient(to bottom, transparent, #8B4513, transparent);
+    margin: 0 20px;
+}
+
+h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: #6b4423;
+    margin: 0 0 15px;
+    text-align: center;
+}
+
+.auth-subtitle {
+    font-family: 'Lora', serif;
+    font-style: italic;
+    font-size: 1rem;
+    color: #8B4513;
+    margin: 0 0 30px;
+    text-align: center;
+}
+
+.restriction-message {
+    background-color: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeeba;
+    border-radius: 6px;
+    padding: 12px 16px;
+    margin: 20px 0;
     display: flex;
     align-items: center;
     gap: 10px;
-    width: 100%;
-    max-width: 400px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    font-size: 0.95rem;
 }
 
-.error-message i {
-    font-size: 1.2em;
-    color: #dc3545;
+.restriction-message i {
+    font-size: 1.2rem;
+    color: #856404;
+}
+
+.toggle-link {
+    display: block;
+    margin-top: 25px;
+    color: #8B4513;
+    font-weight: 500;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+.toggle-link:hover {
+    color: #6b4423;
+    text-decoration: underline;
+}
+
+.auth-quote {
+    font-style: italic;
+    color: #8B4513;
+    text-align: center;
+    margin-top: 20px;
+    font-size: 1rem;
+    max-width: 600px;
+    opacity: 0.8;
+}
+
+@media (max-width: 768px) {
+    .auth-container {
+        flex-direction: column;
+    }
+    
+    .auth-decoration {
+        height: 1px;
+        width: 80px;
+        margin: 20px 0;
+        background: linear-gradient(to right, transparent, #8B4513, transparent);
+    }
+    
+    .auth-content {
+        padding: 30px 20px;
+    }
+    
+    h1 {
+        font-size: 1.8rem;
+    }
 }
 </style>
