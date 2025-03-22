@@ -263,7 +263,7 @@ class AuthController extends Controller
                     'phone_number' => 'string|nullable|max:15',
                     'shift_disponibility' => 'in:Lunch,Dinner,Flexible',
                     'bio' => 'string|nullable',
-                    'avatar_url' => 'url',
+                    'avatar_url' => 'string|nullable',
                ]);
 
                if ($validator->fails()) {
@@ -376,7 +376,7 @@ class AuthController extends Controller
                     'phone_number' => 'string|nullable|max:15',
                     'address' => 'string|nullable',
                     'bio' => 'string|nullable',
-                    'avatar_url' => 'url',
+                    'avatar_url' => 'string|nullable',
                ]);
 
                if ($validator->fails()) {
