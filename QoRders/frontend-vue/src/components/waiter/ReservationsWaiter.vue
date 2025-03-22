@@ -32,9 +32,9 @@
               <i class="pi pi-users"></i>
               <span>{{ reservation.guestCount }} comensales</span>
             </div>
-            <div class="info-item">
+            <div class="info-item" :class="{ 'today-date': isToday(reservation.date) }">
               <i class="pi pi-calendar"></i>
-              <span>{{ reservation.date }}</span>
+              <span>{{ formatDate(reservation.date) }}</span>
             </div>
             <div class="info-item">
               <i class="pi pi-user"></i>
@@ -223,6 +223,20 @@ export default {
         'status-inprogress': status === 'InProgress',
         'status-completed': status === 'Completed'
       };
+    },
+    formatDate(dateString) {
+      if (!dateString) return '';
+      const [year, month, day] = dateString.split('-');
+      return `${day}/${month}/${year}`;
+    },
+    isToday(dateString) {
+      if (!dateString) return false;
+      const today = new Date();
+      const [year, month, day] = dateString.split('-');
+      
+      return parseInt(year) === today.getFullYear() &&
+             parseInt(month) === today.getMonth() + 1 &&
+             parseInt(day) === today.getDate();
     },
     // Clases para los estados de orden
     getOrderStatusClass(status) {
@@ -574,7 +588,17 @@ export default {
   font-weight: 600;
   color: #495057;
 }
+.today-date {
+  background-color: #fffacd;
+  border-radius: 4px;
+  padding: 0.3rem 0.5rem !important;
+  border-left: 3px solid #ffd700;
+  font-weight: bold;
+}
 
+.today-date i, .today-date span {
+  color: #d4af37 !important;
+}
 .reservation-notes p {
   margin: 0;
   color: #6c757d;

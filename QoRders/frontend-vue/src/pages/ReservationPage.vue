@@ -152,7 +152,11 @@ const redirectToLogin = () => {
 const redirectToProfile = () => {
     router.push('/profile');
 };
-
+const formatDate = (dateString) => {
+  if (!dateString) return '';
+  const [year, month, day] = dateString.split('-');
+  return `${day}/${month}/${year}`;
+};
 const redirectToHome = () => {
     router.push('/');
 };
@@ -265,7 +269,7 @@ const handleReservation = () => {
                 // Actualizar para indicar éxito
                 reservationSuccess.value = true;
                 modalTitle.value = '¡Reserva Confirmada!';
-                reservationModalMessage.value = `¡Excelente elección! Su experiencia gastronómica está reservada para el ${selectedDay.value} en ${selectedRoom.value}, mesa para ${selectedPeople.value} comensales en el servicio de ${selectedShiftSpanish.value}. Puede revisar los detalles en su perfil.`;
+                reservationModalMessage.value = `¡Excelente elección! Su experiencia gastronómica está reservada para el ${formatDate(selectedDay.value)} en ${selectedRoom.value}, mesa para ${selectedPeople.value} comensales en el servicio de ${selectedShiftSpanish.value}. Puede revisar los detalles en su perfil.`;
             })
             .catch((error) => {
                 // Actualizar para indicar error
