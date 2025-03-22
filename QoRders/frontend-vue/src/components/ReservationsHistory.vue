@@ -33,16 +33,13 @@
                 
                 <div class="experience-content">
                     <!-- Imagen de la sala como fondo -->
-                    <div class="destination-photo" :style="{ backgroundImage: 'url(' + getRoomImageUrl(reservation.roomName) + ')' }">
+                    <div class="destination-photo-container">
+                        <img class="destination-photo-img" :src="getRoomImageUrl(reservation.roomName)" :alt="reservation.roomName">
                         <div class="photo-overlay">{{ reservation.roomName }}</div>
                     </div>
                     
                     <!-- Detalles de la experiencia -->
                     <div class="experience-details">
-                        <div class="experience-section">
-                            <h3><i class="cuisine-icon">📝</i> Notas del viaje</h3>
-                            <p class="experience-notes">{{ reservation.notes || 'Sin notas para esta experiencia.' }}</p>
-                        </div>
                         
                         <!-- Notas o preferencias adicionales -->
                         <div class="experience-section">
@@ -82,7 +79,7 @@
                                         </div>
                                         <div class="amount-row">
                                             <span>Contribución solidaria:</span>
-                                            <span class="amount-value">{{ (ticket.totalAmount * 0.05).toFixed(2) }}€</span>
+                                            <span class="amount-value">{{ (ticket.totalAmount * 0.009).toFixed(2) }}€</span>
                                         </div>
                                         <div class="amount-row total">
                                             <span>Importe abonado:</span>
@@ -357,17 +354,22 @@ const getPaymentStatusClass = (status) => {
     gap: 25px;
 }
 
-.destination-photo {
+.destination-photo-container {
     flex: 1;
-    min-width: 300px;
+    min-width: 280px;
     height: 220px;
-    border-radius: 6px;
-    background-size: cover;
-    background-position: center;
     position: relative;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
     border: 5px solid white;
     outline: 1px solid #e1d5c8;
+    border-radius: 6px;
+    overflow: hidden;
+}
+.destination-photo-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
 }
 
 .photo-overlay {
@@ -578,8 +580,41 @@ const getPaymentStatusClass = (status) => {
         padding: 20px;
     }
     
-    .destination-photo {
-        height: 180px;
+    
+    .experience-content {
+        flex-direction: column;
+    }
+    
+    .culinary-experience {
+        padding: 15px;
+    }
+    
+    .memory-receipt {
+        min-width: 100%;
+    }
+    
+    .stamp-decoration {
+        width: 40px;
+        height: 40px;
+    }
+}
+@media (max-width: 480px) {
+    .passport-cover {
+        padding: 25px 15px;
+    }
+    
+    .passport-title {
+        font-size: 28px;
+    }
+    
+    .passport-pages {
+        padding: 20px;
+    }
+    
+    .destination-photo-container {
+        min-width: 100%;
+        height: 160px;
+        margin-bottom: 15px;
     }
     
     .experience-content {

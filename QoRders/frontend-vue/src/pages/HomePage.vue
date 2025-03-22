@@ -14,7 +14,7 @@
       <div class="donation-content">
         <h2>Gastronomía con Propósito</h2>
         <p>
-            Con cada plato que disfrutas, contribuyes a un mundo mejor. Donamos el 2% de cada consumición 
+            Con cada plato que disfrutas, contribuyes a un mundo mejor. Donamos el 0.9% de cada consumición 
           a organizaciones benéficas que luchan para hacer un mundo mejor, transformando tu experiencia 
           gastronómica en un acto de solidaridad.
         </p>

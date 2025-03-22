@@ -23,13 +23,13 @@
             <ul>
                 <li :class="{ active: activeView === 'Data' }" @click="changeView('Data')">
                     <i :class="getIconClass('Data')"></i>
-                    <span>{{ props.userType === 'client' ? 'Carta Personal' : 'Datos Personales' }}</span>
+                    <span>{{ props.userType === 'client' ? 'Perfil' : 'Datos Personales' }}</span>
                 </li>
                 
                 <li v-if="props.userType === 'client'" :class="{ active: activeView === 'ReservationsHistory' }"
                     @click="changeView('ReservationsHistory')">
                     <i class="pi pi-calendar-plus"></i>
-                    <span>Pasaporte Gastronómico</span>
+                    <span>Reservas</span>
                 </li>
                 
                 <li v-if="props.userType === 'waiter'" :class="{ active: activeView === 'ReservationsWaiter' }"
@@ -58,7 +58,7 @@
                 
                 <li :class="{ active: activeView === 'Settings' }" @click="changeView('Settings')">
                     <i class="pi pi-cog"></i>
-                    <span>{{ props.userType === 'client' ? 'Libro de Recetas' : 'Ajustes' }}</span>
+                    <span>{{ props.userType === 'client' ? 'Actualizar Datos' : 'Ajustes' }}</span>
                 </li>
             </ul>
         </nav>
@@ -120,7 +120,18 @@ const userBadgeIcon = computed(() => {
 });
 
 const emit = defineEmits(['change-view']);
-const activeView = ref('Data');
+const getDefaultView = () => {
+  switch (props.userType) {
+    case 'client':
+      return 'ReservationsHistory';
+    case 'waiter':
+      return 'ReservationsWaiter';
+    default:
+      return 'Data';
+  }
+};
+
+const activeView = ref(getDefaultView());
 
 const changeView = (view) => {
     activeView.value = view;
@@ -139,9 +150,10 @@ const getIconClass = (view) => {
 
 // Aplicar estilos globales para inputs cuando se monta el componente
 onMounted(() => {
+    emit('change-view', activeView.value);
     // Crear una etiqueta de estilo global
     const styleElement = document.createElement('style');
-    
+
     // Añadir reglas CSS para inputs en toda la aplicación
     styleElement.textContent = `
         /* Estilos para formularios */
