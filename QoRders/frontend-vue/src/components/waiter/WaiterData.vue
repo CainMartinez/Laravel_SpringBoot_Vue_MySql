@@ -1,73 +1,91 @@
 <template>
-    <div class="waiter-profile-card">
-        <!-- Encabezado con avatar placeholder -->
-        <div class="profile-header">
-            <div class="avatar-container">
-                <div class="avatar">
-                    {{ getInitials() }}
-                </div>
-            </div>
-            <div class="title-container">
-                <h1>Ficha de Empleado</h1>
-                <div class="employee-id">ID: {{ userData.id || 'N/A' }}</div>
-            </div>
+    <div class="settings-container">
+        <div class="settings-header">
+            <i class="pi pi-id-card"></i>
+            <h2>Ficha de Empleado</h2>
         </div>
+        
+        <div class="data-content">
+            <!-- Sección de Información Personal -->
+            <div class="form-section">
+                <h3>Información Personal</h3>
+                
+                <div class="data-user-header">
+                    <div class="avatar-container">
+                        <div class="avatar-preview" v-if="userData.avatar_url">
+                            <img :src="userData.avatar_url" alt="Foto de perfil" class="avatar-image" />
+                        </div>
+                        <div class="avatar-placeholder" v-else>
+                            {{ getInitials() }}
+                        </div>
+                    </div>
+                    <div class="id-container">
+                        <span class="employee-id">ID: {{ userData.id || 'N/A' }}</span>
+                    </div>
+                </div>
+                
+                <div class="info-section">
+                    <div class="info-row">
+                        <div class="info-label">
+                            <i class="pi pi-user"></i>
+                            <span>Nombre Completo</span>
+                        </div>
+                        <div class="info-value">{{ userData.firstName }} {{ userData.lastName }}</div>
+                    </div>
+                    
+                    <div class="info-row">
+                        <div class="info-label">
+                            <i class="pi pi-envelope"></i>
+                            <span>Email</span>
+                        </div>
+                        <div class="info-value">{{ userData.email }}</div>
+                    </div>
+                    
+                    <div class="info-row">
+                        <div class="info-label">
+                            <i class="pi pi-phone"></i>
+                            <span>Teléfono</span>
+                        </div>
+                        <div class="info-value">{{ userData.phone_number || 'No disponible' }}</div>
+                    </div>
 
-        <!-- Contenido principal de dos columnas -->
-        <div class="profile-content">
-            <div class="profile-column personal-info">
-                <h2>Información Personal</h2>
-                <div class="info-row">
-                    <i class="pi pi-user"></i>
-                    <div>
-                        <label>Nombre Completo</label>
-                        <p>{{ userData.firstName }} {{ userData.lastName }}</p>
-                    </div>
-                </div>
-                <div class="info-row">
-                    <i class="pi pi-envelope"></i>
-                    <div>
-                        <label>Email</label>
-                        <p>{{ userData.email }}</p>
-                    </div>
-                </div>
-                <div class="info-row">
-                    <i class="pi pi-phone"></i>
-                    <div>
-                        <label>Teléfono</label>
-                        <p>{{ userData.phone_number || 'No disponible' }}</p>
-                    </div>
-                </div>
-                <div class="info-row">
-                    <i class="pi pi-info-circle"></i>
-                    <div>
-                        <label>Bio</label>
-                        <p>{{ userData.bio || 'No disponible' }}</p>
+                    <div class="info-row">
+                        <div class="info-label">
+                            <i class="pi pi-info-circle"></i>
+                            <span>Biografía</span>
+                        </div>
+                        <div class="info-value bio-text">{{ userData.bio || 'No disponible' }}</div>
                     </div>
                 </div>
             </div>
             
-            <div class="profile-column employment-info">
-                <h2>Información Laboral</h2>
-                <div class="info-row">
-                    <i class="pi pi-calendar"></i>
-                    <div>
-                        <label>Fecha de Contratación</label>
-                        <p>{{ userData.hire_date || 'No disponible' }}</p>
+            <!-- Sección de Información Laboral -->
+            <div class="form-section">
+                <h3>Información Laboral</h3>
+                
+                <div class="info-section">
+                    <div class="info-row">
+                        <div class="info-label">
+                            <i class="pi pi-calendar"></i>
+                            <span>Fecha de Contratación</span>
+                        </div>
+                        <div class="info-value">{{ userData.hire_date || 'No disponible' }}</div>
                     </div>
-                </div>
-                <div class="info-row">
-                    <i class="pi pi-euro"></i>
-                    <div>
-                        <label>Salario</label>
-                        <p>{{ userData.salary || 'No disponible' }} €</p>
+                    
+                    <div class="info-row">
+                        <div class="info-label">
+                            <i class="pi pi-euro"></i>
+                            <span>Salario</span>
+                        </div>
+                        <div class="info-value">{{ userData.salary ? `${userData.salary} €` : 'No disponible' }}</div>
                     </div>
-                </div>
-                <div class="info-row">
-                    <i class="pi pi-clock"></i>
-                    <div>
-                        <label>Disponibilidad de Turno</label>
-                        <p>{{ userData.shift_disponibility || 'No disponible' }}</p>
+                    
+                    <div class="info-row">
+                        <div class="info-label">
+                            <i class="pi pi-clock"></i>
+                            <span>Disponibilidad de Turno</span>
+                        </div>
+                        <div class="info-value">{{ userData.shift_disponibility || 'No disponible' }}</div>
                     </div>
                 </div>
             </div>
@@ -93,158 +111,176 @@ const getInitials = () => {
 </script>
 
 <style scoped>
-.waiter-profile-card {
-    padding: 0;
-    margin: 40px auto;
+.settings-container {
     max-width: 900px;
+    margin: 40px auto;
     background-color: #ffffff;
     border-radius: 10px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
     overflow: hidden;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-/* Estilos para el encabezado */
-.profile-header {
+.settings-header {
+    background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+    color: white;
+    padding: 20px 30px;
     display: flex;
     align-items: center;
-    background: linear-gradient(135deg, #0a4f70 0%, #0d6efd 100%);
-    color: white;
+}
+
+.settings-header i {
+    font-size: 24px;
+    margin-right: 15px;
+}
+
+.settings-header h2 {
+    margin: 0;
+    font-weight: 400;
+    font-size: 24px;
+    letter-spacing: 0.5px;
+}
+
+.data-content {
     padding: 30px;
-    position: relative;
+}
+
+.form-section {
+    margin-bottom: 30px;
+    background-color: #f9fafb;
+    border-radius: 8px;
+    padding: 25px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+    transition: all 0.3s ease;
+}
+
+.form-section:hover {
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    transform: translateY(-2px);
+}
+
+.form-section h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: #2c3e50;
+    font-size: 18px;
+    font-weight: 500;
+    border-bottom: 1px solid #e0e0e0;
+    padding-bottom: 10px;
+}
+
+.data-user-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
 }
 
 .avatar-container {
-    margin-right: 25px;
+    display: flex;
+    align-items: center;
 }
 
-.avatar {
-    width: 80px;
-    height: 80px;
-    background-color: rgba(255, 255, 255, 0.2);
+.avatar-preview {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    border: 3px solid #3498db;
+}
+
+.avatar-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.avatar-placeholder {
+    width: 100px;
+    height: 100px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 30px;
-    font-weight: bold;
+    background-color: #3498db;
     color: white;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-    border: 3px solid rgba(255, 255, 255, 0.3);
+    font-size: 36px;
+    font-weight: bold;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-.title-container h1 {
-    margin: 0;
-    font-size: 28px;
-    font-weight: 300;
-    letter-spacing: 1px;
-}
-
-.employee-id {
-    margin-top: 5px;
+.id-container {
+    background-color: #ebf8ff;
+    padding: 8px 15px;
+    border-radius: 20px;
+    color: #3498db;
     font-size: 14px;
-    opacity: 0.8;
-    letter-spacing: 1px;
-}
-
-/* Estilos para el contenido principal */
-.profile-content {
-    display: flex;
-    flex-wrap: wrap;
-    padding: 0;
-}
-
-.profile-column {
-    flex: 1;
-    min-width: 300px;
-    padding: 30px;
-}
-
-.profile-column h2 {
-    font-size: 18px;
-    color: #0a4f70;
-    margin-bottom: 25px;
-    padding-bottom: 15px;
-    border-bottom: 1px solid #e0e0e0;
-    font-weight: 500;
     letter-spacing: 0.5px;
+    font-weight: 500;
+    box-shadow: 0 2px 5px rgba(52, 152, 219, 0.1);
+    border: 1px solid rgba(52, 152, 219, 0.2);
 }
 
-.personal-info {
-    border-right: 1px solid #f0f0f0;
+.info-section {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
 }
 
 .info-row {
     display: flex;
-    margin-bottom: 25px;
-    align-items: flex-start;
+    flex-direction: column;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #edf2f7;
 }
 
-.info-row i {
-    font-size: 18px;
-    margin-right: 15px;
-    color: #0d6efd;
-    background-color: rgba(13, 110, 253, 0.1);
-    width: 36px;
-    height: 36px;
-    border-radius: 18px;
+.info-label {
     display: flex;
     align-items: center;
-    justify-content: center;
+    margin-bottom: 8px;
+    color: #4a5568;
+    font-size: 14px;
+    font-weight: 500;
 }
 
-.info-row label {
-    display: block;
-    font-size: 12px;
-    color: #888;
-    margin-bottom: 5px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.info-row p {
-    margin: 0;
+.info-label i {
+    margin-right: 10px;
+    color: #3498db;
     font-size: 16px;
-    color: #333;
+    width: 24px;
+    text-align: center;
 }
 
-/* Efectos decorativos */
-.waiter-profile-card::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    width: 5px;
-    background: linear-gradient(to bottom, #0a4f70, #0d6efd);
-    border-top-right-radius: 10px;
-    border-bottom-right-radius: 10px;
+.info-value {
+    color: #2d3748;
+    font-size: 16px;
+    padding-left: 34px;
 }
 
-/* Estilos responsivos */
+.bio-text {
+    font-style: italic;
+    line-height: 1.6;
+}
+
+/* Responsive design */
 @media (max-width: 768px) {
-    .profile-content {
-        flex-direction: column;
-    }
-    
-    .personal-info {
-        border-right: none;
-        border-bottom: 1px solid #f0f0f0;
-    }
-    
-    .profile-header {
-        flex-direction: column;
-        text-align: center;
+    .data-content {
         padding: 20px;
     }
-    
-    .avatar-container {
-        margin-right: 0;
-        margin-bottom: 15px;
-    }
-    
-    .profile-column {
+
+    .form-section {
         padding: 20px;
+    }
+
+    .data-user-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .id-container {
+        align-self: flex-end;
     }
 }
 </style>
