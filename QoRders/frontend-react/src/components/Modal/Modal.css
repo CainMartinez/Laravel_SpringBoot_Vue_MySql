@@ -1,62 +1,246 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap');
+
+:root {
+    --primary-color: #e74c3c;
+    --secondary-color: #e67e22;
+    --accent-color: #3498db;
+    --success-color: #27ae60;
+    --error-color: #e74c3c;
+    --text-dark: #2c3e50;
+    --text-medium: #34495e;
+    --text-light: #7f8c8d;
+    --bg-light: #f9f9fa;
+    --bg-white: #ffffff;
+    --shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.05);
+    --shadow-medium: 0 15px 35px rgba(0, 0, 0, 0.1);
+    --transition-standard: all 0.3s ease;
+}
+
 .modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(5px);
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 1000;
+    padding: 20px;
+    box-sizing: border-box;
+    animation: fadeIn 0.3s ease-out;
 }
 
 .modal {
-    background-color: white;
-    padding: 2rem;
-    border-radius: 10px;
-    max-width: 400px;
+    background-color: var(--bg-white);
+    padding: 0;
+    border-radius: 12px;
+    max-width: 440px;
+    width: 100%;
     text-align: center;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    animation: fadeIn 0.5s ease-in-out;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+    position: relative;
+    animation: slideUp 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+    font-family: 'Poppins', sans-serif;
 }
 
-.modal-success {
-    border: 2px solid #28a745;
+.modal-header {
+    position: relative;
+    padding: 35px 20px 20px;
+    text-align: center;
 }
 
-.modal-error {
-    border: 2px solid #d9534f;
+/* Estilos específicos para modales de éxito */
+.modal-success .modal-header {
+    background: linear-gradient(135deg, #2ecc71, #27ae60);
+    color: white;
+}
+
+.modal-success::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 6px;
+    background: linear-gradient(90deg, #2ecc71, var(--success-color));
+}
+
+/* Estilos específicos para modales de error */
+.modal-error .modal-header {
+    background: linear-gradient(135deg, var(--primary-color), #c0392b);
+    color: white;
+}
+
+.modal-error::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 6px;
+    background: linear-gradient(90deg, var(--primary-color), #c0392b);
+}
+
+.modal-icon-container {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background-color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+}
+
+.modal-success .modal-icon-container {
+    color: var(--success-color);
+}
+
+.modal-error .modal-icon-container {
+    color: var(--error-color);
+}
+
+.modal-icon {
+    font-size: 35px;
+}
+
+.modal-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    margin: 0 0 10px;
+}
+
+.modal-body {
+    padding: 30px 30px 20px;
+    background-color: var(--bg-white);
 }
 
 .modal p {
-    margin-bottom: 1rem;
-    font-size: 1.2rem;
+    margin: 0 0 25px;
+    color: var(--text-medium);
+    font-size: 1rem;
+    line-height: 1.6;
 }
 
-button {
-    background-color: #333;
+.modal-footer {
+    padding: 0 30px 30px;
+    display: flex;
+    justify-content: center;
+}
+
+.modal-close-btn {
+    background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
     color: white;
     border: none;
-    padding: 10px 20px;
+    padding: 14px 35px;
     font-size: 1rem;
-    border-radius: 5px;
+    font-weight: 600;
+    border-radius: 50px;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: var(--transition-standard);
+    font-family: 'Poppins', sans-serif;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(231, 76, 60, 0.2);
+    min-width: 160px;
 }
 
-button:hover {
-    background-color: #555;
+.modal-close-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.2);
+    transform: skewX(-30deg);
+    transition: 0.5s;
 }
 
-/* Animación de entrada */
+.modal-close-btn:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(231, 76, 60, 0.3);
+}
+
+.modal-close-btn:hover::before {
+    left: 100%;
+}
+
+.modal-success .modal-close-btn {
+    background: linear-gradient(135deg, #2ecc71, #27ae60);
+    box-shadow: 0 5px 15px rgba(46, 204, 113, 0.2);
+}
+
+.modal-success .modal-close-btn:hover {
+    box-shadow: 0 8px 25px rgba(46, 204, 113, 0.3);
+}
+
+/* Animaciones */
 @keyframes fadeIn {
     from {
         opacity: 0;
-        transform: scale(0.9);
     }
     to {
         opacity: 1;
-        transform: scale(1);
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Media queries para responsividad */
+@media screen and (max-width: 576px) {
+    .modal {
+        max-width: 100%;
+    }
+    
+    .modal-header {
+        padding: 25px 15px 15px;
+    }
+    
+    .modal-icon-container {
+        width: 60px;
+        height: 60px;
+        margin-bottom: 15px;
+    }
+    
+    .modal-icon {
+        font-size: 28px;
+    }
+    
+    .modal-title {
+        font-size: 1.4rem;
+    }
+    
+    .modal-body {
+        padding: 20px 20px 15px;
+    }
+    
+    .modal p {
+        font-size: 0.95rem;
+        margin-bottom: 20px;
+    }
+    
+    .modal-footer {
+        padding: 0 20px 25px;
+    }
+    
+    .modal-close-btn {
+        width: 100%;
+        padding: 12px 20px;
     }
 }
