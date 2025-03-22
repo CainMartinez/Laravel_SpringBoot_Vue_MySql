@@ -9,21 +9,28 @@
                     {{ isLoginView ? 'Acceda a su cuenta para continuar su experiencia gastronómica' : 'Complete su información para comenzar su viaje culinario con nosotros' }}
                 </p>
                 
-                <!-- Selector de tipo de usuario -->
-                <UserTypeSelector @update:selectedType="handleTypeChange" />
-
-                <!-- Mensaje de error para tipos restringidos -->
-                <div v-if="showRestrictionWarning" class="restriction-message">
-                    <i class="pi pi-exclamation-triangle"></i>
-                    <span>Se necesitan permisos de administrador para registrar a este usuario.</span>
+                <!-- Selector de tipo de usuario (solo en login) -->
+                <UserTypeSelector 
+                    v-if="isLoginView" 
+                    @update:selectedType="handleTypeChange" 
+                />
+                
+                <!-- Nota para registro -->
+                <div v-if="!isLoginView" class="client-registration-note">
+                    <i class="pi pi-info-circle"></i>
+                    <span>Está creando una cuenta de cliente. Los perfiles de gerente y camarero requieren autorización.</span>
                 </div>
 
                 <!-- Formulario de login o registro -->
-                <LoginForm v-if="isLoginView" :selectedType="selectedType" @submit="login" />
+                <LoginForm 
+                    v-if="isLoginView" 
+                    :selectedType="selectedType" 
+                    @submit="login" 
+                />
                 <RegisterForm 
                     v-else 
-                    :selectedType="selectedType" 
-                    :isDisabled="isTypeRestricted" 
+                    :selectedType="'client'"
+                    :isDisabled="false" 
                     @submit="handleRegister" 
                 />
 
@@ -51,46 +58,26 @@ import useAuth from '../composables/useAuth';
 
 const { login, register, isLoginView, toggleForm } = useAuth();
 const selectedType = ref('client');
-const showRestrictionWarning = ref(false);
 
-// Computed property para determinar si el tipo seleccionado está restringido
-const isTypeRestricted = computed(() => {
-    return selectedType.value !== 'client';
-});
-
-// Función para manejar el cambio de tipo de usuario
+// Función para manejar el cambio de tipo de usuario (solo para login)
 const handleTypeChange = (type) => {
     selectedType.value = type;
-    
-    // Si estamos en la vista de registro y no es cliente, mostrar la advertencia
-    if (!isLoginView.value && type !== 'client') {
-        showRestrictionWarning.value = true;
-    } else {
-        showRestrictionWarning.value = false;
-    }
 };
 
-// Función intermediaria para el registro
+// Función para el registro (siempre como cliente)
 const handleRegister = (userData) => {
-    // Si es un tipo restringido, mostrar advertencia y no continuar
-    if (userData.userType !== 'client') {
-        showRestrictionWarning.value = true;
-        return;
-    }
+    // Asegurar que el tipo de usuario siempre sea cliente
+    userData.userType = 'client';
     
-    // Si es cliente, proceder con el registro normal
+    // Proceder con el registro
     register(userData);
 };
 
-// Actualizar la advertencia cuando cambia entre login/registro
+// Resetear a cliente cuando cambiamos entre vistas
 watch(isLoginView, (isLogin) => {
-    // Ocultar advertencia si vamos a login
-    if (isLogin) {
-        showRestrictionWarning.value = false;
-    }
-    // Mostrar advertencia si vamos a registro y no es cliente
-    else if (selectedType.value !== 'client') {
-        showRestrictionWarning.value = true;
+    if (!isLogin) {
+        // Si vamos a registro, fijar tipo a cliente
+        selectedType.value = 'client';
     }
 });
 </script>
@@ -200,6 +187,23 @@ h1 {
     opacity: 0.8;
 }
 
+.client-registration-note {
+    background-color: #e6f7ff;
+    color: #0c5460;
+    border: 1px solid #d1ecf1;
+    border-radius: 6px;
+    padding: 12px 16px;
+    margin: 0 0 25px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.95rem;
+}
+
+.client-registration-note i {
+    font-size: 1.2rem;
+    color: #0c5460;
+}
 @media (max-width: 768px) {
     .auth-container {
         flex-direction: column;
