@@ -66,14 +66,6 @@
                 <div class="info-section">
                     <div class="info-row">
                         <div class="info-label">
-                            <i class="pi pi-calendar"></i>
-                            <span>Fecha de Contratación</span>
-                        </div>
-                        <div class="info-value">{{ userData.hire_date || 'No disponible' }}</div>
-                    </div>
-                    
-                    <div class="info-row">
-                        <div class="info-label">
                             <i class="pi pi-euro"></i>
                             <span>Salario</span>
                         </div>
