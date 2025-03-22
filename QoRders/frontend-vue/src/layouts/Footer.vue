@@ -1,109 +1,220 @@
 <template>
-  <div class="footer">
-    <div class="footer-decoration"></div>
+  <footer class="footer">
+    <div class="footer-pattern"></div>
     
-    <div class="footer-content">
-      <div class="footer-info">
-        <img class="footer-logo" src="/src/assets/logo.png" alt="QoRders Logo" />
-        <p class="copyright">&copy; 2025 QoRders</p>
-      </div>
-      
-      <div class="footer-links">
-        <a href="https://github.com/CainMartinez" target="_blank" rel="noopener noreferrer" class="github-link">
-          <svg 
-              class="github-icon" 
-              height="20" 
-              width="20" 
-              viewBox="0 0 16 16" 
-              aria-hidden="true"
-          >
-              <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z" fill="currentColor"></path>
-          </svg>
+    <div class="footer-container">
+      <div class="footer-logo">
+        <h3 class="footer-heading">GitHub</h3>
+        <a 
+          href="https://github.com/CainMartinez" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          class="github-link"
+        >
+          <font-awesome-icon :icon="['fab', 'github']" class="github-icon" />
           <span>Caín Martínez Bernabeu</span>
         </a>
       </div>
+      
+      <div class="footer-links-container">
+        <h3 class="footer-heading">QoRders</h3>
+        <p class="footer-description">
+          Transformando corazones y comunidades a través de la solidaridad digital. 
+          Conectamos donantes con organizaciones que hacen la diferencia.
+        </p>
+      </div>
+      
+      <div class="footer-links-container">
+        <h3 class="footer-heading">Colaboradores</h3>
+        <div class="footer-links">
+          <a 
+            class="footer-link"
+            target="_blank" 
+            rel="noopener noreferrer"
+          >
+            <font-awesome-icon :icon="['fas', 'arrow-right']" /> Àngela Torró
+          </a>
+          <a 
+            class="footer-link"
+            target="_blank" 
+            rel="noopener noreferrer"
+          >
+            <font-awesome-icon :icon="['fas', 'arrow-right']" /> Álvaro Garrido
+          </a>
+          <a 
+            class="footer-link"
+            target="_blank" 
+            rel="noopener noreferrer"
+          >
+            <font-awesome-icon :icon="['fas', 'arrow-right']" /> Caín Martínez
+          </a>
+        </div>
+      </div>
     </div>
-  </div>
+    
+    <div class="footer-bottom">
+      <p class="footer-copyright">
+        &copy; {{ currentYear }} QoRders. Todos los derechos reservados.
+      </p>
+    </div>
+  </footer>
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { computed } from 'vue';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+
+const currentYear = computed(() => new Date().getFullYear());
 </script>
 
 <style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap');
+
 .footer {
-  display: flex;
-  flex-direction: column;
-  background-color: #f8f9fa;
-  color: #212529;
-  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+  background: linear-gradient(to top, #2c3e50, #34495e);
+  color: white;
+  padding: 60px 5% 30px;
   position: relative;
-  margin-top: auto; /* Esto ayuda a empujar el footer hacia abajo cuando se usa con flexbox */
+  overflow: hidden;
+  font-family: 'Poppins', sans-serif;
+}
+
+.footer::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--primary-color, #e74c3c), var(--secondary-color, #e67e22));
+}
+
+.footer-pattern {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
+  height: 100%;
+  background-image: url('data:image/svg+xml;utf8,<svg width="60" height="60" xmlns="http://www.w3.org/2000/svg"><path d="M0,30 L30,0 M60,30 L30,60" stroke="rgba(255,255,255,0.03)" stroke-width="1"/></svg>');
+  background-size: 30px 30px;
+  opacity: 0.8;
+  pointer-events: none;
 }
 
-.footer-decoration {
-  height: 3px;
-  background: linear-gradient(to right, #0056b3 30%, #212529 100%);
-  width: 100%;
+.footer-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 40px;
+  max-width: 1200px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 2;
 }
 
-.footer-content {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px 30px;
-  flex-wrap: wrap;
-  gap: 20px;
-}
-
-.footer-info {
+.footer-logo {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
 }
 
-.footer-logo {
-  height: 40px;
-  width: auto;
-  margin-bottom: 10px;
+.footer-logo-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0 0 15px;
+  color: white;
+  position: relative;
+  display: inline-block;
 }
 
-.copyright {
-  font-size: 0.9rem;
-  color: #6c757d;
-  margin: 0;
+.footer-logo-title span {
+  background: linear-gradient(135deg, var(--secondary-color, #e67e22), var(--primary-color, #e74c3c));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.footer-description {
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.6;
+  margin-bottom: 25px;
+  font-size: 0.95rem;
+}
+
+.footer-links-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.footer-heading {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin-bottom: 20px;
+  color: white;
+  position: relative;
+  padding-bottom: 12px;
+}
+
+.footer-heading::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 40px;
+  height: 2px;
+  background: linear-gradient(to right, var(--secondary-color, #e67e22), var(--primary-color, #e74c3c));
 }
 
 .footer-links {
   display: flex;
-  gap: 15px;
-  justify-content: flex-end;
-  flex-wrap: wrap;
+  flex-direction: column;
+  gap: 10px;
 }
 
-a {
-  color: #495057;
-  text-decoration: none;
-  padding: 8px 16px;
-  border-radius: 4px;
-  transition: all 0.3s ease;
-  background-color: transparent;
-  display: inline-flex;
+.footer-link {
+  display: flex;
   align-items: center;
+  gap: 10px;
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: none;
+  transition: all 0.3s ease;
+  background: transparent;
+  padding: 0;
+  font-size: 0.95rem;
 }
 
-a:hover {
-  background-color: rgba(0, 86, 179, 0.08);
-  color: #0056b3;
-  transform: translateY(-2px);
+.footer-link:hover {
+  color: white;
+  transform: translateX(5px);
+  background: transparent;
+}
+
+.footer-link svg {
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+}
+
+.footer-link:hover svg {
+  transform: translateX(3px);
 }
 
 .github-link {
   display: flex;
   align-items: center;
-  gap: 8px;
-  border: 1px solid rgba(0, 86, 179, 0.2);
+  gap: 12px;
+  margin-top: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 12px 16px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  color: white;
+}
+
+.github-link:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-3px);
 }
 
 .github-icon {
@@ -111,35 +222,107 @@ a:hover {
 }
 
 .github-link:hover .github-icon {
-  transform: rotate(10deg);
-  color: #0056b3;
+  transform: rotate(5deg);
 }
 
-@media (max-width: 768px) {
-  .footer-content {
-    flex-direction: column;
-    text-align: center;
-    padding: 20px;
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 40px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  width: 100%;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.footer-copyright {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.85rem;
+}
+
+.footer-social {
+  display: flex;
+  gap: 15px;
+}
+
+.social-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+.social-icon:hover {
+  background: linear-gradient(135deg, var(--secondary-color, #e67e22), var(--primary-color, #e74c3c));
+  transform: translateY(-3px);
+}
+
+/* Media queries para responsive */
+@media screen and (max-width: 992px) {
+  .footer-container {
+    grid-template-columns: 1fr 1fr;
   }
   
-  .footer-info {
+  .footer-logo {
+    grid-column: span 2;
+    text-align: center;
     align-items: center;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .footer {
+    padding: 50px 5% 20px;
+  }
+  
+  .footer-container {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+  
+  .footer-logo {
+    grid-column: span 1;
+  }
+  
+  .footer-heading {
+    font-size: 1.2rem;
     margin-bottom: 15px;
   }
   
-  .footer-links {
-    justify-content: center;
-    width: 100%;
+  .footer-bottom {
+    flex-direction: column;
+    gap: 15px;
+    text-align: center;
+  }
+  
+  .footer-copyright {
+    order: 2;
+  }
+  
+  .footer-social {
+    order: 1;
   }
 }
 
-@media (max-width: 480px) {
-  .footer-links {
-    flex-direction: column;
-    align-items: center;
+@media screen and (max-width: 576px) {
+  .footer {
+    padding: 40px 5% 20px;
   }
   
-  a {
+  .footer-logo-title {
+    font-size: 1.8rem;
+  }
+  
+  .github-link {
     width: 100%;
     justify-content: center;
   }
