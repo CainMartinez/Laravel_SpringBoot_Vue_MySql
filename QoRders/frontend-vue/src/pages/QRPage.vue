@@ -24,6 +24,8 @@ import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import useQR from '../composables/useQR';
 import useOrders from '../composables/useOrders';
+import { useStore } from 'vuex';
+const store = useStore();
 
 const loading = ref(true);
 const roomName = ref('');
@@ -52,9 +54,27 @@ onMounted(async () => {
 });
 
 const redirectToCard = async () => {
-    const orderData = await createOrder(bookingData.value.data.bookingId);
-    localStorage.setItem('bookingId', bookingData.value.data.bookingId);
-    window.location.href = `/room/${roomSlug.value}`;
+    try {
+        const orderData = await createOrder(bookingData.value.data.bookingId);
+        
+        // Guardar bookingId en localStorage (para compatibilidad actual)
+        localStorage.setItem('bookingId', bookingData.value.data.bookingId);
+        
+        // Guardar datos completos en el store
+        if (orderData && orderData.orderId) {
+            store.commit('storeOrders/setOrderData', {
+                orderId: orderData.orderId,
+                bookingId: bookingData.value.data.bookingId
+            });
+            console.log('Datos guardados en store:', orderData.orderId, bookingData.value.data.bookingId);
+        }
+        
+        // Navegar a la página del menú
+        window.location.href = `/room/${roomSlug.value}`;
+    } catch (error) {
+        console.error('Error al crear la orden:', error);
+        // Manejo de errores
+    }
 };
 </script>
 
