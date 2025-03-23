@@ -1,13 +1,17 @@
 package com.QoRders.client.booking.api.request;
 
 import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
+@Data
 public class PaymentRequest {
-    @NotNull(message = "Payment method is required")
-    private String paymentMethod;
+    @NotNull(message = "El ID de la reserva es obligatorio")
     private Integer bookingId;
+    
+    @NotNull(message = "El ID de la orden es obligatorio")
+    private Integer orderId;
+    
+    private String paymentMethod;
+    
+    private String paymentStatus;
 }

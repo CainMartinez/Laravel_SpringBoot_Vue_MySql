@@ -10,4 +10,5 @@ public interface BookingService {
     String finalizeBookingPayment(Integer orderId, String paymentMethod);
     BookingEntity getBookingById(Integer bookingId);
     TicketEntity generateTicket(Integer bookingId);
+    String finalizeBookingPayment(Integer bookingId, Integer orderId, String paymentMethod, String paymentStatus);
 }

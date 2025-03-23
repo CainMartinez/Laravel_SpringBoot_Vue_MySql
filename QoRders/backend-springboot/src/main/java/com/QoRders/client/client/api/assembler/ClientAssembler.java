@@ -52,5 +52,6 @@ public class ClientAssembler {
         if (clientUpdateRequest.getAddress() != null) {
             client.setAddress(clientUpdateRequest.getAddress());
         }
+        client.setHas_coupon(clientUpdateRequest.isHas_coupon());
     }
 }

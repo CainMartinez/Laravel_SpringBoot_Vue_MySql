@@ -315,4 +315,46 @@ public class BookingServiceImpl implements BookingService {
         ticketRepository.save(ticket);
         return ticket;
     }
+
+    @Override
+    @Transactional
+    public String finalizeBookingPayment(Integer bookingId, Integer orderId, String paymentMethod, String paymentStatus) {
+        log.info("Actualizando estados después del pago: booking={}, order={}", bookingId, orderId);
+        
+        // Verificar si existe el booking
+        BookingEntity booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No se encuentra la reserva."));
+    
+        // Verificar si hay tickets asociados
+        TicketEntity ticket = booking.getTickets().stream()
+                .filter(t -> t.getPaymentStatus() != TicketEntity.PaymentStatus.Paid)
+                .findFirst()
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Esta reserva no tiene tickets pendientes de pago."));
+    
+        // Verificar si existe la orden
+        OrderEntity order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No se encuentra la orden asociada."));
+    
+        // Actualizar el estado del ticket a pagado
+        ticket.setPaymentStatus(TicketEntity.PaymentStatus.Paid);
+        ticketRepository.save(ticket);
+    
+        // Actualizar el estado de la orden a pagado
+        order.setPaymentStatus(OrderEntity.PaymentStatus.Paid);
+        orderRepository.save(order);
+    
+        // Marcar el booking como completado
+        booking.setStatus(BookingEntity.Status.Completed);
+        bookingRepository.save(booking);
+    
+        // Actualizar el estado del cliente
+        ClientEntity client = booking.getClient();
+        client.setIs_seated(false);
+        clientRepository.save(client);
+    
+        log.info("Estados actualizados correctamente: booking=#{} (Completed), order=#{} (Paid), ticket=#{} (Paid)",
+                bookingId, orderId, ticket.getTicketId());
+        
+        return "Payment status updated successfully";
+    }
 }

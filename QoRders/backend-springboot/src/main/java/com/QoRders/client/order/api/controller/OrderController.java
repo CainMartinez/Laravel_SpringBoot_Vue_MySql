@@ -53,12 +53,15 @@ public class OrderController {
         try {
             // Extraer el email desde el token
             String email = jwtProvider.parseAccessToken(authorization.replace("Bearer ", ""));
-
+    
+            // Primero, obtener la orden actual
+            OrderEntity order = orderService.getOrderById(request.getOrderId());
+            
             // Añadir cada producto al pedido
             for (OrderProductRequest.ProductQuantityRequest productRequest : request.getProducts()) {
                 OrderProductsEntity orderProduct = new OrderProductsEntity();
                 orderProduct.setQuantity(productRequest.getQuantity());
-
+    
                 orderService.addProductToOrder(
                     request.getOrderId(),
                     orderProduct,
@@ -66,7 +69,12 @@ public class OrderController {
                     email
                 );
             }
-
+            
+            // Importante: Cambiar el estado de la orden a "Waiting" independientemente 
+            // de su estado anterior (incluido "Delivered")
+            order.setOrderStatus(OrderEntity.OrderStatus.Waiting);
+            orderService.updateOrder(order);
+            
             // Respuesta simplificada al cliente
             Map<String, String> response = Map.of(
                 "message", "Comanda realizada con éxito, en breve te servirán nuestros camareros."
@@ -74,7 +82,7 @@ public class OrderController {
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
-                Map.of("message", "Error al realizar la comanda.")
+                Map.of("message", "Error al realizar la comanda: " + e.getMessage())
             );
         }
     }
