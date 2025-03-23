@@ -63,16 +63,23 @@ const OrderService = {
         }
     },
 
-    async makePayment(paymentData, token) {
+    async makePayment(paymentData) {
         try {
+            console.log('OrderService - Enviando datos de pago:', paymentData);
             const response = await api_spring.post('/booking/pay', paymentData, {
                 headers: {
-                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
                 }
             });
+            console.log('OrderService - Respuesta recibida:', response.data);
             return response.data;
         } catch (error) {
             console.error("Error al realizar el pago:", error);
+            if (error.response) {
+                console.error("Detalles del error:", error.response.data);
+                console.error("Estado HTTP:", error.response.status);
+                console.error("Headers:", error.response.headers);
+            }
             throw error;
         }
     },

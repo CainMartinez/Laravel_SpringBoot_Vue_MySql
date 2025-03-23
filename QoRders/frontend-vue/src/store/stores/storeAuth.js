@@ -31,6 +31,14 @@ const mutations = {
         localStorage.removeItem('token');
         localStorage.removeItem('userType');
     },
+    UPDATE_CLIENT_DATA(state, clientData) {
+        if (state.userData && state.userData.client) {
+            state.userData.client = {
+                ...state.userData.client,
+                ...clientData
+            };
+        }
+    }
 };
 
 const actions = {
@@ -66,7 +74,21 @@ const actions = {
             }
         }
     },
-
+    async generateCoupon({ commit, rootGetters }) {
+        try {
+            const userId = rootGetters['storeAuth/getUserData'].id;
+            const response = await axios.post('/api/clients/generate-coupon', { user_id: userId });
+            
+            if (response.data.success) {
+            // Actualizar el estado del usuario en el store
+            commit('storeAuth/UPDATE_USER_COUPON_STATUS', true, { root: true });
+            return response.data;
+            }
+        } catch (error) {
+            console.error('Error generando cupón:', error);
+            throw error;
+        }
+    },
     async login({ commit }, { email, password, role }) {
         try {
             let response;

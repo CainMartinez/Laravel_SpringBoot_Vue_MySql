@@ -16,12 +16,24 @@ export default function useOrders() {
         }
     };
 
-    const addProductsToExistingOrder = async (productId, quantity) => {
+    // En el composable useOrders
+    const addProductsToExistingOrder = async (orderId) => {
         try {
-            const product = { productId, quantity };
-            store.dispatch('storeOrders/addProductsToExistingOrder', product);
+            const productsToAdd = store.getters['storeOrders/getOrderProducts'];
+            
+            // Si no hay productos seleccionados, mostrar error
+            if (!productsToAdd || productsToAdd.length === 0) {
+                return { success: false, message: 'No hay productos seleccionados' };
+            }
+            
+            const response = await OrderService.addProductsToOrder(orderId, productsToAdd);
+            
+            // Limpiar los productos seleccionados después de añadirlos
+            store.commit('storeOrders/clearOrderProducts');
+            
+            return response;
         } catch (error) {
-            console.error("Error añadiendo productos a la orden:", error);
+            console.error('Error al añadir productos a la orden:', error);
             throw error;
         }
     };
