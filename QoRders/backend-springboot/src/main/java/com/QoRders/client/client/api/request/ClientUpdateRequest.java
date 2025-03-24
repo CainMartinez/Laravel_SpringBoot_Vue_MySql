@@ -37,4 +37,6 @@ public class ClientUpdateRequest {
     private String password;
 
     private boolean has_coupon;
+
+    private int loyalty_points;
 }

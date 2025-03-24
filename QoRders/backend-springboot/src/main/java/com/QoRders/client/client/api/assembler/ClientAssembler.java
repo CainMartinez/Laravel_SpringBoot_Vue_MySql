@@ -53,5 +53,6 @@ public class ClientAssembler {
             client.setAddress(clientUpdateRequest.getAddress());
         }
         client.setHas_coupon(clientUpdateRequest.isHas_coupon());
+        client.setLoyalty_points(clientUpdateRequest.getLoyalty_points());
     }
 }

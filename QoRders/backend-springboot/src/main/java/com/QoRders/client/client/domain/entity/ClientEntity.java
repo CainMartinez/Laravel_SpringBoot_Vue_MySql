@@ -51,7 +51,7 @@ public class ClientEntity {
     private Boolean has_coupon = false;
 
     @Column(name = "loyalty_points", nullable = false)
-    private Integer loyalty_points = 0;
+    private Integer loyalty_points = 500;
 
     @Column(name = "is_active", nullable = false)
     private Boolean isActive = true;
