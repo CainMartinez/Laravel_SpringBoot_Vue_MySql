@@ -14,7 +14,7 @@
       <div class="donation-content">
         <h2>Gastronomía con Propósito</h2>
         <p>
-            Con cada plato que disfrutas, contribuyes a un mundo mejor. Donamos el 0.9% de cada consumición 
+            Con cada plato que disfrutas, contribuyes a un mundo mejor. Donamos el <b>0.9% </b>de cada consumición 
           a organizaciones benéficas que luchan para hacer un mundo mejor, transformando tu experiencia 
           gastronómica en un acto de solidaridad.
         </p>
@@ -24,7 +24,53 @@
         </router-link>
       </div>
     </div>
-
+    <div class="loyalty-rewards-section">
+    <div class="rewards-container">
+      <!-- Loyalty Points Card -->
+      <div class="reward-card loyalty-card">
+        <div class="reward-icon loyalty-icon">
+          <i class="pi pi-star"></i>
+        </div>
+        <h3 class="reward-title">Programa de Fidelidad</h3>
+        <div class="reward-highlights">
+          <div class="highlight-item">
+            <span class="highlight-value">100</span>
+            <span class="highlight-label">puntos por cada euro</span>
+          </div>
+          <i class="pi pi-arrow-right highlight-arrow"></i>
+          <div class="highlight-item">
+            <span class="highlight-value">1€</span>
+            <span class="highlight-label">por cada 100 puntos</span>
+          </div>
+        </div>
+        <p class="reward-description">
+          Acumula puntos con cada compra y canjéalos como descuento en tus próximas visitas. ¡Tu fidelidad tiene recompensa!
+        </p>
+        <router-link class="reward-cta loyalty-cta">
+          Empieza con 500 Puntos gratis
+        </router-link>
+      </div>
+      
+      <!-- Coupon Card -->
+      <div class="reward-card coupon-card">
+        <div class="reward-icon coupon-icon">
+          <i class="pi pi-ticket"></i>
+        </div>
+        <div class="coupon-badge">20% DESCUENTO</div>
+        <h3 class="reward-title">Cupón del 20%</h3>
+        <div class="coupon-amount">
+          <span class="amount-value">20%</span>
+          <span class="amount-label">DESCUENTO</span>
+        </div>
+        <p class="reward-description">
+          Por cada 100€ en donaciones acumuladas, recibe un cupón con 20% de descuento en tu próxima compra. ¡Un incentivo más para disfrutar con nosotros!
+        </p>
+        <router-link class="reward-cta coupon-cta">
+          Sin límites en el valor de la cuenta
+        </router-link>
+      </div>
+    </div>
+  </div>
     <!-- Separador Gourmet -->
     <div class="gourmet-separator">
       <div class="separator-line"></div>
@@ -460,7 +506,287 @@ onMounted(() => {
     padding: 6px 16px;
   }
 }
+/* Añadir al final de la sección de estilos, antes de @media queries */
 
+/* Sección de Loyalty & Rewards */
+.loyalty-rewards-section {
+  width: 100%;
+  max-width: 1200px;
+  margin-bottom: 50px;
+  padding: 0 20px;
+}
+
+.rewards-container {
+  display: flex;
+  gap: 30px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.reward-card {
+  flex: 1;
+  min-width: 300px;
+  max-width: 500px;
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.reward-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 5px;
+}
+
+.reward-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+}
+
+.loyalty-card {
+  background-color: #fff8e1;
+  border: 1px solid #ffe082;
+}
+
+.loyalty-card::before {
+  background: linear-gradient(to right, #ff9800, #fb8c00);
+}
+
+.coupon-card {
+  background-color: #e8f5e9;
+  border: 1px solid #a5d6a7;
+}
+
+.coupon-card::before {
+  background: linear-gradient(to right, #4caf50, #2e7d32);
+}
+
+.reward-icon {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.loyalty-icon {
+  background: linear-gradient(135deg, #ff9800, #ff6f00);
+  color: white;
+  font-size: 2rem;
+}
+
+.coupon-icon {
+  background: linear-gradient(135deg, #4caf50, #2e7d32);
+  color: white;
+  font-size: 2rem;
+}
+
+.reward-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.6rem;
+  margin-bottom: 20px;
+  color: #5d4037;
+}
+
+.reward-description {
+  color: #6b4423;
+  line-height: 1.6;
+  margin-bottom: 25px;
+  flex-grow: 1;
+}
+
+.reward-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 24px;
+  border-radius: 30px;
+  font-weight: 600;
+  text-decoration: none;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  margin-top: auto;
+}
+
+.loyalty-cta {
+  background: linear-gradient(135deg, #ff9800, #ff6f00);
+  color: white;
+}
+
+.loyalty-cta:hover {
+  background: linear-gradient(135deg, #ff6f00, #e65100);
+  box-shadow: 0 5px 15px rgba(255, 152, 0, 0.3);
+}
+
+.coupon-cta {
+  background: linear-gradient(135deg, #4caf50, #2e7d32);
+  color: white;
+}
+
+.coupon-cta:hover {
+  background: linear-gradient(135deg, #2e7d32, #1b5e20);
+  box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3);
+}
+
+.reward-highlights {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+.highlight-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.highlight-value {
+  font-family: 'Playfair Display', serif;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #ff6f00;
+  line-height: 1;
+}
+
+.highlight-label {
+  font-size: 0.9rem;
+  color: #5d4037;
+  margin-top: 5px;
+}
+
+.highlight-arrow {
+  color: #ff9800;
+  font-size: 1.5rem;
+}
+
+.coupon-badge {
+  position: absolute;
+  top: 15px;
+  right: 0;
+  background-color: #c62828;
+  color: white;
+  padding: 5px 15px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  transform: rotate(45deg) translateX(20px);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+}
+
+.coupon-amount {
+  display: flex;
+  flex-direction: column;
+  margin: 10px 0 25px;
+  position: relative;
+}
+
+.coupon-amount::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 120px;
+  height: 120px;
+  background-color: rgba(76, 175, 80, 0.1);
+  border-radius: 50%;
+  z-index: -1;
+}
+
+.amount-value {
+  font-family: 'Playfair Display', serif;
+  font-size: 3.5rem;
+  font-weight: 700;
+  color: #2e7d32;
+  line-height: 1;
+}
+
+.amount-label {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #4caf50;
+  margin-top: 5px;
+}
+
+/* Ajustes responsive para la sección de loyalty */
+@media (max-width: 992px) {
+  .reward-card {
+    min-width: 280px;
+  }
+  
+  .reward-title {
+    font-size: 1.4rem;
+  }
+  
+  .amount-value {
+    font-size: 3rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .reward-card {
+    flex: 1 1 100%;
+    margin-bottom: 20px;
+  }
+  
+  .highlight-value {
+    font-size: 1.8rem;
+  }
+  
+  .highlight-label {
+    font-size: 0.8rem;
+  }
+  
+  .reward-cta {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .reward-card {
+    padding: 20px;
+  }
+  
+  .reward-icon {
+    width: 60px;
+    height: 60px;
+    font-size: 1.5rem;
+  }
+  
+  .reward-title {
+    font-size: 1.3rem;
+  }
+  
+  .reward-description {
+    font-size: 0.9rem;
+  }
+  
+  .coupon-amount::before {
+    width: 100px;
+    height: 100px;
+  }
+  
+  .amount-value {
+    font-size: 2.5rem;
+  }
+}
 @media (max-width: 768px) {
   .carousel-container {
     height: 60vh;

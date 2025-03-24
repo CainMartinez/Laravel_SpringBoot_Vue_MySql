@@ -44,7 +44,28 @@
                 </div>
             </div>
         </div>
-
+        <div class="menu-section">
+            <h2 class="section-title">Programa de Fidelidad</h2>
+            
+            <div class="loyalty-container">
+                <div class="loyalty-card">
+                    <div class="loyalty-header">
+                        <i class="pi pi-star"></i>
+                        <span>Puntos de Fidelidad</span>
+                    </div>
+                    <div class="loyalty-value">{{ userData.loyalty_points || 0 }}</div>
+                    <div class="loyalty-info">
+                        <span>{{((userData.loyalty_points || 0) / 100) }}€ en tu próxima compra</span>
+                    </div>
+                    <div class="loyalty-explanation">
+                        <p>Por cada 1,00€ que gastes, ganas 1 punto de fidelidad. </p>
+                            <p> Cada 100 puntos equivalen a 1,00€</p>
+                        
+                        <p class="loyalty-note">* No acumulable con cupones de descuento.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
         <!-- Sección de métricas -->
         <div class="menu-section metrics-data">
             <h2 class="section-title">Degustación Estadística</h2>
@@ -58,6 +79,28 @@
                 <div class="chart-wrapper">
                     <h3 class="chart-title">Historial de Visitas</h3>
                     <div ref="reservationsChart" class="chart"></div>
+                </div>
+            </div>
+            
+            <div class="coupon-section">
+                <button 
+                    v-if="isDonationComplete && !hasClientCoupon" 
+                    @click="generateCoupon" 
+                    class="coupon-button"
+                >
+                    <i class="pi pi-ticket"></i> Obtener cupón de agradecimiento
+                </button>
+                
+                <div v-else-if="hasClientCoupon" class="coupon-active">
+                    <i class="pi pi-check-circle"></i>
+                    ¡Cupón de 20% de descuento activado para tu próximo pago!
+                </div>
+                
+                <div v-else class="coupon-progress">
+                    <div class="progress-bar">
+                        <div class="progress-fill" :style="{width: `${Math.min(donationPercentage, 100)}%`}"></div>
+                    </div>
+                    <span class="progress-text">{{ donationPercentage.toFixed(1) }}% de donaciones acumuladas</span>
                 </div>
             </div>
         </div>
@@ -78,11 +121,13 @@
 import { computed, onMounted, ref, watch } from 'vue';
 import { useStore } from 'vuex';
 import Highcharts from "highcharts";
+import axios from 'axios';
 
 const store = useStore();
 
 // Datos del usuario
 const userData = computed(() => store.getters['storeAuth/getUserData'].client);
+const hasClientCoupon = computed(() => userData.value?.has_coupon || false);
 
 const props = defineProps({
     reservations: {
@@ -99,17 +144,101 @@ const donationsAmount = computed(() => {
     const totalAmount = props.reservations.reduce((total, reservation) => {
         const ticketsTotal = reservation.tickets.reduce((sum, ticket) => sum + ticket.totalAmount, 0);
         return total + ticketsTotal;
-    }, 0) * 0.05;
+    }, 0) * 0.009;
     return totalAmount.toFixed(2);
+});
+
+// Total histórico de donaciones (para el gráfico)
+const historicalDonationsAmount = computed(() => {
+  const totalAmount = props.reservations.reduce((total, reservation) => {
+    const ticketsTotal = reservation.tickets.reduce((sum, ticket) => sum + ticket.totalAmount, 0);
+    return total + ticketsTotal;
+  }, 0) * 0.009;
+  return totalAmount.toFixed(2);
+});
+
+// Cantidad de donaciones ya canjeadas por cupones (100€ por cada cupón)
+const redeemedDonations = computed(() => {
+  // Obtenemos esto del usuario - cada cupón canjeado equivale a 100€
+  const redeemedCouponsCount = userData.value?.redeemed_coupons_count || 0;
+  return redeemedCouponsCount * 100;
+});
+
+// Donaciones disponibles para el próximo cupón
+const availableDonationsAmount = computed(() => {
+  const available = Math.max(0, parseFloat(historicalDonationsAmount.value) - redeemedDonations.value);
+  return available.toFixed(2);
+});
+
+// Cantidad restante para completar el próximo cupón
+const availableDonationsRest = computed(() => {
+  return (100 - availableDonationsAmount.value).toFixed(2);
+});
+
+// Porcentaje disponible para la barra de progreso
+const availableDonationPercentage = computed(() => {
+  return (parseFloat(availableDonationsAmount.value) / 100) * 100;
 });
 
 const donationsRest = computed(() => {
     return (100 - donationsAmount.value).toFixed(2);
 });
+const donationPercentage = computed(() => {
+    return (parseFloat(donationsAmount.value) / 100) * 100;
+});
+
+const isDonationComplete = computed(() => {
+    return parseFloat(donationsAmount.value) >= 100;
+});
+// Actualizar el método generateCoupon
+
+const generateCoupon = async () => {
+  try {
+    const token = store.getters['storeAuth/getToken'];
+    
+    // Incrementar el contador de cupones canjeados
+    const redeemedCouponsCount = (userData.value?.redeemed_coupons_count || 0) + 1;
+    
+    // Llamar al endpoint de actualización de cliente
+    const response = await axios.put(
+      'http://localhost:8090/spring/api/client', 
+      { 
+        has_coupon: true,
+        redeemed_coupons_count: redeemedCouponsCount  // Este campo se debe agregar al backend
+      },
+      {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      }
+    );
+    
+    if (response.status === 200) {
+      // Actualizar el estado del usuario en el store
+      store.commit('storeAuth/UPDATE_CLIENT_DATA', {
+        ...userData.value,
+        has_coupon: true,
+        redeemed_coupons_count: redeemedCouponsCount
+      });
+      
+      // Mostrar mensaje de éxito
+      store.dispatch('storeNotifications/pushNotification', {
+        type: 'success',
+        message: '¡Cupón de 20% activado! Se aplicará en tu próximo pago y podrás seguir acumulando donaciones.'
+      });
+    }
+  } catch (error) {
+    console.error('Error al generar el cupón:', error);
+    store.dispatch('storeNotifications/pushNotification', {
+      type: 'error',
+      message: 'No se pudo generar el cupón. Inténtalo de nuevo más tarde.'
+    });
+  }
+};
 
 const donationsChart = ref(null);
 const reservationsChart = ref(null);
-
 const chartOptions = {
     chart: {
         type: "pie",
@@ -149,23 +278,23 @@ const chartOptions = {
         }
     },
     series: [
+    {
+      name: 'Donaciones',
+      colorByPoint: true,
+      data: [
         {
-            name: 'Donaciones',
-            colorByPoint: true,
-            data: [
-                {
-                    name: donationsAmount.value + ' €',
-                    y: parseFloat(donationsAmount.value),
-                    color: '#8D6E63', // Marrón claro
-                },
-                {
-                    name: 'Restante',
-                    y: parseFloat(donationsRest.value),
-                    color: '#D7CCC8', // Beige
-                },
-            ]
-        }
-    ]
+          name: historicalDonationsAmount.value + ' € acumulados',
+          y: parseFloat(historicalDonationsAmount.value),
+          color: '#8D6E63', // Marrón claro
+        },
+        {
+          name: 'Impacto necesario',
+          y: Math.max(0, 100 - parseFloat(historicalDonationsAmount.value) % 100),
+          color: '#D7CCC8', // Beige
+        },
+      ]
+    }
+  ]
 };
 
 const reservationSeriesData = props.reservations?.map((reservation) => {
@@ -402,14 +531,250 @@ watch([donationsAmount, donationsRest], () => {
     border-radius: 5px;
     padding: 8px 20px;
 }
+.coupon-section {
+    margin-top: 30px;
+    text-align: center;
+    padding: 20px;
+    background-color: rgba(255, 255, 255, 0.7);
+    border-radius: 8px;
+    border: 1px dashed #D7CCC8;
+}
 
+.coupon-button {
+    background: linear-gradient(135deg, #4CAF50, #2E7D32);
+    color: white;
+    border: none;
+    border-radius: 25px;
+    padding: 12px 25px;
+    font-size: 16px;
+    font-weight: 600;
+    font-family: 'Playfair Display', serif;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+}
+
+.coupon-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+}
+
+.coupon-button i {
+    font-size: 18px;
+}
+
+.coupon-active {
+    background-color: #E8F5E9;
+    color: #2E7D32;
+    padding: 15px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    border: 1px solid #A5D6A7;
+}
+
+.coupon-active i {
+    font-size: 22px;
+    color: #4CAF50;
+}
+
+.coupon-progress {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 12px;
+    background-color: #EFEBE9;
+    border-radius: 6px;
+    overflow: hidden;
+    position: relative;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(to right, #8D6E63, #5D4037);
+    border-radius: 6px;
+    transition: width 0.5s ease-in-out;
+}
+
+.progress-text {
+    font-size: 14px;
+    color: #795548;
+    font-style: italic;
+}
+/* Añadir estos estilos a la sección de estilos */
+
+.progress-info {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 8px;
+}
+
+.progress-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #5D4037;
+}
+
+.progress-total {
+  font-size: 14px;
+  color: #8D6E63;
+  font-style: italic;
+}
+
+/* Mejorar la apariencia de la barra de progreso */
+.progress-bar {
+  width: 100%;
+  height: 14px;
+  background-color: #EFEBE9;
+  border-radius: 7px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(to right, #8D6E63, #5D4037);
+  border-radius: 7px;
+  transition: width 0.5s ease-in-out;
+  position: relative;
+}
+
+.progress-fill::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    45deg,
+    rgba(255, 255, 255, 0.2) 25%,
+    transparent 25%,
+    transparent 50%,
+    rgba(255, 255, 255, 0.2) 50%,
+    rgba(255, 255, 255, 0.2) 75%,
+    transparent 75%
+  );
+  background-size: 15px 15px;
+  animation: move-stripes 1s linear infinite;
+}
+
+@keyframes move-stripes {
+  0% { background-position: 0 0; }
+  100% { background-position: 15px 0; }
+}
+
+.progress-text {
+  font-size: 14px;
+  color: #795548;
+  font-style: italic;
+  margin-top: 8px;
+}
+/* Añadir estos estilos a la sección de estilos */
+
+.loyalty-section {
+  background-color: rgba(255, 248, 225, 0.5);
+  border: 1px dashed #FFD54F;
+}
+
+.loyalty-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 15px 0;
+}
+
+.loyalty-card {
+  background: linear-gradient(135deg, #FFF8E1, #FFECB3);
+  border-radius: 12px;
+  padding: 20px;
+  width: 100%;
+  max-width: 450px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.05);
+  text-align: center;
+  border: 1px solid rgba(255, 193, 7, 0.2);
+}
+
+.loyalty-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 15px;
+  color: #FB8C00;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.loyalty-header i {
+  font-size: 24px;
+  color: #FFA000;
+}
+
+.loyalty-value {
+  font-size: 48px;
+  font-weight: 700;
+  color: #E65100;
+  margin: 10px 0;
+  text-shadow: 1px 1px 0 rgba(0,0,0,0.1);
+  font-family: 'Playfair Display', serif;
+}
+
+.loyalty-info {
+  margin: 15px 0;
+  padding: 8px 0;
+  border-top: 1px dashed #FFD54F;
+  border-bottom: 1px dashed #FFD54F;
+  color: #795548;
+  font-weight: 500;
+}
+
+.loyalty-explanation {
+  margin-top: 15px;
+  text-align: left;
+  color: #795548;
+  font-size: 14px;
+}
+
+.loyalty-explanation p {
+  margin: 5px 0;
+}
+
+.loyalty-note {
+  font-style: italic;
+  font-size: 13px;
+  color: #BF360C;
+  margin-top: 10px;
+}
 /* Responsive */
 @media (max-width: 768px) {
     .menu-card {
         padding: 20px;
         margin: 20px;
     }
+    .coupon-button {
+        padding: 10px 20px;
+        font-size: 14px;
+    }
     
+    .coupon-active {
+        padding: 12px;
+        font-size: 14px;
+    }
     .chartsContainer {
         flex-direction: column;
     }

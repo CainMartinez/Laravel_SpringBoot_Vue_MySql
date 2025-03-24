@@ -117,7 +117,7 @@ const NgosPage = () => {
                 <h2>Nuestro Compromiso Solidario</h2>
                 <p>
                     Creemos firmemente que los negocios tienen una responsabilidad social. 
-                    Por eso, destinamos el 0.9% de nuestros ingresos a apoyar estas organizaciones
+                    Por eso, destinamos el <b>0.9%</b> de nuestros ingresos a apoyar estas organizaciones
                     que trabajan incansablemente para construir un futuro mejor para todos.
                 </p>
             </div>
