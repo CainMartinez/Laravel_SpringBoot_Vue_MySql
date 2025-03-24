@@ -295,7 +295,7 @@ public class PaymentUseCase {
                 "            \n" +
                 "            <p>¡Le esperamos pronto para otra experiencia gastronómica inolvidable!</p>\n" +
                 "            \n" +
-                "            <a href='http://localhost:3000/profile' class='cta-button'>Ver mi perfil</a>\n" +
+                "            <a href='http://cain-dev.es' class='cta-button'>Ir al restaurante</a>\n" +
                 "        </div>\n" +
                 "        \n" +
                 "        <div class='footer'>\n" +
@@ -320,13 +320,7 @@ public class PaymentUseCase {
                 "                    <p>Sáb-Dom: 13:00 - 00:00</p>\n" +
                 "                </div>\n" +
                 "            </div>\n" +
-                "            \n" +
-                "            <div class='social-links'>\n" +
-                "                <a href='#' class='social-icon'>f</a>\n" +
-                "                <a href='#' class='social-icon'>t</a>\n" +
-                "                <a href='#' class='social-icon'>i</a>\n" +
-                "            </div>\n" +
-                "            \n" +
+                "            \n" +      
                 "            <div class='copyright'>\n" +
                 "                &copy; " + java.time.LocalDate.now().getYear() + " QoRders. Todos los derechos reservados.\n" +
                 "            </div>\n" +

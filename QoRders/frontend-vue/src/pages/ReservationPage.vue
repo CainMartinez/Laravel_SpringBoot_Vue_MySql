@@ -78,10 +78,18 @@
                         <label for="email">Email:</label>
                         <InputText id="email" v-model="userEmail" placeholder="Introduce tu email" disabled class="light-input" />
                     </div>
-
                     <div class="form-group">
                         <label for="phone">Teléfono:</label>
-                        <InputText id="phone" v-model="userPhone" placeholder="Introduce tu teléfono" class="light-input" />
+                        <InputText 
+                            id="phone" 
+                            v-model="userPhone" 
+                            placeholder="Introduce tu teléfono (9 dígitos)" 
+                            class="light-input" 
+                            :class="{ 'p-invalid': phoneError }"
+                            maxlength="9"
+                            @input="validatePhone"
+                        />
+                        <small v-if="phoneError" class="p-error">{{ phoneErrorMessage }}</small>
                     </div>
                 </div>
             </div>
@@ -136,14 +144,37 @@ const selectedShift = ref('');
 const selectedShiftSpanish = ref('');
 const selectedPeople = ref(2);
 const selectedDay = ref('');
-const isDisabled = ref(true);
 const userFirstName = computed(() => store.getters['storeAuth/getUserData'].client.firstName);
 const userEmail = computed(() => store.getters['storeAuth/getUserData'].client.email);
 const userPhone = ref('');
 
 const reservationSuccess = ref(false);
 const modalTitle = ref('Reserva');
+// Añadir después de las variables existentes
+const phoneError = ref(false);
+const phoneErrorMessage = ref('');
 
+// Función para validar el teléfono (solo 9 dígitos)
+const validatePhone = () => {
+    // Remover cualquier carácter que no sea un número
+    userPhone.value = userPhone.value.replace(/\D/g, '');
+    
+    // Validar que sea exactamente 9 dígitos
+    if (userPhone.value.length > 0 && userPhone.value.length !== 9) {
+        phoneError.value = true;
+        phoneErrorMessage.value = 'El número de teléfono debe tener exactamente 9 dígitos';
+    } else {
+        phoneError.value = false;
+        phoneErrorMessage.value = '';
+    }
+};
+
+// Modificar la propiedad computada isDisabled para incluir la validación del teléfono
+const isDisabled = computed(() => {
+    return !selectedDay.value || !selectedRoom.value || !selectedShift.value || 
+           !selectedPeople.value || !userPhone.value || phoneError.value || 
+           userPhone.value.length !== 9;
+});
 const redirectToLogin = () => {
     window.location.href = '/login';
 };
@@ -252,7 +283,17 @@ const changeSelectedDay = (dayInfo) => {
 };
 
 // Realizar la reserva
+// Modificar la función handleReservation para capturar correctamente el error 409
 const handleReservation = () => {
+    validatePhone();
+    if (phoneError.value) {
+        reservationSuccess.value = false;
+        modalTitle.value = 'Error de Validación';
+        reservationModalMessage.value = phoneErrorMessage.value;
+        reservationModalVisible.value = true;
+        return;
+    }
+    
     const reservationData = {
         "date": selectedDay.value,
         "room_slug": selectedRoomSlug.value,
@@ -275,7 +316,21 @@ const handleReservation = () => {
                 // Actualizar para indicar error
                 reservationSuccess.value = false;
                 modalTitle.value = 'Error en la Reserva';
-                reservationModalMessage.value = `Lo sentimos, no hemos podido completar su reserva: ${error.message}`;
+                
+                // Verificar si es un error 409 (conflicto por reserva duplicada)
+                if (error.response && error.response.status === 409) {
+                    reservationModalMessage.value = "No se pueden hacer dos reservas para el mismo día. Por favor, seleccione otra fecha para su reserva.";
+                } 
+                // También verificar el mensaje de error específico por si cambia la estructura
+                else if (error.response && error.response.data && error.response.data.error && 
+                    error.response.data.error.includes("ya tienes una reserva")) {
+                    reservationModalMessage.value = "No se pueden hacer dos reservas para el mismo día. Por favor, seleccione otra fecha para su reserva.";
+                }
+                // Para cualquier otro error
+                else {
+                    console.error("Error completo:", error);
+                    reservationModalMessage.value = "Lo sentimos, no hemos podido completar su reserva. Por favor, inténtelo de nuevo más tarde.";
+                }
             });
     } else {
         reservationSuccess.value = false;
@@ -612,7 +667,29 @@ h2 {
 .button-icon {
     margin-right: 10px;
 }
+/* Añadir al bloque de estilos scoped */
+.p-invalid {
+    border-color: #ff5252 !important;
+}
 
+.p-error {
+    color: #ff5252;
+    font-size: 0.875rem;
+    margin-top: 4px;
+    font-style: italic;
+}
+
+/* Asegurar que el input inválido en modo oscuro también se vea bien */
+@media (prefers-color-scheme: dark) {
+    .p-invalid {
+        border-color: #ff6b6b !important;
+        background-color: #ffffff !important;
+    }
+    
+    .p-error {
+        color: #ff6b6b;
+    }
+}
 /* Responsive design */
 @media (max-width: 768px) {
     h1 {
