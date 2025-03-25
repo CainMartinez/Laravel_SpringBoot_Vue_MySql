@@ -160,7 +160,7 @@ public class PaymentUseCase {
                 "        .cta-button {\n" +
                 "            display: block;\n" +
                 "            text-align: center;\n" +
-                "            background-color: #8d6e63;\n" +
+                "            background-color:rgb(216, 210, 208);\n" +
                 "            color: white;\n" +
                 "            text-decoration: none;\n" +
                 "            padding: 15px 30px;\n" +
@@ -319,6 +319,12 @@ public class PaymentUseCase {
                 "                    <p>Lun-Vie: 12:00 - 23:00</p>\n" +
                 "                    <p>Sáb-Dom: 13:00 - 00:00</p>\n" +
                 "                </div>\n" +
+                "           </div>\n" +
+                "            \n" +
+                "            <div class='social-links'>\n" +
+                "                <a href='#' class='social-icon'>f</a>\n" +
+                "                <a href='#' class='social-icon'>t</a>\n" +
+                "                <a href='#' class='social-icon'>i</a>\n" +
                 "            </div>\n" +
                 "            \n" +      
                 "            <div class='copyright'>\n" +

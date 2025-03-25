@@ -166,10 +166,6 @@
               <span class="label">Total:</span>
               <span class="value">{{ reservation.ticket.total_amount }} €</span>
             </div>
-            <div class="summary-item">
-              <span class="label">Donación:</span>
-              <span class="value">{{ reservation.ticket.donated_amount }} €</span>
-            </div>
             <div class="summary-item payment-status">
               <span class="label">Estado de pago:</span>
               <span class="value" :class="'payment-' + reservation.ticket.payment_status.toLowerCase()">
